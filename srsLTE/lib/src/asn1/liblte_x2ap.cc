@@ -33,6 +33,1658 @@ static void liblte_x2ap_log_print(const char *format, ...) {
 }
 
 /*******************************************************************************
+/* ProtocolIE Criticality ENUMERATED
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_criticality(
+  LIBLTE_X2AP_CRITICALITY_ENUM                                       *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Enum - *ie
+    liblte_value_2_bits(*ie, ptr, 2);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_criticality(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_CRITICALITY_ENUM                                       *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Enum - *ie
+    *ie = (LIBLTE_X2AP_CRITICALITY_ENUM)liblte_bits_2_value(ptr, 2);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ /*******************************************************************************
+/* ProtocolIE local INTEGER
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_s1ap_pack_local(
+  LIBLTE_S1AP_LOCAL_STRUCT                                           *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Integer - ie->local
+    // lb:0, ub:65535
+    liblte_align_up_zero(ptr, 8);
+    liblte_value_2_bits(0, ptr, (2*8)-16);
+    liblte_value_2_bits(ie->local, ptr, 16);
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_local(
+  uint8_t                                                           **ptr,
+  LIBLTE_S1AP_LOCAL_STRUCT                                           *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Integer - ie->local
+    // lb:0, ub:65535
+    liblte_align_up(ptr, 8);
+    ie->local = (uint16_t)liblte_bits_2_value(ptr, 2.0*8);
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ /*******************************************************************************
+/* ProtocolIE PrivateIE_ID CHOICE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_s1ap_pack_privateie_id(
+  LIBLTE_S1AP_PRIVATEIE_ID_STRUCT                                    *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Choice type
+    liblte_value_2_bits(ie->choice_type, ptr, 1);
+        // Choice
+ if(ie->choice_type == LIBLTE_S1AP_PRIVATEIE_ID_CHOICE_LOCAL) {
+      if(liblte_s1ap_pack_local(&ie->choice.local, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    } else if(ie->choice_type == LIBLTE_S1AP_PRIVATEIE_ID_CHOICE_GLOBAL) {
+      } 
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_privateie_id(
+  uint8_t                                                           **ptr,
+  LIBLTE_S1AP_PRIVATEIE_ID_STRUCT                                    *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Choice type
+    ie->choice_type = (LIBLTE_S1AP_PRIVATEIE_ID_CHOICE_ENUM)liblte_bits_2_value(ptr, 1);
+        // Choice
+ if(ie->choice_type == LIBLTE_S1AP_PRIVATEIE_ID_CHOICE_LOCAL) {
+      if(liblte_s1ap_unpack_local(ptr, &ie->choice.local) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    } else if(ie->choice_type == LIBLTE_S1AP_PRIVATEIE_ID_CHOICE_GLOBAL) {
+      } 
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ /*******************************************************************************
+/* ProtocolIE ProtocolExtensionID INTEGER
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolextensionid(
+  LIBLTE_S1AP_PROTOCOLEXTENSIONID_STRUCT                             *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Integer - ie->ProtocolExtensionID
+    // lb:0, ub:65535
+    liblte_align_up_zero(ptr, 8);
+    liblte_value_2_bits(0, ptr, (2*8)-16);
+    liblte_value_2_bits(ie->ProtocolExtensionID, ptr, 16);
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_protocolextensionid(
+  uint8_t                                                           **ptr,
+  LIBLTE_S1AP_PROTOCOLEXTENSIONID_STRUCT                             *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Integer - ie->ProtocolExtensionID
+    // lb:0, ub:65535
+    liblte_align_up(ptr, 8);
+    ie->ProtocolExtensionID = (uint16_t)liblte_bits_2_value(ptr, 2.0*8);
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ /*******************************************************************************
+/* ProtocolIE TriggeringMessage ENUMERATED
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_s1ap_pack_triggeringmessage(
+  LIBLTE_S1AP_TRIGGERINGMESSAGE_ENUM                                 *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Enum - *ie
+    liblte_value_2_bits(*ie, ptr, 2);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_triggeringmessage(
+  uint8_t                                                           **ptr,
+  LIBLTE_S1AP_TRIGGERINGMESSAGE_ENUM                                 *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Enum - *ie
+    *ie = (LIBLTE_S1AP_TRIGGERINGMESSAGE_ENUM)liblte_bits_2_value(ptr, 2);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ /*******************************************************************************
+/* ProtocolIE Presence ENUMERATED
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_s1ap_pack_presence(
+  LIBLTE_S1AP_PRESENCE_ENUM                                          *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Enum - *ie
+    liblte_value_2_bits(*ie, ptr, 2);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_presence(
+  uint8_t                                                           **ptr,
+  LIBLTE_S1AP_PRESENCE_ENUM                                          *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Enum - *ie
+    *ie = (LIBLTE_S1AP_PRESENCE_ENUM)liblte_bits_2_value(ptr, 2);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ /*******************************************************************************
+/* ProtocolIE ProtocolIE_ID INTEGER
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolie_id(
+  LIBLTE_S1AP_PROTOCOLIE_ID_STRUCT                                   *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Integer - ie->ProtocolIE_ID
+    // lb:0, ub:65535
+    liblte_align_up_zero(ptr, 8);
+    liblte_value_2_bits(0, ptr, (2*8)-16);
+    liblte_value_2_bits(ie->ProtocolIE_ID, ptr, 16);
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_protocolie_id(
+  uint8_t                                                           **ptr,
+  LIBLTE_S1AP_PROTOCOLIE_ID_STRUCT                                   *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Integer - ie->ProtocolIE_ID
+    // lb:0, ub:65535
+    liblte_align_up(ptr, 8);
+    ie->ProtocolIE_ID = (uint16_t)liblte_bits_2_value(ptr, 2.0*8);
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ /*******************************************************************************
+/* ProtocolIE ProcedureCode INTEGER
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_s1ap_pack_procedurecode(
+  LIBLTE_S1AP_PROCEDURECODE_STRUCT                                   *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Integer - ie->ProcedureCode
+    // lb:0, ub:255
+    liblte_align_up_zero(ptr, 8);
+    liblte_value_2_bits(0, ptr, (1*8)-8);
+    liblte_value_2_bits(ie->ProcedureCode, ptr, 8);
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_procedurecode(
+  uint8_t                                                           **ptr,
+  LIBLTE_S1AP_PROCEDURECODE_STRUCT                                   *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Integer - ie->ProcedureCode
+    // lb:0, ub:255
+    liblte_align_up(ptr, 8);
+    ie->ProcedureCode = (uint8_t)liblte_bits_2_value(ptr, 1.0*8);
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ /*******************************************************************************
+/* ProtocolIE ProtocolIE_Field SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolie_field(
+  LIBLTE_S1AP_PROTOCOLIE_FIELD_STRUCT                                *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+     if(liblte_s1ap_pack_protocolie_id(&ie->id, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+     // Enum - ie->criticality
+    liblte_value_2_bits(ie->criticality, ptr, 2);
+     err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_protocolie_field(
+  uint8_t                                                           **ptr,
+  LIBLTE_S1AP_PROTOCOLIE_FIELD_STRUCT                                *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+     if(liblte_s1ap_unpack_protocolie_id(ptr, &ie->id) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+     // Enum - ie->criticality
+    ie->criticality = (LIBLTE_S1AP_CRITICALITY_ENUM)liblte_bits_2_value(ptr, 2);
+     err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ /*******************************************************************************
+/* ProtocolIE ProtocolIE_SingleContainer SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolie_singlecontainer(
+  LIBLTE_S1AP_PROTOCOLIE_SINGLECONTAINER_STRUCT                      *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+     if(liblte_s1ap_pack_protocolie_id(&ie->id, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+     // Enum - ie->criticality
+    liblte_value_2_bits(ie->criticality, ptr, 2);
+     err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_protocolie_singlecontainer(
+  uint8_t                                                           **ptr,
+  LIBLTE_S1AP_PROTOCOLIE_SINGLECONTAINER_STRUCT                      *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+     if(liblte_s1ap_unpack_protocolie_id(ptr, &ie->id) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+     // Enum - ie->criticality
+    ie->criticality = (LIBLTE_S1AP_CRITICALITY_ENUM)liblte_bits_2_value(ptr, 2);
+     err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ /*******************************************************************************
+/* ProtocolIE ProtocolIE_Container DYNAMIC SEQUENCE OF
+********************************************************************************/
+// lb:1, ub:65535
+LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolie_container(
+  LIBLTE_X2AP_PROTOCOLIE_CONTAINER_STRUCT                             *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    if(ie->len > 32) {
+      liblte_log_print("ProtocolIE_Container pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    // Length
+    liblte_value_2_bits(ie->len-1, ptr, 16);
+    liblte_align_up_zero(ptr, 8);
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_s1ap_pack_protocolie_field(&ie->buffer[i], ptr) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_protocolie_container(
+  uint8_t                                                           **ptr,
+  LIBLTE_S1AP_PROTOCOLIE_CONTAINER_STRUCT                             *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Length
+    ie->len = liblte_bits_2_value(ptr, 16) + 1;
+    liblte_align_up(ptr, 8);
+    if(ie->len > 32) {
+      liblte_log_print("ProtocolIE_Container unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_s1ap_unpack_protocolie_field(ptr, &ie->buffer[i]) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_DECODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ /*******************************************************************************
+/* ProtocolIE ProtocolExtensionField SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolextensionfield(
+  LIBLTE_S1AP_PROTOCOLEXTENSIONFIELD_STRUCT                          *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+     if(liblte_s1ap_pack_protocolextensionid(&ie->id, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+     // Enum - ie->criticality
+    liblte_value_2_bits(ie->criticality, ptr, 2);
+     err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_protocolextensionfield(
+  uint8_t                                                           **ptr,
+  LIBLTE_S1AP_PROTOCOLEXTENSIONFIELD_STRUCT                          *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+     if(liblte_s1ap_unpack_protocolextensionid(ptr, &ie->id) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+     // Enum - ie->criticality
+    ie->criticality = (LIBLTE_S1AP_CRITICALITY_ENUM)liblte_bits_2_value(ptr, 2);
+     err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ /*******************************************************************************
+/* ProtocolIE ProtocolExtensionContainer DYNAMIC SEQUENCE OF
+********************************************************************************/
+// lb:1, ub:65535
+LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolextensioncontainer(
+  LIBLTE_S1AP_PROTOCOLEXTENSIONCONTAINER_STRUCT                      *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    if(ie->len > 32) {
+      liblte_log_print("ProtocolExtensionContainer pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    // Length
+    liblte_value_2_bits(ie->len-1, ptr, 16);
+    liblte_align_up_zero(ptr, 8);
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_s1ap_pack_protocolextensionfield(&ie->buffer[i], ptr) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_protocolextensioncontainer(
+  uint8_t                                                           **ptr,
+  LIBLTE_S1AP_PROTOCOLEXTENSIONCONTAINER_STRUCT                      *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Length
+    ie->len = liblte_bits_2_value(ptr, 16) + 1;
+    liblte_align_up(ptr, 8);
+    if(ie->len > 32) {
+      liblte_log_print("ProtocolExtensionContainer unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_s1ap_unpack_protocolextensionfield(ptr, &ie->buffer[i]) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_DECODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ /*******************************************************************************
+/* ProtocolIE ProtocolIE_FieldPair SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolie_fieldpair(
+  LIBLTE_S1AP_PROTOCOLIE_FIELDPAIR_STRUCT                            *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+     if(liblte_s1ap_pack_protocolie_id(&ie->id, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+     // Enum - ie->firstCriticality
+    liblte_value_2_bits(ie->firstCriticality, ptr, 2);
+     // Enum - ie->secondCriticality
+    liblte_value_2_bits(ie->secondCriticality, ptr, 2);
+     err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_protocolie_fieldpair(
+  uint8_t                                                           **ptr,
+  LIBLTE_S1AP_PROTOCOLIE_FIELDPAIR_STRUCT                            *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+     if(liblte_s1ap_unpack_protocolie_id(ptr, &ie->id) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+     // Enum - ie->firstCriticality
+    ie->firstCriticality = (LIBLTE_S1AP_CRITICALITY_ENUM)liblte_bits_2_value(ptr, 2);
+     // Enum - ie->secondCriticality
+    ie->secondCriticality = (LIBLTE_S1AP_CRITICALITY_ENUM)liblte_bits_2_value(ptr, 2);
+     err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ /*******************************************************************************
+/* ProtocolIE ProtocolIE_ContainerPair DYNAMIC SEQUENCE OF
+********************************************************************************/
+// lb:0, ub:65535
+LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolie_containerpair(
+  LIBLTE_S1AP_PROTOCOLIE_CONTAINERPAIR_STRUCT                        *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    if(ie->len > 32) {
+      liblte_log_print("ProtocolIE_ContainerPair pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    // Length
+    liblte_value_2_bits(ie->len-0, ptr, 16);
+    liblte_align_up_zero(ptr, 8);
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_s1ap_pack_protocolie_fieldpair(&ie->buffer[i], ptr) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_protocolie_containerpair(
+  uint8_t                                                           **ptr,
+  LIBLTE_S1AP_PROTOCOLIE_CONTAINERPAIR_STRUCT                        *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Length
+    ie->len = liblte_bits_2_value(ptr, 16) + 0;
+    liblte_align_up(ptr, 8);
+    if(ie->len > 32) {
+      liblte_log_print("ProtocolIE_ContainerPair unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_s1ap_unpack_protocolie_fieldpair(ptr, &ie->buffer[i]) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_DECODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ /*******************************************************************************
+/* ProtocolIE ProtocolIE_ContainerList DYNAMIC SEQUENCE OF
+********************************************************************************/
+// lb:None, ub:None
+LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolie_containerlist(
+  LIBLTE_S1AP_PROTOCOLIE_CONTAINERLIST_STRUCT                    *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    if(ie->len > 32) {
+      liblte_log_print("ProtocolIE_ContainerList pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    // Length
+    if(ie->len < 128) {
+      liblte_value_2_bits(0,       ptr, 1);
+      liblte_value_2_bits(ie->len, ptr, 7);
+    } else if(ie->len < 16383) {
+      liblte_value_2_bits(1,       ptr, 1);
+      liblte_value_2_bits(0,       ptr, 1);
+      liblte_value_2_bits(ie->len, ptr, 14);
+    } else {
+      // FIXME: Unlikely to have more than 16K of bits
+    }
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_s1ap_pack_protocolie_container(&ie->buffer[i], ptr) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_protocolie_containerlist(
+  uint8_t                                                           **ptr,
+  LIBLTE_S1AP_PROTOCOLIE_CONTAINERLIST_STRUCT                    *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Length
+    if(0 == liblte_bits_2_value(ptr, 1)) {
+      ie->len = liblte_bits_2_value(ptr, 7);
+    } else {
+      if(0 == liblte_bits_2_value(ptr, 1)) {
+        ie->len = liblte_bits_2_value(ptr, 14);
+      } else {
+        // FIXME: Unlikely to have more than 16K of bits
+      }
+    }
+    if(ie->len > 32) {
+      liblte_log_print("ProtocolIE_ContainerPairList unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_s1ap_unpack_protocolie_container(ptr, &ie->buffer[i]) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_DECODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ /*******************************************************************************
+/* ProtocolIE ProtocolIE_ContainerPairList DYNAMIC SEQUENCE OF
+********************************************************************************/
+// lb:None, ub:None
+LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolie_containerpairlist(
+  LIBLTE_S1AP_PROTOCOLIE_CONTAINERPAIRLIST_STRUCT                    *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    if(ie->len > 32) {
+      liblte_log_print("ProtocolIE_ContainerPairList pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    // Length
+    if(ie->len < 128) {
+      liblte_value_2_bits(0,       ptr, 1);
+      liblte_value_2_bits(ie->len, ptr, 7);
+    } else if(ie->len < 16383) {
+      liblte_value_2_bits(1,       ptr, 1);
+      liblte_value_2_bits(0,       ptr, 1);
+      liblte_value_2_bits(ie->len, ptr, 14);
+    } else {
+      // FIXME: Unlikely to have more than 16K of bits
+    }
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_s1ap_pack_protocolie_containerpair(&ie->buffer[i], ptr) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_protocolie_containerpairlist(
+  uint8_t                                                           **ptr,
+  LIBLTE_S1AP_PROTOCOLIE_CONTAINERPAIRLIST_STRUCT                    *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Length
+    if(0 == liblte_bits_2_value(ptr, 1)) {
+      ie->len = liblte_bits_2_value(ptr, 7);
+    } else {
+      if(0 == liblte_bits_2_value(ptr, 1)) {
+        ie->len = liblte_bits_2_value(ptr, 14);
+      } else {
+        // FIXME: Unlikely to have more than 16K of bits
+      }
+    }
+    if(ie->len > 32) {
+      liblte_log_print("ProtocolIE_ContainerPairList unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_s1ap_unpack_protocolie_containerpair(ptr, &ie->buffer[i]) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_DECODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ /*******************************************************************************
+/* ProtocolIE PrivateIE_Field SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_s1ap_pack_privateie_field(
+  LIBLTE_S1AP_PRIVATEIE_FIELD_STRUCT                                 *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+     if(liblte_s1ap_pack_privateie_id(&ie->id, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+     // Enum - ie->criticality
+    liblte_value_2_bits(ie->criticality, ptr, 2);
+     err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_privateie_field(
+  uint8_t                                                           **ptr,
+  LIBLTE_S1AP_PRIVATEIE_FIELD_STRUCT                                 *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+     if(liblte_s1ap_unpack_privateie_id(ptr, &ie->id) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+     // Enum - ie->criticality
+    ie->criticality = (LIBLTE_S1AP_CRITICALITY_ENUM)liblte_bits_2_value(ptr, 2);
+     err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ /*******************************************************************************
+/* ProtocolIE PrivateIE_Container DYNAMIC SEQUENCE OF
+********************************************************************************/
+// lb:1, ub:65535
+LIBLTE_ERROR_ENUM liblte_s1ap_pack_privateie_container(
+  LIBLTE_S1AP_PRIVATEIE_CONTAINER_STRUCT                             *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    if(ie->len > 32) {
+      liblte_log_print("PrivateIE_Container pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    // Length
+    liblte_value_2_bits(ie->len-1, ptr, 16);
+    liblte_align_up_zero(ptr, 8);
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_s1ap_pack_privateie_field(&ie->buffer[i], ptr) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_privateie_container(
+  uint8_t                                                           **ptr,
+  LIBLTE_S1AP_PRIVATEIE_CONTAINER_STRUCT                             *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Length
+    ie->len = liblte_bits_2_value(ptr, 16) + 1;
+    liblte_align_up(ptr, 8);
+    if(ie->len > 32) {
+      liblte_log_print("PrivateIE_Container unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_s1ap_unpack_privateie_field(ptr, &ie->buffer[i]) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_DECODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ /*******************************************************************************
+/* ProtocolIE DL_ABS_status INTEGER
+********************************************************************************/
+ LIBLTE_ERROR_ENUM liblte_x2ap_pack_dl_abs_status(
+  LIBLTE_X2AP_DL_ABS_STATUS_STRUCT                                   *ie,
+  uint8_t                                                     **ptr)
+{
+	LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+	if(ie != NULL && ptr != NULL)
+	{
+		liblte_align_up_zero(ptr, 8);
+	 	liblte_value_2_bits(ie->DL_ABS_Status, ptr, 32);
+		err = LIBLTE_SUCCESS;
+	}
+	return err;
+}
+ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_dl_abs_status(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_DL_ABS_STATUS_STRUCT                                   *ie)
+{
+	LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+	if(ptr != NULL && ie != NULL)
+	{
+		liblte_align_up(ptr, 8);
+		ie->DL_ABS_Status = (uint32_t)liblte_bits_2_value(ptr, 32);
+		err = LIBLTE_SUCCESS;
+	}
+	return err;
+}
+ /*******************************************************************************
+/* ProtocolIE BitRate INTEGER
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_s1ap_pack_bitrate(
+  LIBLTE_S1AP_BITRATE_STRUCT                                         *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Integer - ie->BitRate
+    // lb:0, ub:10000000000
+    // Range > 65536 - encoded based on value
+    {
+      uint32_t n_bits   = floor(log2(ie->BitRate-0)+1);
+      uint32_t n_octets = (n_bits+7)/8;
+      liblte_value_2_bits(n_octets-1, ptr, 3);
+      liblte_align_up_zero(ptr, 8);
+      liblte_value_2_bits(0, ptr, (n_octets*8)-n_bits);
+      liblte_value_2_bits(ie->BitRate-0, ptr, n_bits);
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_bitrate(
+  uint8_t                                                           **ptr,
+  LIBLTE_S1AP_BITRATE_STRUCT                                         *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Integer - ie->BitRate
+    // lb:0, ub:10000000000
+    // Range > 65536 - encoded based on value
+    {
+      uint32_t n_octets = liblte_bits_2_value(ptr, 3) + 1;
+      liblte_align_up(ptr, 8);
+      ie->BitRate = liblte_bits_2_value(ptr, n_octets*8) + 0;
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ /*******************************************************************************
+/* ProtocolIE CapacityValue INTEGER
+********************************************************************************/
+ LIBLTE_ERROR_ENUM liblte_x2ap_pack_capacityvalue(
+  LIBLTE_X2AP_CAPACITYVALUE_STRUCT                                   *ie,
+  uint8_t                                                     **ptr)
+{
+	LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+	if(ie != NULL && ptr != NULL)
+	{
+		liblte_align_up_zero(ptr, 8);
+	 	liblte_value_2_bits(ie->CapacityValue, ptr, 32);
+		err = LIBLTE_SUCCESS;
+	}
+	return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_capacityvalue(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_CAPACITYVALUE_STRUCT                                   *ie)
+{
+	LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+	if(ptr != NULL && ie != NULL)
+	{
+		liblte_align_up(ptr, 8);
+		ie->CapacityValue = (uint32_t)liblte_bits_2_value(ptr, 32);
+		err = LIBLTE_SUCCESS;
+	}
+	return err;
+}
+ /*******************************************************************************
+/* ProtocolIE CellCapacityClassValue INTEGER
+********************************************************************************/
+ LIBLTE_ERROR_ENUM liblte_x2ap_pack_cellcapacityclassvalue(
+  LIBLTE_X2AP_CELLCAPACITYCLASSVALUE_STRUCT                                   *ie,
+  uint8_t                                                     **ptr)
+{
+	LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+	if(ie != NULL && ptr != NULL)
+	{
+		liblte_align_up_zero(ptr, 8);
+	 	liblte_value_2_bits(ie->CellCapacityClassValue, ptr, 32);
+		err = LIBLTE_SUCCESS;
+	}
+	return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_cellcapacityclassvalue(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_CELLCAPACITYCLASSVALUE_STRUCT                                   *ie)
+{
+	LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+	if(ptr != NULL && ie != NULL)
+	{
+		liblte_align_up(ptr, 8);
+		ie->CellCapacityClassValue = (uint32_t)liblte_bits_2_value(ptr, 32);
+		err = LIBLTE_SUCCESS;
+	}
+	return err;
+}
+ /*******************************************************************************
+/* ProtocolIE DL_GBR_PRB_usage INTEGER
+********************************************************************************/
+ LIBLTE_ERROR_ENUM liblte_x2ap_pack_dl_gbr_prb_usage(
+  LIBLTE_X2AP_DL_GBR_PRB_USAGE_STRUCT                            *ie,
+  uint8_t                                                     **ptr)
+{
+	LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+	if(ie != NULL && ptr != NULL)
+	{
+		liblte_align_up_zero(ptr, 8);
+	 	liblte_value_2_bits(ie->DL_GBR_PRB_usage, ptr, 16);
+		err = LIBLTE_SUCCESS;
+	}
+	return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_dl_gbr_prb_usage(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_DL_GBR_PRB_USAGE_STRUCT                            *ie)
+{
+	LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+	if(ptr != NULL && ie != NULL)
+	{
+		liblte_align_up(ptr, 8);
+		ie->DL_GBR_PRB_usage = (uint16_t)liblte_bits_2_value(ptr, 16);
+		err = LIBLTE_SUCCESS;
+	}
+	return err;
+}
+ /*******************************************************************************
+/* ProtocolIE DL_non_GBR_PRB_usage INTEGER
+********************************************************************************/
+ LIBLTE_ERROR_ENUM liblte_x2ap_pack_dl_non_gbr_prb_usage(
+  LIBLTE_X2AP_DL_NON_GBR_PRB_USAGE_STRUCT                            *ie,
+  uint8_t                                                     **ptr)
+{
+	LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+	if(ie != NULL && ptr != NULL)
+	{
+		liblte_align_up_zero(ptr, 8);
+	 	liblte_value_2_bits(ie->DL_non_GBR_PRB_usage, ptr, 16);
+		err = LIBLTE_SUCCESS;
+	}
+	return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_dl_non_gbr_prb_usage(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_DL_NON_GBR_PRB_USAGE_STRUCT                            *ie)
+{
+	LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+	if(ptr != NULL && ie != NULL)
+	{
+		liblte_align_up(ptr, 8);
+		ie->DL_non_GBR_PRB_usage = (uint16_t)liblte_bits_2_value(ptr, 16);
+		err = LIBLTE_SUCCESS;
+	}
+	return err;
+}
+ /*******************************************************************************
+/* ProtocolIE DL_Total_PRB_usage INTEGER
+********************************************************************************/
+ LIBLTE_ERROR_ENUM liblte_x2ap_pack_dl_total_prb_usage(
+  LIBLTE_X2AP_DL_TOTAL_PRB_USAGE_STRUCT                            *ie,
+  uint8_t                                                     **ptr)
+{
+	LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+	if(ie != NULL && ptr != NULL)
+	{
+		liblte_align_up_zero(ptr, 8);
+	 	liblte_value_2_bits(ie->DL_Total_PRB_usage, ptr, 16);
+		err = LIBLTE_SUCCESS;
+	}
+	return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_dl_total_prb_usage(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_DL_TOTAL_PRB_USAGE_STRUCT                            *ie)
+{
+	LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+	if(ptr != NULL && ie != NULL)
+	{
+		liblte_align_up(ptr, 8);
+		ie->DL_Total_PRB_usage = (uint16_t)liblte_bits_2_value(ptr, 16);
+		err = LIBLTE_SUCCESS;
+	}
+	return err;
+}
+ /*******************************************************************************
+/* ProtocolIE EARFCN INTEGER
+********************************************************************************/
+ LIBLTE_ERROR_ENUM liblte_x2ap_pack_earfcn(
+  LIBLTE_X2AP_EARFCN_STRUCT                            *ie,
+  uint8_t                                                     **ptr)
+{
+	LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+	if(ie != NULL && ptr != NULL)
+	{
+		liblte_align_up_zero(ptr, 8);
+	 	liblte_value_2_bits(ie->EARFCN, ptr, 16);
+		err = LIBLTE_SUCCESS;
+	}
+	return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_earfcn(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_EARFCN_STRUCT                            *ie)
+{
+	LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+	if(ptr != NULL && ie != NULL)
+	{
+		liblte_align_up(ptr, 8);
+		ie->EARFCN = (uint16_t)liblte_bits_2_value(ptr, 16);
+		err = LIBLTE_SUCCESS;
+	}
+	return err;
+}
+ /*******************************************************************************
+/* ProtocolIE EARFCNExtension INTEGER
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_earfcnextension(
+  LIBLTE_X2AP_EARFCNEXTENSION_STRUCT                            *ie,
+  uint8_t                                                     **ptr)
+{
+	LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+	if(ie != NULL && ptr != NULL)
+	{
+		liblte_align_up_zero(ptr, 8);
+	 	liblte_value_2_bits(ie->EARFCNExtension, ptr, 16);
+		err = LIBLTE_SUCCESS;
+	}
+	return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_earfcnextension(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_EARFCNEXTENSION_STRUCT                            *ie)
+{
+	LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+	if(ptr != NULL && ie != NULL)
+	{
+		liblte_align_up(ptr, 8);
+		ie->EARFCNExtension = (uint16_t)liblte_bits_2_value(ptr, 16);
+		err = LIBLTE_SUCCESS;
+	}
+	return err;
+}
+ /*******************************************************************************
+/* ProtocolIE E_RAB_ID INTEGER
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_s1ap_pack_e_rab_id(
+  LIBLTE_S1AP_E_RAB_ID_STRUCT                                        *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Integer - ie->E_RAB_ID
+    // lb:0, ub:15
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_log_print("ie->E_RAB_ID error: S1AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    liblte_value_2_bits(ie->E_RAB_ID, ptr, 4);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_e_rab_id(
+  uint8_t                                                           **ptr,
+  LIBLTE_S1AP_E_RAB_ID_STRUCT                                        *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Integer - ie->E_RAB_ID
+    // lb:0, ub:15
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_log_print("ie->E_RAB_ID error: S1AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    ie->E_RAB_ID = (uint8_t)liblte_bits_2_value(ptr, 4);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ /*******************************************************************************
+/* ProtocolIE FreqBandIndicator INTEGER
+********************************************************************************/
+typedef struct{
+uint32_t FreqBandIndicator;
+}LIBLTE_X2AP_FREQBANDINDICATOR_STRUCT;
+ LIBLTE_ERROR_ENUM liblte_x2ap_pack_freqbandindicator(
+  LIBLTE_X2AP_FREQBANDINDICATOR_STRUCT                                       *ie,
+  uint8_t                                                     **ptr)
+{
+	LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+	if(ie != NULL && ptr != NULL)
+	{
+		liblte_align_up_zero(ptr, 8);
+	 	liblte_value_2_bits(ie->FreqBandIndicator, ptr, 32);
+		err = LIBLTE_SUCCESS;
+	}
+	return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_freqbandindicator(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_FREQBANDINDICATOR_STRUCT                                       *ie)
+{
+	LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+	if(ptr != NULL && ie != NULL)
+	{
+		liblte_align_up(ptr, 8);
+		ie->FreqBandIndicator = (uint32_t)liblte_bits_2_value(ptr, 32);
+		err = LIBLTE_SUCCESS;
+	}
+	return err;
+}
+ /*******************************************************************************
+/* ProtocolIE HFN INTEGER
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_s1ap_pack_hfn(
+  LIBLTE_S1AP_HFN_STRUCT                                             *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Integer - ie->HFN
+    // lb:0, ub:1048575
+    // Range > 65536 - encoded based on value
+    {
+      uint32_t n_bits   = floor(log2(ie->HFN-0)+1);
+      uint32_t n_octets = (n_bits+7)/8;
+      liblte_value_2_bits(n_octets-1, ptr, 2);
+      liblte_align_up_zero(ptr, 8);
+      liblte_value_2_bits(0, ptr, (n_octets*8)-n_bits);
+      liblte_value_2_bits(ie->HFN-0, ptr, n_bits);
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_hfn(
+  uint8_t                                                           **ptr,
+  LIBLTE_S1AP_HFN_STRUCT                                             *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Integer - ie->HFN
+    // lb:0, ub:1048575
+    // Range > 65536 - encoded based on value
+    {
+      uint32_t n_octets = liblte_bits_2_value(ptr, 2) + 1;
+      liblte_align_up(ptr, 8);
+      ie->HFN = liblte_bits_2_value(ptr, n_octets*8) + 0;
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ /*******************************************************************************
+/* ProtocolIE HFNModified INTEGER
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_s1ap_pack_hfnmodified(
+  LIBLTE_S1AP_HFNMODIFIED_STRUCT                                     *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Integer - ie->HFNModified
+    // lb:0, ub:131071
+    // Range > 65536 - encoded based on value
+    {
+      uint32_t n_bits   = floor(log2(ie->HFNModified-0)+1);
+      uint32_t n_octets = (n_bits+7)/8;
+      liblte_value_2_bits(n_octets-1, ptr, 2);
+      liblte_align_up_zero(ptr, 8);
+      liblte_value_2_bits(0, ptr, (n_octets*8)-n_bits);
+      liblte_value_2_bits(ie->HFNModified-0, ptr, n_bits);
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_hfnmodified(
+  uint8_t                                                           **ptr,
+  LIBLTE_S1AP_HFNMODIFIED_STRUCT                                     *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Integer - ie->HFNModified
+    // lb:0, ub:131071
+    // Range > 65536 - encoded based on value
+    {
+      uint32_t n_octets = liblte_bits_2_value(ptr, 2) + 1;
+      liblte_align_up(ptr, 8);
+      ie->HFNModified = liblte_bits_2_value(ptr, n_octets*8) + 0;
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ /*******************************************************************************
+/* ProtocolIE Measurement_ID INTEGER
+********************************************************************************/
+typedef struct{
+uint32_t Measurement_ID;
+}LIBLTE_X2AP_MEASUREMENT_ID_STRUCT;
+ LIBLTE_ERROR_ENUM liblte_x2ap_pack_measurement_id(
+  LIBLTE_X2AP_MEASUREMENT_ID_STRUCT                            *ie,
+  uint8_t                                                     **ptr);
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_measurement_id(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_MEASUREMENT_ID_STRUCT                            *ie);
+ /*******************************************************************************
+/* ProtocolIE nextHopChainingCount INTEGER
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_s1ap_pack_nexthopchainingcount(
+  LIBLTE_S1AP_NEXTHOPCHAININGCOUNT_STRUCT                            *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Integer - ie->nextHopChainingCount
+    // lb:0, ub:7
+    liblte_value_2_bits(ie->nextHopChainingCount, ptr, 3);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_nexthopchainingcount(
+  uint8_t                                                           **ptr,
+  LIBLTE_S1AP_NEXTHOPCHAININGCOUNT_STRUCT                            *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Integer - ie->nextHopChainingCount
+    // lb:0, ub:7
+    ie->nextHopChainingCount = (uint8_t)liblte_bits_2_value(ptr, 3);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ /*******************************************************************************
+/* ProtocolIE PDCP_SN INTEGER
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_s1ap_pack_pdcp_sn(
+  LIBLTE_S1AP_PDCP_SN_STRUCT                                         *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Integer - ie->PDCP_SN
+    // lb:0, ub:4095
+    liblte_align_up_zero(ptr, 8);
+    liblte_value_2_bits(0, ptr, (1*8)-12);
+    liblte_value_2_bits(ie->PDCP_SN, ptr, 12);
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_pdcp_sn(
+  uint8_t                                                           **ptr,
+  LIBLTE_S1AP_PDCP_SN_STRUCT                                         *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Integer - ie->PDCP_SN
+    // lb:0, ub:4095
+    liblte_align_up(ptr, 8);
+    ie->PDCP_SN = (uint16_t)liblte_bits_2_value(ptr, 1.0*8);
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ /*******************************************************************************
+/* ProtocolIE PDCP_SNExtended INTEGER
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_s1ap_pack_pdcp_snextended(
+  LIBLTE_S1AP_PDCP_SNEXTENDED_STRUCT                                 *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Integer - ie->PDCP_SNExtended
+    // lb:0, ub:32767
+    liblte_align_up_zero(ptr, 8);
+    liblte_value_2_bits(0, ptr, (1*8)-15);
+    liblte_value_2_bits(ie->PDCP_SNExtended, ptr, 15);
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_pdcp_snextended(
+  uint8_t                                                           **ptr,
+  LIBLTE_S1AP_PDCP_SNEXTENDED_STRUCT                                 *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Integer - ie->PDCP_SNExtended
+    // lb:0, ub:32767
+    liblte_align_up(ptr, 8);
+    ie->PDCP_SNExtended = (uint16_t)liblte_bits_2_value(ptr, 15);
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ /*******************************************************************************
+/* ProtocolIE PCI INTEGER
+********************************************************************************/
+typedef struct{
+uint16_t PCI;
+}LIBLTE_X2AP_PCI_STRUCT;
+ LIBLTE_ERROR_ENUM liblte_x2ap_pack_pci(
+  LIBLTE_X2AP_PCI_STRUCT                                   *ie,
+  uint8_t                                                     **ptr);
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_pci(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_PCI_STRUCT                                   *ie);
+ /*******************************************************************************
+/* ProtocolIE PriorityLevel INTEGER
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_s1ap_pack_prioritylevel(
+  LIBLTE_S1AP_PRIORITYLEVEL_STRUCT                                   *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Integer - ie->PriorityLevel
+    // lb:0, ub:15
+    liblte_value_2_bits(ie->PriorityLevel, ptr, 4);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_prioritylevel(
+  uint8_t                                                           **ptr,
+  LIBLTE_S1AP_PRIORITYLEVEL_STRUCT                                   *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Integer - ie->PriorityLevel
+    // lb:0, ub:15
+    ie->PriorityLevel = (uint8_t)liblte_bits_2_value(ptr, 4);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ /*******************************************************************************
+/* ProtocolIE QCI INTEGER
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_s1ap_pack_qci(
+  LIBLTE_S1AP_QCI_STRUCT                                             *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Integer - ie->QCI
+    // lb:0, ub:255
+    liblte_align_up_zero(ptr, 8);
+    liblte_value_2_bits(0, ptr, (1*8)-8);
+    liblte_value_2_bits(ie->QCI, ptr, 8);
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_qci(
+  uint8_t                                                           **ptr,
+  LIBLTE_S1AP_QCI_STRUCT                                             *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Integer - ie->QCI
+    // lb:0, ub:255
+    liblte_align_up(ptr, 8);
+    ie->QCI = (uint8_t)liblte_bits_2_value(ptr, 1.0*8);
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ /*******************************************************************************
+/* ProtocolIE RadioframeAllocationOffset INTEGER
+********************************************************************************/
+typedef struct{
+uint8_t RadioframeAllocationOffset;
+}LIBLTE_X2AP_RADIOFRAMEALLOCATIONOFFSET_STRUCT;
+ LIBLTE_ERROR_ENUM liblte_x2ap_pack_radioframeallocationoffset(
+  LIBLTE_X2AP_RADIOFRAMEALLOCATIONOFFSET_STRUCT                                       *ie,
+  uint8_t                                                     **ptr);
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_radioframeallocationoffset(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_RADIOFRAMEALLOCATIONOFFSET_STRUCT                                       *ie);
+ /*******************************************************************************
+/* ProtocolIE subscriberProfileIDforRFP INTEGER
+********************************************************************************/
+typedef struct{
+uint8_t SubscribeProfileIDforRFP;
+}LIBLTE_X2AP_SUBSCRIBERPROFILEIDFORRFP_STRUCT;
+ LIBLTE_ERROR_ENUM liblte_x2ap_pack_subscribeprofileidforrfp(
+  LIBLTE_X2AP_SUBSCRIBERPROFILEIDFORRFP_STRUCT                            *ie,
+  uint8_t                                                     **ptr);
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_subscribeprofileidforrfp(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_SUBSCRIBERPROFILEIDFORRFP_STRUCT                            *ie);
+ /*******************************************************************************
+/* ProtocolIE Threshold_RSRP INTEGER
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_s1ap_pack_threshold_rsrp(
+  LIBLTE_S1AP_THRESHOLD_RSRP_STRUCT                                  *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Integer - ie->Threshold_RSRP
+    // lb:0, ub:97
+    liblte_value_2_bits(ie->Threshold_RSRP, ptr, 7);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_threshold_rsrp(
+  uint8_t                                                           **ptr,
+  LIBLTE_S1AP_THRESHOLD_RSRP_STRUCT                                  *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Integer - ie->Threshold_RSRP
+    // lb:0, ub:97
+    ie->Threshold_RSRP = (uint8_t)liblte_bits_2_value(ptr, 7);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ /*******************************************************************************
+/* ProtocolIE Threshold_RSRQ INTEGER
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_s1ap_pack_threshold_rsrq(
+  LIBLTE_S1AP_THRESHOLD_RSRQ_STRUCT                                  *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Integer - ie->Threshold_RSRQ
+    // lb:0, ub:34
+    liblte_value_2_bits(ie->Threshold_RSRQ, ptr, 6);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_threshold_rsrq(
+  uint8_t                                                           **ptr,
+  LIBLTE_S1AP_THRESHOLD_RSRQ_STRUCT                                  *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Integer - ie->Threshold_RSRQ
+    // lb:0, ub:34
+    ie->Threshold_RSRQ = (uint8_t)liblte_bits_2_value(ptr, 6);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ /*******************************************************************************
+/* ProtocolIE Time_UE_StayedInCell INTEGER
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_s1ap_pack_time_ue_stayedincell(
+  LIBLTE_S1AP_TIME_UE_STAYEDINCELL_STRUCT                            *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Integer - ie->Time_UE_StayedInCell
+    // lb:0, ub:4095
+    liblte_align_up_zero(ptr, 8);
+    liblte_value_2_bits(0, ptr, (1*8)-12);
+    liblte_value_2_bits(ie->Time_UE_StayedInCell, ptr, 12);
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_time_ue_stayedincell(
+  uint8_t                                                           **ptr,
+  LIBLTE_S1AP_TIME_UE_STAYEDINCELL_STRUCT                            *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Integer - ie->Time_UE_StayedInCell
+    // lb:0, ub:4095
+    liblte_align_up(ptr, 8);
+    ie->Time_UE_StayedInCell = (uint16_t)liblte_bits_2_value(ptr, 1.0*8);
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ /*******************************************************************************
+/* ProtocolIE Time_UE_StayedInCell_EnhancedGranularity INTEGER
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_s1ap_pack_time_ue_stayedincell_enhancedgranularity(
+  LIBLTE_S1AP_TIME_UE_STAYEDINCELL_ENHANCEDGRANULARITY_STRUCT        *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Integer - ie->Time_UE_StayedInCell_EnhancedGranularity
+    // lb:0, ub:40950
+    liblte_align_up_zero(ptr, 8);
+    liblte_value_2_bits(0, ptr, (2*8)-16);
+    liblte_value_2_bits(ie->Time_UE_StayedInCell_EnhancedGranularity, ptr, 16);
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_time_ue_stayedincell_enhancedgranularity(
+  uint8_t                                                           **ptr,
+  LIBLTE_S1AP_TIME_UE_STAYEDINCELL_ENHANCEDGRANULARITY_STRUCT        *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Integer - ie->Time_UE_StayedInCell_EnhancedGranularity
+    // lb:0, ub:40950
+    liblte_align_up(ptr, 8);
+    ie->Time_UE_StayedInCell_EnhancedGranularity = (uint16_t)liblte_bits_2_value(ptr, 2.0*8);
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+
+/*******************************************************************************
 /* ProtocolIE-Field
 ********************************************************************************/
 LIBLTE_ERROR_ENUM liblte_x2ap_pack_protocolie_header(

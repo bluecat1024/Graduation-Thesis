@@ -66,8 +66,8 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_criticality(
  /*******************************************************************************
 /* ProtocolIE local INTEGER
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_local(
-  LIBLTE_S1AP_LOCAL_STRUCT                                           *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_local(
+  LIBLTE_X2AP_LOCAL_STRUCT                                           *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -77,16 +77,17 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_local(
     // Integer - ie->local
     // lb:0, ub:65535
     liblte_align_up_zero(ptr, 8);
-    liblte_value_2_bits(0, ptr, (2*8)-16);
+    // Next line commented by ZY
+    // liblte_value_2_bits(0, ptr, (2*8)-16);
     liblte_value_2_bits(ie->local, ptr, 16);
     liblte_align_up_zero(ptr, 8);
     err = LIBLTE_SUCCESS;
   }
   return err;
 }
- LIBLTE_ERROR_ENUM liblte_s1ap_unpack_local(
+ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_local(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_LOCAL_STRUCT                                           *ie)
+  LIBLTE_X2AP_LOCAL_STRUCT                                           *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
    if(ie  != NULL &&
@@ -95,7 +96,12 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_local(
     // Integer - ie->local
     // lb:0, ub:65535
     liblte_align_up(ptr, 8);
-    ie->local = (uint16_t)liblte_bits_2_value(ptr, 2.0*8);
+
+    // Original version below:
+    // ie->local = (uint16_t)liblte_bits_2_value(ptr, 2.0*8);
+    // Modified to be the next line by ZY
+    ie->local = (uint16_t)liblte_bits_2_value(ptr, 16);
+
     liblte_align_up(ptr, 8);
     err = LIBLTE_SUCCESS;
   }
@@ -104,53 +110,57 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_local(
  /*******************************************************************************
 /* ProtocolIE PrivateIE_ID CHOICE
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_privateie_id(
-  LIBLTE_S1AP_PRIVATEIE_ID_STRUCT                                    *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_privateie_id(
+  LIBLTE_X2AP_PRIVATEIE_ID_STRUCT                                    *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
-   if(ie  != NULL &&
-     ptr != NULL)
+  if (ie != NULL &&
+      ptr != NULL)
   {
     // Choice type
     liblte_value_2_bits(ie->choice_type, ptr, 1);
-        // Choice
- if(ie->choice_type == LIBLTE_S1AP_PRIVATEIE_ID_CHOICE_LOCAL) {
-      if(liblte_s1ap_pack_local(&ie->choice.local, ptr) != LIBLTE_SUCCESS) {
-      return LIBLTE_ERROR_ENCODE_FAIL;
+    // Choice
+    if (ie->choice_type == LIBLTE_X2AP_PRIVATEIE_ID_CHOICE_LOCAL) {
+      if (liblte_x2ap_pack_local(&ie->choice.local, ptr) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
     }
-    } else if(ie->choice_type == LIBLTE_S1AP_PRIVATEIE_ID_CHOICE_GLOBAL) {
-      } 
+    else if (ie->choice_type == LIBLTE_X2AP_PRIVATEIE_ID_CHOICE_GLOBAL) {
+    }
     err = LIBLTE_SUCCESS;
   }
   return err;
 }
- LIBLTE_ERROR_ENUM liblte_s1ap_unpack_privateie_id(
-  uint8_t                                                           **ptr,
-  LIBLTE_S1AP_PRIVATEIE_ID_STRUCT                                    *ie)
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_privateie_id(
+    uint8_t **ptr,
+    LIBLTE_X2AP_PRIVATEIE_ID_STRUCT *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
-   if(ie  != NULL &&
-     ptr != NULL)
+  if (ie != NULL &&
+      ptr != NULL)
   {
     // Choice type
-    ie->choice_type = (LIBLTE_S1AP_PRIVATEIE_ID_CHOICE_ENUM)liblte_bits_2_value(ptr, 1);
-        // Choice
- if(ie->choice_type == LIBLTE_S1AP_PRIVATEIE_ID_CHOICE_LOCAL) {
-      if(liblte_s1ap_unpack_local(ptr, &ie->choice.local) != LIBLTE_SUCCESS) {
-      return LIBLTE_ERROR_DECODE_FAIL;
+    ie->choice_type = (LIBLTE_X2AP_PRIVATEIE_ID_CHOICE_ENUM)liblte_bits_2_value(ptr, 1);
+    // Choice
+    if (ie->choice_type == LIBLTE_X2AP_PRIVATEIE_ID_CHOICE_LOCAL) {
+      if (liblte_x2ap_unpack_local(ptr, &ie->choice.local) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_DECODE_FAIL;
+      }
     }
-    } else if(ie->choice_type == LIBLTE_S1AP_PRIVATEIE_ID_CHOICE_GLOBAL) {
-      } 
+    else if (ie->choice_type == LIBLTE_X2AP_PRIVATEIE_ID_CHOICE_GLOBAL) {
+    }
     err = LIBLTE_SUCCESS;
   }
   return err;
 }
- /*******************************************************************************
+
+/* Do not need this for X2AP -- WT
+/*******************************************************************************
 /* ProtocolIE ProtocolExtensionID INTEGER
-********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolextensionid(
-  LIBLTE_S1AP_PROTOCOLEXTENSIONID_STRUCT                             *ie,
+********************************************************************************
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_protocolextensionid(
+  LIBLTE_X2AP_PROTOCOLEXTENSIONID_STRUCT                             *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -167,9 +177,9 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolextensionid(
   }
   return err;
 }
- LIBLTE_ERROR_ENUM liblte_s1ap_unpack_protocolextensionid(
+ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_protocolextensionid(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_PROTOCOLEXTENSIONID_STRUCT                             *ie)
+  LIBLTE_X2AP_PROTOCOLEXTENSIONID_STRUCT                             *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
    if(ie  != NULL &&
@@ -184,11 +194,13 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolextensionid(
   }
   return err;
 }
+*/
+
  /*******************************************************************************
 /* ProtocolIE TriggeringMessage ENUMERATED
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_triggeringmessage(
-  LIBLTE_S1AP_TRIGGERINGMESSAGE_ENUM                                 *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_triggeringmessage(
+  LIBLTE_X2AP_TRIGGERINGMESSAGE_ENUM                                 *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -201,16 +213,16 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_triggeringmessage(
   }
   return err;
 }
- LIBLTE_ERROR_ENUM liblte_s1ap_unpack_triggeringmessage(
+ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_triggeringmessage(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_TRIGGERINGMESSAGE_ENUM                                 *ie)
+  LIBLTE_X2AP_TRIGGERINGMESSAGE_ENUM                                 *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
    if(ie  != NULL &&
      ptr != NULL)
   {
     // Enum - *ie
-    *ie = (LIBLTE_S1AP_TRIGGERINGMESSAGE_ENUM)liblte_bits_2_value(ptr, 2);
+    *ie = (LIBLTE_X2AP_TRIGGERINGMESSAGE_ENUM)liblte_bits_2_value(ptr, 2);
     err = LIBLTE_SUCCESS;
   }
   return err;
@@ -218,8 +230,8 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_triggeringmessage(
  /*******************************************************************************
 /* ProtocolIE Presence ENUMERATED
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_presence(
-  LIBLTE_S1AP_PRESENCE_ENUM                                          *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_presence(
+  LIBLTE_X2AP_PRESENCE_ENUM                                          *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -232,16 +244,16 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_presence(
   }
   return err;
 }
- LIBLTE_ERROR_ENUM liblte_s1ap_unpack_presence(
+ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_presence(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_PRESENCE_ENUM                                          *ie)
+  LIBLTE_X2AP_PRESENCE_ENUM                                          *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
    if(ie  != NULL &&
      ptr != NULL)
   {
     // Enum - *ie
-    *ie = (LIBLTE_S1AP_PRESENCE_ENUM)liblte_bits_2_value(ptr, 2);
+    *ie = (LIBLTE_X2AP_PRESENCE_ENUM)liblte_bits_2_value(ptr, 2);
     err = LIBLTE_SUCCESS;
   }
   return err;
@@ -249,8 +261,8 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_presence(
  /*******************************************************************************
 /* ProtocolIE ProtocolIE_ID INTEGER
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolie_id(
-  LIBLTE_S1AP_PROTOCOLIE_ID_STRUCT                                   *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_protocolie_id(
+  LIBLTE_X2AP_PROTOCOLIE_ID_STRUCT                                   *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -267,9 +279,9 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolie_id(
   }
   return err;
 }
- LIBLTE_ERROR_ENUM liblte_s1ap_unpack_protocolie_id(
+ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_protocolie_id(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_PROTOCOLIE_ID_STRUCT                                   *ie)
+  LIBLTE_X2AP_PROTOCOLIE_ID_STRUCT                                   *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
    if(ie  != NULL &&
@@ -287,8 +299,8 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolie_id(
  /*******************************************************************************
 /* ProtocolIE ProcedureCode INTEGER
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_procedurecode(
-  LIBLTE_S1AP_PROCEDURECODE_STRUCT                                   *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_procedurecode(
+  LIBLTE_X2AP_PROCEDURECODE_STRUCT                                   *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -305,9 +317,9 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_procedurecode(
   }
   return err;
 }
- LIBLTE_ERROR_ENUM liblte_s1ap_unpack_procedurecode(
+ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_procedurecode(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_PROCEDURECODE_STRUCT                                   *ie)
+  LIBLTE_X2AP_PROCEDURECODE_STRUCT                                   *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
    if(ie  != NULL &&
@@ -325,15 +337,15 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_procedurecode(
  /*******************************************************************************
 /* ProtocolIE ProtocolIE_Field SEQUENCE
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolie_field(
-  LIBLTE_S1AP_PROTOCOLIE_FIELD_STRUCT                                *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_protocolie_field(
+  LIBLTE_X2AP_PROTOCOLIE_FIELD_STRUCT                                *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
    if(ie  != NULL &&
      ptr != NULL)
   {
-     if(liblte_s1ap_pack_protocolie_id(&ie->id, ptr) != LIBLTE_SUCCESS) {
+     if(liblte_x2ap_pack_protocolie_id(&ie->id, ptr) != LIBLTE_SUCCESS) {
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
      // Enum - ie->criticality
@@ -342,19 +354,19 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolie_field(
   }
   return err;
 }
- LIBLTE_ERROR_ENUM liblte_s1ap_unpack_protocolie_field(
+ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_protocolie_field(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_PROTOCOLIE_FIELD_STRUCT                                *ie)
+  LIBLTE_X2AP_PROTOCOLIE_FIELD_STRUCT                                *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
    if(ie  != NULL &&
      ptr != NULL)
   {
-     if(liblte_s1ap_unpack_protocolie_id(ptr, &ie->id) != LIBLTE_SUCCESS) {
+     if(liblte_x2ap_unpack_protocolie_id(ptr, &ie->id) != LIBLTE_SUCCESS) {
       return LIBLTE_ERROR_DECODE_FAIL;
     }
      // Enum - ie->criticality
-    ie->criticality = (LIBLTE_S1AP_CRITICALITY_ENUM)liblte_bits_2_value(ptr, 2);
+    ie->criticality = (LIBLTE_X2AP_CRITICALITY_ENUM)liblte_bits_2_value(ptr, 2);
      err = LIBLTE_SUCCESS;
   }
   return err;
@@ -362,15 +374,15 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolie_field(
  /*******************************************************************************
 /* ProtocolIE ProtocolIE_SingleContainer SEQUENCE
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolie_singlecontainer(
-  LIBLTE_S1AP_PROTOCOLIE_SINGLECONTAINER_STRUCT                      *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_protocolie_singlecontainer(
+  LIBLTE_X2AP_PROTOCOLIE_SINGLECONTAINER_STRUCT                      *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
    if(ie  != NULL &&
      ptr != NULL)
   {
-     if(liblte_s1ap_pack_protocolie_id(&ie->id, ptr) != LIBLTE_SUCCESS) {
+     if(liblte_x2ap_pack_protocolie_id(&ie->id, ptr) != LIBLTE_SUCCESS) {
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
      // Enum - ie->criticality
@@ -379,19 +391,19 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolie_singlecontainer(
   }
   return err;
 }
- LIBLTE_ERROR_ENUM liblte_s1ap_unpack_protocolie_singlecontainer(
+ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_protocolie_singlecontainer(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_PROTOCOLIE_SINGLECONTAINER_STRUCT                      *ie)
+  LIBLTE_X2AP_PROTOCOLIE_SINGLECONTAINER_STRUCT                      *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
    if(ie  != NULL &&
      ptr != NULL)
   {
-     if(liblte_s1ap_unpack_protocolie_id(ptr, &ie->id) != LIBLTE_SUCCESS) {
+     if(liblte_x2ap_unpack_protocolie_id(ptr, &ie->id) != LIBLTE_SUCCESS) {
       return LIBLTE_ERROR_DECODE_FAIL;
     }
      // Enum - ie->criticality
-    ie->criticality = (LIBLTE_S1AP_CRITICALITY_ENUM)liblte_bits_2_value(ptr, 2);
+    ie->criticality = (LIBLTE_X2AP_CRITICALITY_ENUM)liblte_bits_2_value(ptr, 2);
      err = LIBLTE_SUCCESS;
   }
   return err;
@@ -400,7 +412,7 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolie_singlecontainer(
 /* ProtocolIE ProtocolIE_Container DYNAMIC SEQUENCE OF
 ********************************************************************************/
 // lb:1, ub:65535
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolie_container(
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_protocolie_container(
   LIBLTE_X2AP_PROTOCOLIE_CONTAINER_STRUCT                             *ie,
   uint8_t                                                           **ptr)
 {
@@ -409,7 +421,7 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolie_container(
      ptr != NULL)
   {
     if(ie->len > 32) {
-      liblte_log_print("ProtocolIE_Container pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      liblte_x2ap_log_print("ProtocolIE_Container pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
     // Length
@@ -417,7 +429,7 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolie_container(
     liblte_align_up_zero(ptr, 8);
     uint32_t i;
     for(i=0;i<ie->len;i++) {
-      if(liblte_s1ap_pack_protocolie_field(&ie->buffer[i], ptr) != LIBLTE_SUCCESS) {
+      if(liblte_x2ap_pack_protocolie_field(&ie->buffer[i], ptr) != LIBLTE_SUCCESS) {
         return LIBLTE_ERROR_ENCODE_FAIL;
       }
     }
@@ -425,9 +437,9 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolie_container(
   }
   return err;
 }
- LIBLTE_ERROR_ENUM liblte_s1ap_unpack_protocolie_container(
+ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_protocolie_container(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_PROTOCOLIE_CONTAINER_STRUCT                             *ie)
+  LIBLTE_X2AP_PROTOCOLIE_CONTAINER_STRUCT                             *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
    if(ie  != NULL &&
@@ -437,12 +449,12 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolie_container(
     ie->len = liblte_bits_2_value(ptr, 16) + 1;
     liblte_align_up(ptr, 8);
     if(ie->len > 32) {
-      liblte_log_print("ProtocolIE_Container unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      liblte_x2ap_log_print("ProtocolIE_Container unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
       return LIBLTE_ERROR_DECODE_FAIL;
     }
     uint32_t i;
     for(i=0;i<ie->len;i++) {
-      if(liblte_s1ap_unpack_protocolie_field(ptr, &ie->buffer[i]) != LIBLTE_SUCCESS) {
+      if(liblte_x2ap_unpack_protocolie_field(ptr, &ie->buffer[i]) != LIBLTE_SUCCESS) {
         return LIBLTE_ERROR_DECODE_FAIL;
       }
     }
@@ -453,15 +465,15 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolie_container(
  /*******************************************************************************
 /* ProtocolIE ProtocolExtensionField SEQUENCE
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolextensionfield(
-  LIBLTE_S1AP_PROTOCOLEXTENSIONFIELD_STRUCT                          *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_protocolextensionfield(
+  LIBLTE_X2AP_PROTOCOLEXTENSIONFIELD_STRUCT                          *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
    if(ie  != NULL &&
      ptr != NULL)
   {
-     if(liblte_s1ap_pack_protocolextensionid(&ie->id, ptr) != LIBLTE_SUCCESS) {
+     if(liblte_x2ap_pack_protocolie_id(&ie->id, ptr) != LIBLTE_SUCCESS) { // changed by ZY
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
      // Enum - ie->criticality
@@ -470,19 +482,19 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolextensionfield(
   }
   return err;
 }
- LIBLTE_ERROR_ENUM liblte_s1ap_unpack_protocolextensionfield(
+ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_protocolextensionfield(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_PROTOCOLEXTENSIONFIELD_STRUCT                          *ie)
+  LIBLTE_X2AP_PROTOCOLEXTENSIONFIELD_STRUCT                          *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
    if(ie  != NULL &&
      ptr != NULL)
   {
-     if(liblte_s1ap_unpack_protocolextensionid(ptr, &ie->id) != LIBLTE_SUCCESS) {
+     if(liblte_x2ap_unpack_protocolie_id(ptr, &ie->id) != LIBLTE_SUCCESS) { // changed by ZY
       return LIBLTE_ERROR_DECODE_FAIL;
     }
      // Enum - ie->criticality
-    ie->criticality = (LIBLTE_S1AP_CRITICALITY_ENUM)liblte_bits_2_value(ptr, 2);
+    ie->criticality = (LIBLTE_X2AP_CRITICALITY_ENUM)liblte_bits_2_value(ptr, 2);
      err = LIBLTE_SUCCESS;
   }
   return err;
@@ -491,8 +503,8 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolextensionfield(
 /* ProtocolIE ProtocolExtensionContainer DYNAMIC SEQUENCE OF
 ********************************************************************************/
 // lb:1, ub:65535
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolextensioncontainer(
-  LIBLTE_S1AP_PROTOCOLEXTENSIONCONTAINER_STRUCT                      *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_protocolextensioncontainer(
+  LIBLTE_X2AP_PROTOCOLEXTENSIONCONTAINER_STRUCT                      *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -500,7 +512,7 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolextensioncontainer(
      ptr != NULL)
   {
     if(ie->len > 32) {
-      liblte_log_print("ProtocolExtensionContainer pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      liblte_x2ap_log_print("ProtocolExtensionContainer pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
     // Length
@@ -508,7 +520,7 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolextensioncontainer(
     liblte_align_up_zero(ptr, 8);
     uint32_t i;
     for(i=0;i<ie->len;i++) {
-      if(liblte_s1ap_pack_protocolextensionfield(&ie->buffer[i], ptr) != LIBLTE_SUCCESS) {
+      if(liblte_x2ap_pack_protocolextensionfield(&ie->buffer[i], ptr) != LIBLTE_SUCCESS) {
         return LIBLTE_ERROR_ENCODE_FAIL;
       }
     }
@@ -516,9 +528,9 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolextensioncontainer(
   }
   return err;
 }
- LIBLTE_ERROR_ENUM liblte_s1ap_unpack_protocolextensioncontainer(
+ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_protocolextensioncontainer(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_PROTOCOLEXTENSIONCONTAINER_STRUCT                      *ie)
+  LIBLTE_X2AP_PROTOCOLEXTENSIONCONTAINER_STRUCT                      *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
    if(ie  != NULL &&
@@ -528,12 +540,12 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolextensioncontainer(
     ie->len = liblte_bits_2_value(ptr, 16) + 1;
     liblte_align_up(ptr, 8);
     if(ie->len > 32) {
-      liblte_log_print("ProtocolExtensionContainer unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      liblte_x2ap_log_print("ProtocolExtensionContainer unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
       return LIBLTE_ERROR_DECODE_FAIL;
     }
     uint32_t i;
     for(i=0;i<ie->len;i++) {
-      if(liblte_s1ap_unpack_protocolextensionfield(ptr, &ie->buffer[i]) != LIBLTE_SUCCESS) {
+      if(liblte_x2ap_unpack_protocolextensionfield(ptr, &ie->buffer[i]) != LIBLTE_SUCCESS) {
         return LIBLTE_ERROR_DECODE_FAIL;
       }
     }
@@ -544,15 +556,15 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolextensioncontainer(
  /*******************************************************************************
 /* ProtocolIE ProtocolIE_FieldPair SEQUENCE
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolie_fieldpair(
-  LIBLTE_S1AP_PROTOCOLIE_FIELDPAIR_STRUCT                            *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_protocolie_fieldpair(
+  LIBLTE_X2AP_PROTOCOLIE_FIELDPAIR_STRUCT                            *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
    if(ie  != NULL &&
      ptr != NULL)
   {
-     if(liblte_s1ap_pack_protocolie_id(&ie->id, ptr) != LIBLTE_SUCCESS) {
+     if(liblte_x2ap_pack_protocolie_id(&ie->id, ptr) != LIBLTE_SUCCESS) {
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
      // Enum - ie->firstCriticality
@@ -563,21 +575,21 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolie_fieldpair(
   }
   return err;
 }
- LIBLTE_ERROR_ENUM liblte_s1ap_unpack_protocolie_fieldpair(
+ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_protocolie_fieldpair(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_PROTOCOLIE_FIELDPAIR_STRUCT                            *ie)
+  LIBLTE_X2AP_PROTOCOLIE_FIELDPAIR_STRUCT                            *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
    if(ie  != NULL &&
      ptr != NULL)
   {
-     if(liblte_s1ap_unpack_protocolie_id(ptr, &ie->id) != LIBLTE_SUCCESS) {
+     if(liblte_x2ap_unpack_protocolie_id(ptr, &ie->id) != LIBLTE_SUCCESS) {
       return LIBLTE_ERROR_DECODE_FAIL;
     }
      // Enum - ie->firstCriticality
-    ie->firstCriticality = (LIBLTE_S1AP_CRITICALITY_ENUM)liblte_bits_2_value(ptr, 2);
+    ie->firstCriticality = (LIBLTE_X2AP_CRITICALITY_ENUM)liblte_bits_2_value(ptr, 2);
      // Enum - ie->secondCriticality
-    ie->secondCriticality = (LIBLTE_S1AP_CRITICALITY_ENUM)liblte_bits_2_value(ptr, 2);
+    ie->secondCriticality = (LIBLTE_X2AP_CRITICALITY_ENUM)liblte_bits_2_value(ptr, 2);
      err = LIBLTE_SUCCESS;
   }
   return err;
@@ -586,8 +598,8 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolie_fieldpair(
 /* ProtocolIE ProtocolIE_ContainerPair DYNAMIC SEQUENCE OF
 ********************************************************************************/
 // lb:0, ub:65535
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolie_containerpair(
-  LIBLTE_S1AP_PROTOCOLIE_CONTAINERPAIR_STRUCT                        *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_protocolie_containerpair(
+  LIBLTE_X2AP_PROTOCOLIE_CONTAINERPAIR_STRUCT                        *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -595,7 +607,7 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolie_containerpair(
      ptr != NULL)
   {
     if(ie->len > 32) {
-      liblte_log_print("ProtocolIE_ContainerPair pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      liblte_x2ap_log_print("ProtocolIE_ContainerPair pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
     // Length
@@ -603,7 +615,7 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolie_containerpair(
     liblte_align_up_zero(ptr, 8);
     uint32_t i;
     for(i=0;i<ie->len;i++) {
-      if(liblte_s1ap_pack_protocolie_fieldpair(&ie->buffer[i], ptr) != LIBLTE_SUCCESS) {
+      if(liblte_x2ap_pack_protocolie_fieldpair(&ie->buffer[i], ptr) != LIBLTE_SUCCESS) {
         return LIBLTE_ERROR_ENCODE_FAIL;
       }
     }
@@ -611,9 +623,9 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolie_containerpair(
   }
   return err;
 }
- LIBLTE_ERROR_ENUM liblte_s1ap_unpack_protocolie_containerpair(
+ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_protocolie_containerpair(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_PROTOCOLIE_CONTAINERPAIR_STRUCT                        *ie)
+  LIBLTE_X2AP_PROTOCOLIE_CONTAINERPAIR_STRUCT                        *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
    if(ie  != NULL &&
@@ -623,12 +635,12 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolie_containerpair(
     ie->len = liblte_bits_2_value(ptr, 16) + 0;
     liblte_align_up(ptr, 8);
     if(ie->len > 32) {
-      liblte_log_print("ProtocolIE_ContainerPair unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      liblte_x2ap_log_print("ProtocolIE_ContainerPair unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
       return LIBLTE_ERROR_DECODE_FAIL;
     }
     uint32_t i;
     for(i=0;i<ie->len;i++) {
-      if(liblte_s1ap_unpack_protocolie_fieldpair(ptr, &ie->buffer[i]) != LIBLTE_SUCCESS) {
+      if(liblte_x2ap_unpack_protocolie_fieldpair(ptr, &ie->buffer[i]) != LIBLTE_SUCCESS) {
         return LIBLTE_ERROR_DECODE_FAIL;
       }
     }
@@ -640,8 +652,8 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolie_containerpair(
 /* ProtocolIE ProtocolIE_ContainerList DYNAMIC SEQUENCE OF
 ********************************************************************************/
 // lb:None, ub:None
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolie_containerlist(
-  LIBLTE_S1AP_PROTOCOLIE_CONTAINERLIST_STRUCT                    *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_protocolie_containerlist(
+  LIBLTE_X2AP_PROTOCOLIE_CONTAINERLIST_STRUCT                    *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -649,7 +661,7 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolie_containerlist(
      ptr != NULL)
   {
     if(ie->len > 32) {
-      liblte_log_print("ProtocolIE_ContainerList pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      liblte_x2ap_log_print("ProtocolIE_ContainerList pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
     // Length
@@ -662,10 +674,11 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolie_containerlist(
       liblte_value_2_bits(ie->len, ptr, 14);
     } else {
       // FIXME: Unlikely to have more than 16K of bits
+      return err; // add by ZY, at least report error.
     }
     uint32_t i;
     for(i=0;i<ie->len;i++) {
-      if(liblte_s1ap_pack_protocolie_container(&ie->buffer[i], ptr) != LIBLTE_SUCCESS) {
+      if(liblte_x2ap_pack_protocolie_container(&ie->buffer[i], ptr) != LIBLTE_SUCCESS) {
         return LIBLTE_ERROR_ENCODE_FAIL;
       }
     }
@@ -673,31 +686,34 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolie_containerlist(
   }
   return err;
 }
- LIBLTE_ERROR_ENUM liblte_s1ap_unpack_protocolie_containerlist(
+ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_protocolie_containerlist(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_PROTOCOLIE_CONTAINERLIST_STRUCT                    *ie)
+  LIBLTE_X2AP_PROTOCOLIE_CONTAINERLIST_STRUCT                    *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
    if(ie  != NULL &&
      ptr != NULL)
   {
     // Length
-    if(0 == liblte_bits_2_value(ptr, 1)) {
+    if (0 == liblte_bits_2_value(ptr, 1)) {
       ie->len = liblte_bits_2_value(ptr, 7);
-    } else {
-      if(0 == liblte_bits_2_value(ptr, 1)) {
+    }
+    else {
+      if (0 == liblte_bits_2_value(ptr, 1)) {
         ie->len = liblte_bits_2_value(ptr, 14);
-      } else {
+      }
+      else {
         // FIXME: Unlikely to have more than 16K of bits
+        return err; // add by ZY, at least report error.
       }
     }
     if(ie->len > 32) {
-      liblte_log_print("ProtocolIE_ContainerPairList unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      liblte_x2ap_log_print("ProtocolIE_ContainerPairList unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
       return LIBLTE_ERROR_DECODE_FAIL;
     }
     uint32_t i;
     for(i=0;i<ie->len;i++) {
-      if(liblte_s1ap_unpack_protocolie_container(ptr, &ie->buffer[i]) != LIBLTE_SUCCESS) {
+      if(liblte_x2ap_unpack_protocolie_container(ptr, &ie->buffer[i]) != LIBLTE_SUCCESS) {
         return LIBLTE_ERROR_DECODE_FAIL;
       }
     }
@@ -709,8 +725,8 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolie_containerlist(
 /* ProtocolIE ProtocolIE_ContainerPairList DYNAMIC SEQUENCE OF
 ********************************************************************************/
 // lb:None, ub:None
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolie_containerpairlist(
-  LIBLTE_S1AP_PROTOCOLIE_CONTAINERPAIRLIST_STRUCT                    *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_protocolie_containerpairlist(
+  LIBLTE_X2AP_PROTOCOLIE_CONTAINERPAIRLIST_STRUCT                    *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -718,7 +734,7 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolie_containerpairlist(
      ptr != NULL)
   {
     if(ie->len > 32) {
-      liblte_log_print("ProtocolIE_ContainerPairList pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      liblte_x2ap_log_print("ProtocolIE_ContainerPairList pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
     // Length
@@ -731,10 +747,11 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolie_containerpairlist(
       liblte_value_2_bits(ie->len, ptr, 14);
     } else {
       // FIXME: Unlikely to have more than 16K of bits
+      return err; // add by ZY, at least report error.
     }
     uint32_t i;
     for(i=0;i<ie->len;i++) {
-      if(liblte_s1ap_pack_protocolie_containerpair(&ie->buffer[i], ptr) != LIBLTE_SUCCESS) {
+      if(liblte_x2ap_pack_protocolie_containerpair(&ie->buffer[i], ptr) != LIBLTE_SUCCESS) {
         return LIBLTE_ERROR_ENCODE_FAIL;
       }
     }
@@ -742,31 +759,34 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolie_containerpairlist(
   }
   return err;
 }
- LIBLTE_ERROR_ENUM liblte_s1ap_unpack_protocolie_containerpairlist(
+ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_protocolie_containerpairlist(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_PROTOCOLIE_CONTAINERPAIRLIST_STRUCT                    *ie)
+  LIBLTE_X2AP_PROTOCOLIE_CONTAINERPAIRLIST_STRUCT                    *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
    if(ie  != NULL &&
      ptr != NULL)
   {
     // Length
-    if(0 == liblte_bits_2_value(ptr, 1)) {
+    if (0 == liblte_bits_2_value(ptr, 1)) {
       ie->len = liblte_bits_2_value(ptr, 7);
-    } else {
-      if(0 == liblte_bits_2_value(ptr, 1)) {
+    }
+    else {
+      if (0 == liblte_bits_2_value(ptr, 1)) {
         ie->len = liblte_bits_2_value(ptr, 14);
-      } else {
+      }
+      else {
         // FIXME: Unlikely to have more than 16K of bits
+        return err; // add by ZY, at least report error.
       }
     }
     if(ie->len > 32) {
-      liblte_log_print("ProtocolIE_ContainerPairList unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      liblte_x2ap_log_print("ProtocolIE_ContainerPairList unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
       return LIBLTE_ERROR_DECODE_FAIL;
     }
     uint32_t i;
     for(i=0;i<ie->len;i++) {
-      if(liblte_s1ap_unpack_protocolie_containerpair(ptr, &ie->buffer[i]) != LIBLTE_SUCCESS) {
+      if(liblte_x2ap_unpack_protocolie_containerpair(ptr, &ie->buffer[i]) != LIBLTE_SUCCESS) {
         return LIBLTE_ERROR_DECODE_FAIL;
       }
     }
@@ -777,15 +797,15 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_protocolie_containerpairlist(
  /*******************************************************************************
 /* ProtocolIE PrivateIE_Field SEQUENCE
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_privateie_field(
-  LIBLTE_S1AP_PRIVATEIE_FIELD_STRUCT                                 *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_privateie_field(
+  LIBLTE_X2AP_PRIVATEIE_FIELD_STRUCT                                 *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
    if(ie  != NULL &&
      ptr != NULL)
   {
-     if(liblte_s1ap_pack_privateie_id(&ie->id, ptr) != LIBLTE_SUCCESS) {
+     if(liblte_x2ap_pack_privateie_id(&ie->id, ptr) != LIBLTE_SUCCESS) {
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
      // Enum - ie->criticality
@@ -794,19 +814,19 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_privateie_field(
   }
   return err;
 }
- LIBLTE_ERROR_ENUM liblte_s1ap_unpack_privateie_field(
+ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_privateie_field(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_PRIVATEIE_FIELD_STRUCT                                 *ie)
+  LIBLTE_X2AP_PRIVATEIE_FIELD_STRUCT                                 *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
    if(ie  != NULL &&
      ptr != NULL)
   {
-     if(liblte_s1ap_unpack_privateie_id(ptr, &ie->id) != LIBLTE_SUCCESS) {
+     if(liblte_x2ap_unpack_privateie_id(ptr, &ie->id) != LIBLTE_SUCCESS) {
       return LIBLTE_ERROR_DECODE_FAIL;
     }
      // Enum - ie->criticality
-    ie->criticality = (LIBLTE_S1AP_CRITICALITY_ENUM)liblte_bits_2_value(ptr, 2);
+    ie->criticality = (LIBLTE_X2AP_CRITICALITY_ENUM)liblte_bits_2_value(ptr, 2);
      err = LIBLTE_SUCCESS;
   }
   return err;
@@ -815,8 +835,8 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_privateie_field(
 /* ProtocolIE PrivateIE_Container DYNAMIC SEQUENCE OF
 ********************************************************************************/
 // lb:1, ub:65535
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_privateie_container(
-  LIBLTE_S1AP_PRIVATEIE_CONTAINER_STRUCT                             *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_privateie_container(
+  LIBLTE_X2AP_PRIVATEIE_CONTAINER_STRUCT                             *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -824,7 +844,7 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_privateie_container(
      ptr != NULL)
   {
     if(ie->len > 32) {
-      liblte_log_print("PrivateIE_Container pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      liblte_x2ap_log_print("PrivateIE_Container pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
     // Length
@@ -832,7 +852,7 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_privateie_container(
     liblte_align_up_zero(ptr, 8);
     uint32_t i;
     for(i=0;i<ie->len;i++) {
-      if(liblte_s1ap_pack_privateie_field(&ie->buffer[i], ptr) != LIBLTE_SUCCESS) {
+      if(liblte_x2ap_pack_privateie_field(&ie->buffer[i], ptr) != LIBLTE_SUCCESS) {
         return LIBLTE_ERROR_ENCODE_FAIL;
       }
     }
@@ -840,9 +860,9 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_privateie_container(
   }
   return err;
 }
- LIBLTE_ERROR_ENUM liblte_s1ap_unpack_privateie_container(
+ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_privateie_container(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_PRIVATEIE_CONTAINER_STRUCT                             *ie)
+  LIBLTE_X2AP_PRIVATEIE_CONTAINER_STRUCT                             *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
    if(ie  != NULL &&
@@ -852,12 +872,12 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_privateie_container(
     ie->len = liblte_bits_2_value(ptr, 16) + 1;
     liblte_align_up(ptr, 8);
     if(ie->len > 32) {
-      liblte_log_print("PrivateIE_Container unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      liblte_x2ap_log_print("PrivateIE_Container unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
       return LIBLTE_ERROR_DECODE_FAIL;
     }
     uint32_t i;
     for(i=0;i<ie->len;i++) {
-      if(liblte_s1ap_unpack_privateie_field(ptr, &ie->buffer[i]) != LIBLTE_SUCCESS) {
+      if(liblte_x2ap_unpack_privateie_field(ptr, &ie->buffer[i]) != LIBLTE_SUCCESS) {
         return LIBLTE_ERROR_DECODE_FAIL;
       }
     }
@@ -897,8 +917,8 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_privateie_container(
  /*******************************************************************************
 /* ProtocolIE BitRate INTEGER
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_bitrate(
-  LIBLTE_S1AP_BITRATE_STRUCT                                         *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_bitrate(
+  LIBLTE_X2AP_BITRATE_STRUCT                                         *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -920,9 +940,9 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_bitrate(
   }
   return err;
 }
- LIBLTE_ERROR_ENUM liblte_s1ap_unpack_bitrate(
+ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_bitrate(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_BITRATE_STRUCT                                         *ie)
+  LIBLTE_X2AP_BITRATE_STRUCT                                         *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
    if(ie  != NULL &&
@@ -1125,7 +1145,9 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_earfcnextension(
 	if(ie != NULL && ptr != NULL)
 	{
 		liblte_align_up_zero(ptr, 8);
-	 	liblte_value_2_bits(ie->EARFCNExtension, ptr, 16);
+	 	// liblte_value_2_bits(ie->EARFCNExtension, ptr, 16); changed by ZY
+    liblte_value_2_bits(ie->EARFCNExtension, ptr, 32);
+
 		err = LIBLTE_SUCCESS;
 	}
 	return err;
@@ -1138,7 +1160,9 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_earfcnextension(
 	if(ptr != NULL && ie != NULL)
 	{
 		liblte_align_up(ptr, 8);
-		ie->EARFCNExtension = (uint16_t)liblte_bits_2_value(ptr, 16);
+		// ie->EARFCNExtension = (uint16_t)liblte_bits_2_value(ptr, 16); changed by ZY
+    ie->EARFCNExtension = (uint16_t)liblte_bits_2_value(ptr, 32);
+
 		err = LIBLTE_SUCCESS;
 	}
 	return err;
@@ -1146,8 +1170,8 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_earfcnextension(
  /*******************************************************************************
 /* ProtocolIE E_RAB_ID INTEGER
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_e_rab_id(
-  LIBLTE_S1AP_E_RAB_ID_STRUCT                                        *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_e_rab_id(
+  LIBLTE_X2AP_E_RAB_ID_STRUCT                                        *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -1159,7 +1183,7 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_e_rab_id(
     // Extension
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     if(ie->ext) {
-      liblte_log_print("ie->E_RAB_ID error: S1AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ie->E_RAB_ID error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
     liblte_value_2_bits(ie->E_RAB_ID, ptr, 4);
@@ -1167,9 +1191,9 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_e_rab_id(
   }
   return err;
 }
- LIBLTE_ERROR_ENUM liblte_s1ap_unpack_e_rab_id(
+ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_e_rab_id(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_E_RAB_ID_STRUCT                                        *ie)
+  LIBLTE_X2AP_E_RAB_ID_STRUCT                                        *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
    if(ie  != NULL &&
@@ -1180,7 +1204,7 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_e_rab_id(
     // Extension
     ie->ext  = liblte_bits_2_value(ptr, 1);
     if(ie->ext) {
-      liblte_log_print("ie->E_RAB_ID error: S1AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ie->E_RAB_ID error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
     ie->E_RAB_ID = (uint8_t)liblte_bits_2_value(ptr, 4);
@@ -1221,8 +1245,8 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_freqbandindicator(
  /*******************************************************************************
 /* ProtocolIE HFN INTEGER
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_hfn(
-  LIBLTE_S1AP_HFN_STRUCT                                             *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_hfn(
+  LIBLTE_X2AP_HFN_STRUCT                                             *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -1244,9 +1268,9 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_hfn(
   }
   return err;
 }
- LIBLTE_ERROR_ENUM liblte_s1ap_unpack_hfn(
+ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_hfn(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_HFN_STRUCT                                             *ie)
+  LIBLTE_X2AP_HFN_STRUCT                                             *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
    if(ie  != NULL &&
@@ -1267,8 +1291,8 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_hfn(
  /*******************************************************************************
 /* ProtocolIE HFNModified INTEGER
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_hfnmodified(
-  LIBLTE_S1AP_HFNMODIFIED_STRUCT                                     *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_hfnmodified(
+  LIBLTE_X2AP_HFNMODIFIED_STRUCT                                     *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -1290,9 +1314,9 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_hfnmodified(
   }
   return err;
 }
- LIBLTE_ERROR_ENUM liblte_s1ap_unpack_hfnmodified(
+ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_hfnmodified(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_HFNMODIFIED_STRUCT                                     *ie)
+  LIBLTE_X2AP_HFNMODIFIED_STRUCT                                     *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
    if(ie  != NULL &&
@@ -1323,16 +1347,11 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_hfnmodified(
    if(ie  != NULL &&
      ptr != NULL)
   {
-    // Integer - ie->HFNModified
-    // lb:0, ub:131071
-    // Range > 65536 - encoded based on value
+    // Integer - ie->Measurement_ID
+    // lb:0, ub:4095
     {
-      uint32_t n_bits   = floor(log2(ie->Measurement_ID-0)+1);
-      uint32_t n_octets = (n_bits+7)/8;
-      liblte_value_2_bits(n_octets-1, ptr, 2);
       liblte_align_up_zero(ptr, 8);
-      liblte_value_2_bits(0, ptr, (n_octets*8)-n_bits);
-      liblte_value_2_bits(ie->Measurement_ID-0, ptr, n_bits);
+      liblte_value_2_bits(ie->Measurement_ID, ptr, 32);
     }
     err = LIBLTE_SUCCESS;
   }
@@ -1347,13 +1366,11 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_measurement_id(
    if(ie  != NULL &&
      ptr != NULL)
   {
-    // Integer - ie->HFNModified
-    // lb:0, ub:131071
-    // Range > 65536 - encoded based on value
+    // Integer - ie->Measurement_ID
+    // lb:0, ub:4095
     {
-      uint32_t n_octets = liblte_bits_2_value(ptr, 2) + 1;
       liblte_align_up(ptr, 8);
-      ie->Measurement_ID = liblte_bits_2_value(ptr, n_octets*8) + 0;
+      ie->Measurement_ID = liblte_bits_2_value(ptr, 32);
     }
     err = LIBLTE_SUCCESS;
   }
@@ -1361,11 +1378,11 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_measurement_id(
 }
 
 	
- /*******************************************************************************
+/*******************************************************************************
 /* ProtocolIE nextHopChainingCount INTEGER
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_nexthopchainingcount(
-  LIBLTE_S1AP_NEXTHOPCHAININGCOUNT_STRUCT                            *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_nexthopchainingcount(
+  LIBLTE_X2AP_NEXTHOPCHAININGCOUNT_STRUCT                            *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -1374,14 +1391,14 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_nexthopchainingcount(
   {
     // Integer - ie->nextHopChainingCount
     // lb:0, ub:7
-    liblte_value_2_bits(ie->nextHopChainingCount, ptr, 3);
+    liblte_value_2_bits(ie->NextHopChainingCount, ptr, 3);
     err = LIBLTE_SUCCESS;
   }
   return err;
 }
- LIBLTE_ERROR_ENUM liblte_s1ap_unpack_nexthopchainingcount(
+ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_nexthopchainingcount(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_NEXTHOPCHAININGCOUNT_STRUCT                            *ie)
+  LIBLTE_X2AP_NEXTHOPCHAININGCOUNT_STRUCT                            *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
    if(ie  != NULL &&
@@ -1389,7 +1406,7 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_nexthopchainingcount(
   {
     // Integer - ie->nextHopChainingCount
     // lb:0, ub:7
-    ie->nextHopChainingCount = (uint8_t)liblte_bits_2_value(ptr, 3);
+    ie->NextHopChainingCount = (uint8_t)liblte_bits_2_value(ptr, 3);
     err = LIBLTE_SUCCESS;
   }
   return err;
@@ -1397,8 +1414,8 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_nexthopchainingcount(
  /*******************************************************************************
 /* ProtocolIE PDCP_SN INTEGER
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_pdcp_sn(
-  LIBLTE_S1AP_PDCP_SN_STRUCT                                         *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_pdcp_sn(
+  LIBLTE_X2AP_PDCP_SN_STRUCT                                         *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -1408,16 +1425,16 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_pdcp_sn(
     // Integer - ie->PDCP_SN
     // lb:0, ub:4095
     liblte_align_up_zero(ptr, 8);
-    liblte_value_2_bits(0, ptr, (1*8)-12);
+    // liblte_value_2_bits(0, ptr, (1*8)-12); BUG! Comment out by ZY. S1AP is also buggy!
     liblte_value_2_bits(ie->PDCP_SN, ptr, 12);
     liblte_align_up_zero(ptr, 8);
     err = LIBLTE_SUCCESS;
   }
   return err;
 }
- LIBLTE_ERROR_ENUM liblte_s1ap_unpack_pdcp_sn(
+ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_pdcp_sn(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_PDCP_SN_STRUCT                                         *ie)
+  LIBLTE_X2AP_PDCP_SN_STRUCT                                         *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
    if(ie  != NULL &&
@@ -1435,8 +1452,8 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_pdcp_sn(
  /*******************************************************************************
 /* ProtocolIE PDCP_SNExtended INTEGER
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_pdcp_snextended(
-  LIBLTE_S1AP_PDCP_SNEXTENDED_STRUCT                                 *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_pdcp_snextended(
+  LIBLTE_X2AP_PDCP_SNEXTENDED_STRUCT                                 *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -1446,16 +1463,16 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_pdcp_snextended(
     // Integer - ie->PDCP_SNExtended
     // lb:0, ub:32767
     liblte_align_up_zero(ptr, 8);
-    liblte_value_2_bits(0, ptr, (1*8)-15);
+    // liblte_value_2_bits(0, ptr, (1*8)-15); BUG! Comment out by ZY. S1AP is also buggy!
     liblte_value_2_bits(ie->PDCP_SNExtended, ptr, 15);
     liblte_align_up_zero(ptr, 8);
     err = LIBLTE_SUCCESS;
   }
   return err;
 }
- LIBLTE_ERROR_ENUM liblte_s1ap_unpack_pdcp_snextended(
+ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_pdcp_snextended(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_PDCP_SNEXTENDED_STRUCT                                 *ie)
+  LIBLTE_X2AP_PDCP_SNEXTENDED_STRUCT                                 *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
    if(ie  != NULL &&
@@ -1504,8 +1521,8 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_pci(
  /*******************************************************************************
 /* ProtocolIE PriorityLevel INTEGER
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_prioritylevel(
-  LIBLTE_S1AP_PRIORITYLEVEL_STRUCT                                   *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_prioritylevel(
+  LIBLTE_X2AP_PRIORITYLEVEL_STRUCT                                   *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -1519,9 +1536,9 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_prioritylevel(
   }
   return err;
 }
- LIBLTE_ERROR_ENUM liblte_s1ap_unpack_prioritylevel(
+ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_prioritylevel(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_PRIORITYLEVEL_STRUCT                                   *ie)
+  LIBLTE_X2AP_PRIORITYLEVEL_STRUCT                                   *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
    if(ie  != NULL &&
@@ -1537,8 +1554,8 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_prioritylevel(
  /*******************************************************************************
 /* ProtocolIE QCI INTEGER
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_qci(
-  LIBLTE_S1AP_QCI_STRUCT                                             *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_qci(
+  LIBLTE_X2AP_QCI_STRUCT                                             *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -1555,9 +1572,9 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_qci(
   }
   return err;
 }
- LIBLTE_ERROR_ENUM liblte_s1ap_unpack_qci(
+ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_qci(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_QCI_STRUCT                                             *ie)
+  LIBLTE_X2AP_QCI_STRUCT                                             *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
    if(ie  != NULL &&
@@ -1585,8 +1602,8 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_qci(
    if(ie  != NULL &&
      ptr != NULL)
   {
-    // Integer - ie->QCI
-    // lb:0, ub:255
+    // Integer - ie->RadioframeAllocationOffset
+    // lb:0, ub:7
     liblte_align_up_zero(ptr, 8);
     liblte_value_2_bits(0, ptr, (1*8)-8);
     liblte_value_2_bits(ie->RadioframeAllocationOffset, ptr, 8);
@@ -1604,8 +1621,8 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_radioframeallocationoffset(
    if(ie  != NULL &&
      ptr != NULL)
   {
-    // Integer - ie->QCI
-    // lb:0, ub:255
+    // Integer - ie->RadioframeAllocationOffset
+    // lb:0, ub:7
     liblte_align_up(ptr, 8);
     ie->RadioframeAllocationOffset = (uint8_t)liblte_bits_2_value(ptr, 1.0*8);
     liblte_align_up(ptr, 8);
@@ -1625,8 +1642,8 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_radioframeallocationoffset(
    if(ie  != NULL &&
      ptr != NULL)
   {
-    // Integer - ie->QCI
-    // lb:0, ub:255
+    // Integer - ie->SubscribeProfileIDforRFP
+    // lb:1, ub:256
     liblte_align_up_zero(ptr, 8);
     liblte_value_2_bits(0, ptr, (1*8)-8);
     liblte_value_2_bits(ie->SubscribeProfileIDforRFP, ptr, 8);
@@ -1644,8 +1661,8 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_subscribeprofileidforrfp(
    if(ie  != NULL &&
      ptr != NULL)
   {
-    // Integer - ie->QCI
-    // lb:0, ub:255
+    // Integer - ie->SubscribeProfileIDforRFP
+    // lb:1, ub:256
     liblte_align_up(ptr, 8);
     ie->SubscribeProfileIDforRFP = (uint8_t)liblte_bits_2_value(ptr, 1.0*8);
     liblte_align_up(ptr, 8);
@@ -1657,8 +1674,8 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_subscribeprofileidforrfp(
  /*******************************************************************************
 /* ProtocolIE Threshold_RSRP INTEGER
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_threshold_rsrp(
-  LIBLTE_S1AP_THRESHOLD_RSRP_STRUCT                                  *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_threshold_rsrp(
+  LIBLTE_X2AP_THRESHOLD_RSRP_STRUCT                                  *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -1672,9 +1689,9 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_threshold_rsrp(
   }
   return err;
 }
- LIBLTE_ERROR_ENUM liblte_s1ap_unpack_threshold_rsrp(
+ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_threshold_rsrp(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_THRESHOLD_RSRP_STRUCT                                  *ie)
+  LIBLTE_X2AP_THRESHOLD_RSRP_STRUCT                                  *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
    if(ie  != NULL &&
@@ -1690,8 +1707,8 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_threshold_rsrp(
  /*******************************************************************************
 /* ProtocolIE Threshold_RSRQ INTEGER
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_threshold_rsrq(
-  LIBLTE_S1AP_THRESHOLD_RSRQ_STRUCT                                  *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_threshold_rsrq(
+  LIBLTE_X2AP_THRESHOLD_RSRQ_STRUCT                                  *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -1705,9 +1722,9 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_threshold_rsrq(
   }
   return err;
 }
- LIBLTE_ERROR_ENUM liblte_s1ap_unpack_threshold_rsrq(
+ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_threshold_rsrq(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_THRESHOLD_RSRQ_STRUCT                                  *ie)
+  LIBLTE_X2AP_THRESHOLD_RSRQ_STRUCT                                  *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
    if(ie  != NULL &&
@@ -1723,8 +1740,8 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_threshold_rsrq(
  /*******************************************************************************
 /* ProtocolIE Time_UE_StayedInCell INTEGER
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_time_ue_stayedincell(
-  LIBLTE_S1AP_TIME_UE_STAYEDINCELL_STRUCT                            *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_time_ue_stayedincell(
+  LIBLTE_X2AP_TIME_UE_STAYEDINCELL_STRUCT                            *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -1734,16 +1751,16 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_time_ue_stayedincell(
     // Integer - ie->Time_UE_StayedInCell
     // lb:0, ub:4095
     liblte_align_up_zero(ptr, 8);
-    liblte_value_2_bits(0, ptr, (1*8)-12);
+    // liblte_value_2_bits(0, ptr, (1*8)-12); BUG! Comment out by ZY. S1AP is also buggy.
     liblte_value_2_bits(ie->Time_UE_StayedInCell, ptr, 12);
     liblte_align_up_zero(ptr, 8);
     err = LIBLTE_SUCCESS;
   }
   return err;
 }
- LIBLTE_ERROR_ENUM liblte_s1ap_unpack_time_ue_stayedincell(
+ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_time_ue_stayedincell(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_TIME_UE_STAYEDINCELL_STRUCT                            *ie)
+  LIBLTE_X2AP_TIME_UE_STAYEDINCELL_STRUCT                            *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
    if(ie  != NULL &&
@@ -1761,8 +1778,8 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_time_ue_stayedincell(
  /*******************************************************************************
 /* ProtocolIE Time_UE_StayedInCell_EnhancedGranularity INTEGER
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_time_ue_stayedincell_enhancedgranularity(
-  LIBLTE_S1AP_TIME_UE_STAYEDINCELL_ENHANCEDGRANULARITY_STRUCT        *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_time_ue_stayedincell_enhancedgranularity(
+  LIBLTE_X2AP_TIME_UE_STAYEDINCELL_ENHANCEDGRANULARITY_STRUCT        *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -1779,9 +1796,9 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_time_ue_stayedincell_enhancedgranularity(
   }
   return err;
 }
- LIBLTE_ERROR_ENUM liblte_s1ap_unpack_time_ue_stayedincell_enhancedgranularity(
+ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_time_ue_stayedincell_enhancedgranularity(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_TIME_UE_STAYEDINCELL_ENHANCEDGRANULARITY_STRUCT        *ie)
+  LIBLTE_X2AP_TIME_UE_STAYEDINCELL_ENHANCEDGRANULARITY_STRUCT        *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
    if(ie  != NULL &&
@@ -1800,94 +1817,236 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_time_ue_stayedincell_enhancedgranularity(
 /*******************************************************************************
 /* ProtocolIE UE_S1AP_ID INTEGER
 ********************************************************************************/
-typedef struct{
-uint64_t UE_S1AP_ID;
-}LIBLTE_X2AP_UE_S1AP_ID_STRUCT;
-
 LIBLTE_ERROR_ENUM liblte_x2ap_pack_ue_s1ap_id(
   LIBLTE_X2AP_UE_S1AP_ID_STRUCT                  *ie,
-  uint8_t                                                     **ptr);
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Integer - ie->UE_S1AP_ID
+    // lb:0, ub:4294967295
+    liblte_align_up_zero(ptr, 8);
+    liblte_value_2_bits(ie->UE_S1AP_ID, ptr, 32);
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
 LIBLTE_ERROR_ENUM liblte_x2ap_unpack_ue_s1ap_id(
   uint8_t                                                     **ptr,
-  LIBLTE_X2AP_UE_S1AP_ID_STRUCT                  *ie);
+  LIBLTE_X2AP_UE_S1AP_ID_STRUCT                  *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Integer - ie->UE_S1AP_ID
+    // lb:0, ub:4294967295
+    liblte_align_up(ptr, 8);
+    ie->UE_S1AP_ID = (uint32_t)liblte_bits_2_value(ptr, 32);
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
 
 /*******************************************************************************
 /* ProtocolIE UE_X2AP_ID INTEGER
 ********************************************************************************/
-typedef struct{
-uint16_t UE_X2AP_ID;
-}LIBLTE_X2AP_UE_X2AP_ID_STRUCT;
-
 LIBLTE_ERROR_ENUM liblte_x2ap_pack_ue_x2ap_id(
   LIBLTE_X2AP_UE_X2AP_ID_STRUCT                  *ie,
-  uint8_t                                                     **ptr);
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Integer - ie->UE_X2AP_ID
+    // lb:0, ub:4095
+    liblte_align_up_zero(ptr, 8);
+    liblte_value_2_bits(ie->UE_X2AP_ID, ptr, 16);
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
 LIBLTE_ERROR_ENUM liblte_x2ap_unpack_ue_x2ap_id(
   uint8_t                                                     **ptr,
-  LIBLTE_X2AP_UE_X2AP_ID_STRUCT                  *ie);
-
+  LIBLTE_X2AP_UE_X2AP_ID_STRUCT                  *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Integer - ie->UE_X2AP_ID
+    // lb:0, ub:4095
+    liblte_align_up(ptr, 8);
+    ie->UE_X2AP_ID = (uint16_t)liblte_bits_2_value(ptr, 16);
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
 
 /*******************************************************************************
 /* ProtocolIE UL_GBR_PRB_usage INTEGER
 ********************************************************************************/
-typedef struct{
-uint16_t UL_GBR_PRB_usage;
-}LIBLTE_X2AP_UL_GBR_PRB_USAGE_STRUCT;
-
 LIBLTE_ERROR_ENUM liblte_x2ap_pack_ul_gbr_prb_usage(
   LIBLTE_X2AP_UL_GBR_PRB_USAGE_STRUCT                            *ie,
-  uint8_t                                                     **ptr);
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Integer - ie->UL_GBR_PRB_usage
+    // lb:0, ub:100
+    liblte_align_up_zero(ptr, 8);
+    liblte_value_2_bits(ie->UL_GBR_PRB_usage, ptr, 16);
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
 LIBLTE_ERROR_ENUM liblte_x2ap_unpack_ul_gbr_prb_usage(
   uint8_t                                                     **ptr,
-  LIBLTE_X2AP_UL_GBR_PRB_USAGE_STRUCT                            *ie);
+  LIBLTE_X2AP_UL_GBR_PRB_USAGE_STRUCT                            *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Integer - ie->UL_GBR_PRB_usage
+    // lb:0, ub:100
+    liblte_align_up(ptr, 8);
+    ie->UL_GBR_PRB_usage = (uint16_t)liblte_bits_2_value(ptr, 16);
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
 
 /*******************************************************************************
 /* ProtocolIE UL_non_GBR_PRB_usage INTEGER
 ********************************************************************************/
-typedef struct{
-uint16_t UL_non_GBR_PRB_usage;
-}LIBLTE_X2AP_UL_NON_GBR_PRB_USAGE_STRUCT;
-
 LIBLTE_ERROR_ENUM liblte_x2ap_pack_ul_non_gbr_prb_usage(
   LIBLTE_X2AP_UL_NON_GBR_PRB_USAGE_STRUCT                            *ie,
-  uint8_t                                                     **ptr);
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Integer - ie->UL_non_GBR_PRB_usage
+    // lb:0, ub:100
+    liblte_align_up_zero(ptr, 8);
+    liblte_value_2_bits(ie->UL_non_GBR_PRB_usage, ptr, 16);
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
 LIBLTE_ERROR_ENUM liblte_x2ap_unpack_ul_non_gbr_prb_usage(
   uint8_t                                                     **ptr,
-  LIBLTE_X2AP_UL_NON_GBR_PRB_USAGE_STRUCT                            *ie);
+  LIBLTE_X2AP_UL_NON_GBR_PRB_USAGE_STRUCT                            *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Integer - ie->UL_non_GBR_PRB_usage
+    // lb:0, ub:100
+    liblte_align_up(ptr, 8);
+    ie->UL_non_GBR_PRB_usage = (uint16_t)liblte_bits_2_value(ptr, 16);
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
 
 /*******************************************************************************
 /* ProtocolIE UL_Total_PRB_usage INTEGER
 ********************************************************************************/
-typedef struct{
-uint16_t UL_Total_PRB_usage;
-}LIBLTE_X2AP_UL_TOTAL_PRB_USAGE_STRUCT;
-
 LIBLTE_ERROR_ENUM liblte_x2ap_pack_ul_total_prb_usage(
   LIBLTE_X2AP_UL_TOTAL_PRB_USAGE_STRUCT                            *ie,
-  uint8_t                                                     **ptr);
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Integer - ie->UL_Total_PRB_usage
+    // lb:0, ub:100
+    liblte_align_up_zero(ptr, 8);
+    liblte_value_2_bits(ie->UL_Total_PRB_usage, ptr, 16);
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
 LIBLTE_ERROR_ENUM liblte_x2ap_unpack_ul_total_prb_usage(
   uint8_t                                                     **ptr,
-  LIBLTE_X2AP_UL_TOTAL_PRB_USAGE_STRUCT                            *ie);
+  LIBLTE_X2AP_UL_TOTAL_PRB_USAGE_STRUCT                            *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Integer - ie->UL_Total_PRB_usage
+    // lb:0, ub:100
+    liblte_align_up(ptr, 8);
+    ie->UL_Total_PRB_usage = (uint16_t)liblte_bits_2_value(ptr, 16);
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
 
 /*******************************************************************************
 /* ProtocolIE CRNTI STATIC BIT STRING
 ********************************************************************************/
-#define LIBLTE_X2AP_CRNTI_BIT_STRING_LEN 16
-typedef struct{
-  uint8_t  buffer[16];
-}LIBLTE_X2AP_CRNTI_STRUCT;
-
 LIBLTE_ERROR_ENUM liblte_x2ap_pack_crnti(
   LIBLTE_X2AP_CRNTI_STRUCT                               *ie,
-  uint8_t                                                     **ptr);
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    liblte_align_up_zero(ptr, 8);
+    for (uint32_t i = 0; i < LIBLTE_X2AP_CRNTI_BIT_STRING_LEN; ++i)
+      liblte_value_2_bits(ie->buffer[i], ptr, 1);
+    err = LIBLTE_SUCCESS;
+    liblte_align_up_zero(ptr, 8);
+  }
+  return err;
+}
 LIBLTE_ERROR_ENUM liblte_x2ap_unpack_crnti(
   uint8_t                                                     **ptr,
-  LIBLTE_X2AP_CRNTI_STRUCT                               *ie);
+  LIBLTE_X2AP_CRNTI_STRUCT                               *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    liblte_align_up(ptr, 8);
+    for (uint32_t i = 0; i < LIBLTE_X2AP_CRNTI_BIT_STRING_LEN; ++i)
+      ie->buffer[i] = (uint8_t)liblte_bits_2_value(ptr, 1);
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
 
 /*******************************************************************************
 /* ProtocolIE CSG_Id STATIC BIT STRING
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_csg_id(
-  LIBLTE_S1AP_CSG_ID_STRUCT                                          *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_csg_id(
+  LIBLTE_X2AP_CSG_ID_STRUCT                                          *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -1898,7 +2057,7 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_csg_id(
     // Static bit string - CSG-Id
     liblte_align_up_zero(ptr, 8);
     uint32_t i;
-    for(i=0;i<LIBLTE_S1AP_CSG_ID_BIT_STRING_LEN;i++) {
+    for(i=0;i<LIBLTE_X2AP_CSG_ID_BIT_STRING_LEN;i++) {
       liblte_value_2_bits(ie->buffer[i], ptr, 1);
     }
     liblte_align_up_zero(ptr, 8);
@@ -1907,9 +2066,9 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_csg_id(
   return err;
 }
 
-LIBLTE_ERROR_ENUM liblte_s1ap_unpack_csg_id(
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_csg_id(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_CSG_ID_STRUCT                                          *ie)
+  LIBLTE_X2AP_CSG_ID_STRUCT                                          *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
 
@@ -1919,7 +2078,7 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_csg_id(
     // Static bit string - CSG-Id
     liblte_align_up(ptr, 8);
     uint32_t i;
-    for(i=0;i<LIBLTE_S1AP_CSG_ID_BIT_STRING_LEN;i++) {
+    for(i=0;i<LIBLTE_X2AP_CSG_ID_BIT_STRING_LEN;i++) {
       ie->buffer[i] = liblte_bits_2_value(ptr, 1);
     }
     liblte_align_up(ptr, 8);
@@ -1931,8 +2090,8 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_csg_id(
 /*******************************************************************************
 /* ProtocolIE macroENB_ID STATIC BIT STRING
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_macroenb_id(
-  LIBLTE_S1AP_MACROENB_ID_STRUCT                                     *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_macroenb_id(
+  LIBLTE_X2AP_MACROENB_ID_STRUCT                                     *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -1943,7 +2102,7 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_macroenb_id(
     // Static bit string - macroENB-ID
     liblte_align_up_zero(ptr, 8);
     uint32_t i;
-    for(i=0;i<LIBLTE_S1AP_MACROENB_ID_BIT_STRING_LEN;i++) {
+    for(i=0;i<LIBLTE_X2AP_MACROENB_ID_BIT_STRING_LEN;i++) {
       liblte_value_2_bits(ie->buffer[i], ptr, 1);
     }
     liblte_align_up_zero(ptr, 8);
@@ -1952,9 +2111,9 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_macroenb_id(
   return err;
 }
 
-LIBLTE_ERROR_ENUM liblte_s1ap_unpack_macroenb_id(
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_macroenb_id(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_MACROENB_ID_STRUCT                                     *ie)
+  LIBLTE_X2AP_MACROENB_ID_STRUCT                                     *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
 
@@ -1964,7 +2123,7 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_macroenb_id(
     // Static bit string - macroENB-ID
     liblte_align_up(ptr, 8);
     uint32_t i;
-    for(i=0;i<LIBLTE_S1AP_MACROENB_ID_BIT_STRING_LEN;i++) {
+    for(i=0;i<LIBLTE_X2AP_MACROENB_ID_BIT_STRING_LEN;i++) {
       ie->buffer[i] = liblte_bits_2_value(ptr, 1);
     }
     liblte_align_up(ptr, 8);
@@ -1976,8 +2135,8 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_macroenb_id(
 /*******************************************************************************
 /* ProtocolIE homeENB_ID STATIC BIT STRING
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_homeenb_id(
-  LIBLTE_S1AP_HOMEENB_ID_STRUCT                                      *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_homeenb_id(
+  LIBLTE_X2AP_HOMEENB_ID_STRUCT                                      *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -1988,7 +2147,7 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_homeenb_id(
     // Static bit string - homeENB-ID
     liblte_align_up_zero(ptr, 8);
     uint32_t i;
-    for(i=0;i<LIBLTE_S1AP_HOMEENB_ID_BIT_STRING_LEN;i++) {
+    for(i=0;i<LIBLTE_X2AP_HOMEENB_ID_BIT_STRING_LEN;i++) {
       liblte_value_2_bits(ie->buffer[i], ptr, 1);
     }
     liblte_align_up_zero(ptr, 8);
@@ -1997,9 +2156,9 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_homeenb_id(
   return err;
 }
 
-LIBLTE_ERROR_ENUM liblte_s1ap_unpack_homeenb_id(
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_homeenb_id(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_HOMEENB_ID_STRUCT                                      *ie)
+  LIBLTE_X2AP_HOMEENB_ID_STRUCT                                      *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
 
@@ -2009,7 +2168,7 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_homeenb_id(
     // Static bit string - homeENB-ID
     liblte_align_up(ptr, 8);
     uint32_t i;
-    for(i=0;i<LIBLTE_S1AP_HOMEENB_ID_BIT_STRING_LEN;i++) {
+    for(i=0;i<LIBLTE_X2AP_HOMEENB_ID_BIT_STRING_LEN;i++) {
       ie->buffer[i] = liblte_bits_2_value(ptr, 1);
     }
     liblte_align_up(ptr, 8);
@@ -2021,8 +2180,8 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_homeenb_id(
 /*******************************************************************************
 /* ProtocolIE EncryptionAlgorithms STATIC BIT STRING
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_encryptionalgorithms(
-  LIBLTE_S1AP_ENCRYPTIONALGORITHMS_STRUCT                            *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_encryptionalgorithms(
+  LIBLTE_X2AP_ENCRYPTIONALGORITHMS_STRUCT                            *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -2034,12 +2193,12 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_encryptionalgorithms(
     // Extension
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     if(ie->ext) {
-      liblte_log_print("EncryptionAlgorithms error: S1AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("EncryptionAlgorithms error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
     uint32_t i;
-    for(i=0;i<LIBLTE_S1AP_ENCRYPTIONALGORITHMS_BIT_STRING_LEN;i++) {
+    for(i=0;i<LIBLTE_X2AP_ENCRYPTIONALGORITHMS_BIT_STRING_LEN;i++) {
       liblte_value_2_bits(ie->buffer[i], ptr, 1);
     }
     err = LIBLTE_SUCCESS;
@@ -2047,9 +2206,9 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_encryptionalgorithms(
   return err;
 }
 
-LIBLTE_ERROR_ENUM liblte_s1ap_unpack_encryptionalgorithms(
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_encryptionalgorithms(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_ENCRYPTIONALGORITHMS_STRUCT                            *ie)
+  LIBLTE_X2AP_ENCRYPTIONALGORITHMS_STRUCT                            *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
 
@@ -2060,12 +2219,12 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_encryptionalgorithms(
     // Extension
     ie->ext  = liblte_bits_2_value(ptr, 1);
     if(ie->ext) {
-      liblte_log_print("EncryptionAlgorithms error: S1AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("EncryptionAlgorithms error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
     uint32_t i;
-    for(i=0;i<LIBLTE_S1AP_ENCRYPTIONALGORITHMS_BIT_STRING_LEN;i++) {
+    for(i=0;i<LIBLTE_X2AP_ENCRYPTIONALGORITHMS_BIT_STRING_LEN;i++) {
       ie->buffer[i] = liblte_bits_2_value(ptr, 1);
     }
     err = LIBLTE_SUCCESS;
@@ -2076,38 +2235,88 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_encryptionalgorithms(
 /*******************************************************************************
 /* ProtocolIE EUTRANCellIdentifier STATIC BIT STRING
 ********************************************************************************/
-#define LIBLTE_X2AP_EUTRANCELLIDENTIFIER_BIT_STRING_LEN 28
-typedef struct{
-  uint8_t  buffer[28];
-}LIBLTE_X2AP_EUTRANCELLIDENTIFIER_STRUCT;
-
 LIBLTE_ERROR_ENUM liblte_x2ap_pack_eutrancellidentifier(
   LIBLTE_X2AP_EUTRANCELLIDENTIFIER_STRUCT                               *ie,
-  uint8_t                                                     **ptr);
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Static bit string - EUTRANCellIdentifier
+    uint32_t i;
+    for(i=0;i<LIBLTE_X2AP_EUTRANCELLIDENTIFIER_BIT_STRING_LEN;i++) {
+      liblte_value_2_bits(ie->buffer[i], ptr, 1);
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
 LIBLTE_ERROR_ENUM liblte_x2ap_unpack_eutrancellidentifier(
   uint8_t                                                     **ptr,
-  LIBLTE_X2AP_EUTRANCELLIDENTIFIER_STRUCT                               *ie);
+  LIBLTE_X2AP_EUTRANCELLIDENTIFIER_STRUCT                               *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Static bit string - EUTRANCellIdentifier
+    uint32_t i;
+    for(i=0;i<LIBLTE_X2AP_EUTRANCELLIDENTIFIER_BIT_STRING_LEN;i++) {
+      ie->buffer[i] = liblte_bits_2_value(ptr, 1);
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
 
 /*******************************************************************************
 /* ProtocolIE Fourframes STATIC BIT STRING
 ********************************************************************************/
-#define LIBLTE_X2AP_FOURFRAMES_BIT_STRING_LEN 24
-typedef struct{
-  uint8_t  buffer[24];
-}LIBLTE_X2AP_FOURFRAMES_STRUCT;
-
 LIBLTE_ERROR_ENUM liblte_x2ap_pack_fourframes(
   LIBLTE_X2AP_FOURFRAMES_STRUCT                         *ie,
-  uint8_t                                                     **ptr);
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Static bit string - Fourframes
+    uint32_t i;
+    for(i=0;i<LIBLTE_X2AP_FOURFRAMES_BIT_STRING_LEN;i++) {
+      liblte_value_2_bits(ie->buffer[i], ptr, 1);
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
 LIBLTE_ERROR_ENUM liblte_x2ap_unpack_fourframes(
   uint8_t                                                     **ptr,
-  LIBLTE_X2AP_FOURFRAMES_STRUCT                         *ie);
+  LIBLTE_X2AP_FOURFRAMES_STRUCT                         *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Static bit string - Fourframes
+    uint32_t i;
+    for(i=0;i<LIBLTE_X2AP_FOURFRAMES_BIT_STRING_LEN;i++) {
+      ie->buffer[i] = liblte_bits_2_value(ptr, 1);
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
 
 /*******************************************************************************
 /* ProtocolIE IntegrityProtectionAlgorithms STATIC BIT STRING
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_integrityprotectionalgorithms(
-  LIBLTE_S1AP_INTEGRITYPROTECTIONALGORITHMS_STRUCT                   *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_integrityprotectionalgorithms(
+  LIBLTE_X2AP_INTEGRITYPROTECTIONALGORITHMS_STRUCT                   *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -2119,12 +2328,12 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_integrityprotectionalgorithms(
     // Extension
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     if(ie->ext) {
-      liblte_log_print("IntegrityProtectionAlgorithms error: S1AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("IntegrityProtectionAlgorithms error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
     uint32_t i;
-    for(i=0;i<LIBLTE_S1AP_INTEGRITYPROTECTIONALGORITHMS_BIT_STRING_LEN;i++) {
+    for(i=0;i<LIBLTE_X2AP_INTEGRITYPROTECTIONALGORITHMS_BIT_STRING_LEN;i++) {
       liblte_value_2_bits(ie->buffer[i], ptr, 1);
     }
     err = LIBLTE_SUCCESS;
@@ -2132,9 +2341,9 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_integrityprotectionalgorithms(
   return err;
 }
 
-LIBLTE_ERROR_ENUM liblte_s1ap_unpack_integrityprotectionalgorithms(
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_integrityprotectionalgorithms(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_INTEGRITYPROTECTIONALGORITHMS_STRUCT                   *ie)
+  LIBLTE_X2AP_INTEGRITYPROTECTIONALGORITHMS_STRUCT                   *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
 
@@ -2145,12 +2354,12 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_integrityprotectionalgorithms(
     // Extension
     ie->ext  = liblte_bits_2_value(ptr, 1);
     if(ie->ext) {
-      liblte_log_print("IntegrityProtectionAlgorithms error: S1AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("IntegrityProtectionAlgorithms error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
     uint32_t i;
-    for(i=0;i<LIBLTE_S1AP_INTEGRITYPROTECTIONALGORITHMS_BIT_STRING_LEN;i++) {
+    for(i=0;i<LIBLTE_X2AP_INTEGRITYPROTECTIONALGORITHMS_BIT_STRING_LEN;i++) {
       ie->buffer[i] = liblte_bits_2_value(ptr, 1);
     }
     err = LIBLTE_SUCCESS;
@@ -2161,8 +2370,8 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_integrityprotectionalgorithms(
 /*******************************************************************************
 /* ProtocolIE InterfacesToTrace STATIC BIT STRING
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_interfacestotrace(
-  LIBLTE_S1AP_INTERFACESTOTRACE_STRUCT                               *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_interfacestotrace(
+  LIBLTE_X2AP_INTERFACESTOTRACE_STRUCT                               *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -2172,7 +2381,7 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_interfacestotrace(
   {
     // Static bit string - InterfacesToTrace
     uint32_t i;
-    for(i=0;i<LIBLTE_S1AP_INTERFACESTOTRACE_BIT_STRING_LEN;i++) {
+    for(i=0;i<LIBLTE_X2AP_INTERFACESTOTRACE_BIT_STRING_LEN;i++) {
       liblte_value_2_bits(ie->buffer[i], ptr, 1);
     }
     err = LIBLTE_SUCCESS;
@@ -2180,9 +2389,9 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_interfacestotrace(
   return err;
 }
 
-LIBLTE_ERROR_ENUM liblte_s1ap_unpack_interfacestotrace(
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_interfacestotrace(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_INTERFACESTOTRACE_STRUCT                               *ie)
+  LIBLTE_X2AP_INTERFACESTOTRACE_STRUCT                               *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
 
@@ -2191,7 +2400,7 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_interfacestotrace(
   {
     // Static bit string - InterfacesToTrace
     uint32_t i;
-    for(i=0;i<LIBLTE_S1AP_INTERFACESTOTRACE_BIT_STRING_LEN;i++) {
+    for(i=0;i<LIBLTE_X2AP_INTERFACESTOTRACE_BIT_STRING_LEN;i++) {
       ie->buffer[i] = liblte_bits_2_value(ptr, 1);
     }
     err = LIBLTE_SUCCESS;
@@ -2202,24 +2411,49 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_interfacestotrace(
 /*******************************************************************************
 /* ProtocolIE Key_eNodeB_Star STATIC BIT STRING
 ********************************************************************************/
-#define LIBLTE_X2AP_KEY_ENODEB_STAR_BIT_STRING_LEN 256
-typedef struct{
-  uint8_t  buffer[256];
-}LIBLTE_X2AP_KEY_ENODEB_STAR_STRUCT;
-
 LIBLTE_ERROR_ENUM liblte_x2ap_pack_key_enodeb_star(
   LIBLTE_X2AP_KEY_ENODEB_STAR_STRUCT                         *ie,
-  uint8_t                                                     **ptr);
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Static bit string - Key_eNodeB_Star
+    uint32_t i;
+    for(i=0;i<LIBLTE_X2AP_KEY_ENODEB_STAR_BIT_STRING_LEN;i++) {
+      liblte_value_2_bits(ie->buffer[i], ptr, 1);
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
 LIBLTE_ERROR_ENUM liblte_x2ap_unpack_key_enodeb_star(
   uint8_t                                                     **ptr,
-  LIBLTE_X2AP_KEY_ENODEB_STAR_STRUCT                          *ie);
+  LIBLTE_X2AP_KEY_ENODEB_STAR_STRUCT                          *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Static bit string - Key_eNodeB_Star
+    uint32_t i;
+    for(i=0;i<LIBLTE_X2AP_KEY_ENODEB_STAR_BIT_STRING_LEN;i++) {
+      ie->buffer[i] = liblte_bits_2_value(ptr, 1);
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
 
 
 /*******************************************************************************
 /* ProtocolIE MDT_Location_Info STATIC BIT STRING
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_mdt_location_info(
-  LIBLTE_S1AP_MDT_LOCATION_INFO_STRUCT                               *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_mdt_location_info(
+  LIBLTE_X2AP_MDT_LOCATION_INFO_STRUCT                               *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -2229,7 +2463,7 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_mdt_location_info(
   {
     // Static bit string - MDT-Location-Info
     uint32_t i;
-    for(i=0;i<LIBLTE_S1AP_MDT_LOCATION_INFO_BIT_STRING_LEN;i++) {
+    for(i=0;i<LIBLTE_X2AP_MDT_LOCATION_INFO_BIT_STRING_LEN;i++) {
       liblte_value_2_bits(ie->buffer[i], ptr, 1);
     }
     err = LIBLTE_SUCCESS;
@@ -2237,9 +2471,9 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_mdt_location_info(
   return err;
 }
 
-LIBLTE_ERROR_ENUM liblte_s1ap_unpack_mdt_location_info(
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_mdt_location_info(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_MDT_LOCATION_INFO_STRUCT                               *ie)
+  LIBLTE_X2AP_MDT_LOCATION_INFO_STRUCT                               *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
 
@@ -2248,7 +2482,7 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_mdt_location_info(
   {
     // Static bit string - MDT-Location-Info
     uint32_t i;
-    for(i=0;i<LIBLTE_S1AP_MDT_LOCATION_INFO_BIT_STRING_LEN;i++) {
+    for(i=0;i<LIBLTE_X2AP_MDT_LOCATION_INFO_BIT_STRING_LEN;i++) {
       ie->buffer[i] = liblte_bits_2_value(ptr, 1);
     }
     err = LIBLTE_SUCCESS;
@@ -2259,8 +2493,8 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_mdt_location_info(
 /*******************************************************************************
 /* ProtocolIE MeasurementsToActivate STATIC BIT STRING
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_measurementstoactivate(
-  LIBLTE_S1AP_MEASUREMENTSTOACTIVATE_STRUCT                          *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_measurementstoactivate(
+  LIBLTE_X2AP_MEASUREMENTSTOACTIVATE_STRUCT                          *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -2270,7 +2504,7 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_measurementstoactivate(
   {
     // Static bit string - MeasurementsToActivate
     uint32_t i;
-    for(i=0;i<LIBLTE_S1AP_MEASUREMENTSTOACTIVATE_BIT_STRING_LEN;i++) {
+    for(i=0;i<LIBLTE_X2AP_MEASUREMENTSTOACTIVATE_BIT_STRING_LEN;i++) {
       liblte_value_2_bits(ie->buffer[i], ptr, 1);
     }
     err = LIBLTE_SUCCESS;
@@ -2278,9 +2512,9 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_measurementstoactivate(
   return err;
 }
 
-LIBLTE_ERROR_ENUM liblte_s1ap_unpack_measurementstoactivate(
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_measurementstoactivate(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_MEASUREMENTSTOACTIVATE_STRUCT                          *ie)
+  LIBLTE_X2AP_MEASUREMENTSTOACTIVATE_STRUCT                          *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
 
@@ -2289,7 +2523,7 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_measurementstoactivate(
   {
     // Static bit string - MeasurementsToActivate
     uint32_t i;
-    for(i=0;i<LIBLTE_S1AP_MEASUREMENTSTOACTIVATE_BIT_STRING_LEN;i++) {
+    for(i=0;i<LIBLTE_X2AP_MEASUREMENTSTOACTIVATE_BIT_STRING_LEN;i++) {
       ie->buffer[i] = liblte_bits_2_value(ptr, 1);
     }
     err = LIBLTE_SUCCESS;
@@ -2300,24 +2534,53 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_measurementstoactivate(
 /*******************************************************************************
 /* ProtocolIE Oneframe STATIC BIT STRING
 ********************************************************************************/
-#define LIBLTE_X2AP_ONEFRAME_BIT_STRING_LEN 6
-typedef struct{
-  uint8_t  buffer[6];
-}LIBLTE_X2AP_ONEFRAME_STRUCT;
-
 LIBLTE_ERROR_ENUM liblte_x2ap_pack_oneframe(
   LIBLTE_X2AP_ONEFRAME_STRUCT                         *ie,
-  uint8_t                                                     **ptr);
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Static bit string - macroENB-ID
+    liblte_align_up_zero(ptr, 8);
+    uint32_t i;
+    for(i=0;i<LIBLTE_X2AP_ONEFRAME_BIT_STRING_LEN;i++) {
+      liblte_value_2_bits(ie->buffer[i], ptr, 1);
+    }
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
 LIBLTE_ERROR_ENUM liblte_x2ap_unpack_oneframe(
   uint8_t                                                     **ptr,
-  LIBLTE_X2AP_ONEFRAME_STRUCT                         *ie);
+  LIBLTE_X2AP_ONEFRAME_STRUCT                         *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Static bit string - macroENB-ID
+    liblte_align_up(ptr, 8);
+    uint32_t i;
+    for(i=0;i<LIBLTE_X2AP_ONEFRAME_BIT_STRING_LEN;i++) {
+      ie->buffer[i] = liblte_bits_2_value(ptr, 1);
+    }
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
 
 
 /*******************************************************************************
 /* ProtocolIE ReceiveStatusofULPDCPSDUs STATIC BIT STRING
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_receivestatusofulpdcpsdus(
-  LIBLTE_S1AP_RECEIVESTATUSOFULPDCPSDUS_STRUCT                       *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_receivestatusofulpdcpsdus(
+  LIBLTE_X2AP_RECEIVESTATUSOFULPDCPSDUS_STRUCT                       *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -2328,7 +2591,7 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_receivestatusofulpdcpsdus(
     // Static bit string - ReceiveStatusofULPDCPSDUs
     liblte_align_up_zero(ptr, 8);
     uint32_t i;
-    for(i=0;i<LIBLTE_S1AP_RECEIVESTATUSOFULPDCPSDUS_BIT_STRING_LEN;i++) {
+    for(i=0;i<LIBLTE_X2AP_RECEIVESTATUSOFULPDCPSDUS_BIT_STRING_LEN;i++) {
       liblte_value_2_bits(ie->buffer[i], ptr, 1);
     }
     liblte_align_up_zero(ptr, 8);
@@ -2337,9 +2600,9 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_receivestatusofulpdcpsdus(
   return err;
 }
 
-LIBLTE_ERROR_ENUM liblte_s1ap_unpack_receivestatusofulpdcpsdus(
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_receivestatusofulpdcpsdus(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_RECEIVESTATUSOFULPDCPSDUS_STRUCT                       *ie)
+  LIBLTE_X2AP_RECEIVESTATUSOFULPDCPSDUS_STRUCT                       *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
 
@@ -2349,7 +2612,7 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_receivestatusofulpdcpsdus(
     // Static bit string - ReceiveStatusofULPDCPSDUs
     liblte_align_up(ptr, 8);
     uint32_t i;
-    for(i=0;i<LIBLTE_S1AP_RECEIVESTATUSOFULPDCPSDUS_BIT_STRING_LEN;i++) {
+    for(i=0;i<LIBLTE_X2AP_RECEIVESTATUSOFULPDCPSDUS_BIT_STRING_LEN;i++) {
       ie->buffer[i] = liblte_bits_2_value(ptr, 1);
     }
     liblte_align_up(ptr, 8);
@@ -2361,8 +2624,8 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_receivestatusofulpdcpsdus(
 /*******************************************************************************
 /* ProtocolIE ReceiveStatusOfULPDCPSDUsExtended DYNAMIC BIT STRING
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_receivestatusofulpdcpsdusextended(
-  LIBLTE_S1AP_RECEIVESTATUSOFULPDCPSDUSEXTENDED_STRUCT               *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_receivestatusofulpdcpsdusextended(
+  LIBLTE_X2AP_RECEIVESTATUSOFULPDCPSDUSEXTENDED_STRUCT               *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -2387,9 +2650,9 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_receivestatusofulpdcpsdusextended(
   return err;
 }
 
-LIBLTE_ERROR_ENUM liblte_s1ap_unpack_receivestatusofulpdcpsdusextended(
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_receivestatusofulpdcpsdusextended(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_RECEIVESTATUSOFULPDCPSDUSEXTENDED_STRUCT               *ie)
+  LIBLTE_X2AP_RECEIVESTATUSOFULPDCPSDUSEXTENDED_STRUCT               *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
 
@@ -2416,56 +2679,157 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_receivestatusofulpdcpsdusextended(
 /*******************************************************************************
 /* ProtocolIE ReportCharateristics STATIC BIT STRING
 ********************************************************************************/
-#define LIBLTE_X2AP_REPORTCHARATERISTICS_BIT_STRING_LEN 32
-typedef struct{
-  uint8_t  buffer[32];
-}LIBLTE_X2AP_REPORTCHARACTERISTICS_STRUCT;
-
 LIBLTE_ERROR_ENUM liblte_x2ap_pack_reportcharacteristics(
   LIBLTE_X2AP_REPORTCHARACTERISTICS_STRUCT                     *ie,
-  uint8_t                                                     **ptr);
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Static bit string - ReportCharateristics
+    uint32_t i;
+    for(i=0;i<LIBLTE_X2AP_REPORTCHARATERISTICS_BIT_STRING_LEN;i++) {
+      liblte_value_2_bits(ie->buffer[i], ptr, 1);
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
 LIBLTE_ERROR_ENUM liblte_x2ap_unpack_reportcharacteristics(
   uint8_t                                                     **ptr,
-  LIBLTE_X2AP_REPORTCHARACTERISTICS_STRUCT                     *ie);
+  LIBLTE_X2AP_REPORTCHARACTERISTICS_STRUCT                     *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Static bit string - ReportCharateristics
+    uint32_t i;
+    for(i=0;i<LIBLTE_X2AP_REPORTCHARATERISTICS_BIT_STRING_LEN;i++) {
+      ie->buffer[i] = liblte_bits_2_value(ptr, 1);
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
 
 /*******************************************************************************
 /* ProtocolIE ShortMAC_I STATIC BIT STRING
 ********************************************************************************/
-#define LIBLTE_X2AP_SHORTMAC_I_BIT_STRING_LEN 16
-typedef struct{
-  uint8_t  buffer[16];
-}LIBLTE_X2AP_SHORTMAC_I_STRUCT;
-
 LIBLTE_ERROR_ENUM liblte_x2ap_pack_shortmac_i(
   LIBLTE_X2AP_SHORTMAC_I_STRUCT                       *ie,
-  uint8_t                                                     **ptr);
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Static bit string - ShortMAC_I
+    uint32_t i;
+    for(i=0;i<LIBLTE_X2AP_SHORTMAC_I_BIT_STRING_LEN;i++) {
+      liblte_value_2_bits(ie->buffer[i], ptr, 1);
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
 LIBLTE_ERROR_ENUM liblte_x2ap_unpack_shortmac_i(
   uint8_t                                                     **ptr,
-  LIBLTE_X2AP_SHORTMAC_I_STRUCT                       *ie);
+  LIBLTE_X2AP_SHORTMAC_I_STRUCT                       *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Static bit string - ShortMAC_I
+    uint32_t i;
+    for(i=0;i<LIBLTE_X2AP_SHORTMAC_I_BIT_STRING_LEN;i++) {
+      ie->buffer[i] = liblte_bits_2_value(ptr, 1);
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
 
 /*******************************************************************************
 /* ProtocolIE TraceCollectionEntityIPAddress DYNAMIC BIT STRING
 ********************************************************************************/
-// lb:1, ub:160
-typedef struct{
-  bool     ext;
-  uint32_t n_bits;
-  uint8_t  buffer[160];
-}LIBLTE_X2AP_TRACECOLLECTIONENTITYIPADDRESS_STRUCT;
-
 LIBLTE_ERROR_ENUM liblte_x2ap_pack_tracecollectionentityipaddress(
   LIBLTE_X2AP_TRACECOLLECTIONENTITYIPADDRESS_STRUCT                     *ie,
-  uint8_t                                                     **ptr);
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Dynamic bit string - TransportLayerAddress
+    // lb:1, ub:160
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("TraceCollectionEntityIPAddress error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    // Length
+    liblte_value_2_bits(ie->n_bits-1, ptr, 8);
+    liblte_align_up_zero(ptr, 8);
+    
+    // Bits
+    uint32_t i;
+    for(i=0;i<ie->n_bits;i++) {
+      liblte_value_2_bits(ie->buffer[i], ptr, 1);
+    }
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
 LIBLTE_ERROR_ENUM liblte_x2ap_unpack_tracecollectionentityipaddress(
   uint8_t                                                     **ptr,
-  LIBLTE_X2AP_TRACECOLLECTIONENTITYIPADDRESS_STRUCT                     *ie);
+  LIBLTE_X2AP_TRACECOLLECTIONENTITYIPADDRESS_STRUCT                     *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Dynamic bit string - TransportLayerAddress
+    // lb:1, ub:160
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("TraceCollectionEntityIPAddress error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    // Length
+    ie->n_bits = liblte_bits_2_value(ptr, 8) + 1;
+    liblte_align_up(ptr, 8);
+
+    // Bits
+    uint32_t i;
+    for(i=0;i<ie->n_bits;i++) {
+      ie->buffer[i] = liblte_bits_2_value(ptr, 1);
+    }
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
 
 
 /*******************************************************************************
 /* ProtocolIE TransportLayerAddress DYNAMIC BIT STRING
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_transportlayeraddress(
-  LIBLTE_S1AP_TRANSPORTLAYERADDRESS_STRUCT                           *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_transportlayeraddress(
+  LIBLTE_X2AP_TRANSPORTLAYERADDRESS_STRUCT                           *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -2478,7 +2842,7 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_transportlayeraddress(
     // Extension
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     if(ie->ext) {
-      liblte_log_print("TransportLayerAddress error: S1AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("TransportLayerAddress error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
@@ -2497,9 +2861,9 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_transportlayeraddress(
   return err;
 }
 
-LIBLTE_ERROR_ENUM liblte_s1ap_unpack_transportlayeraddress(
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_transportlayeraddress(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_TRANSPORTLAYERADDRESS_STRUCT                           *ie)
+  LIBLTE_X2AP_TRANSPORTLAYERADDRESS_STRUCT                           *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
 
@@ -2511,7 +2875,7 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_transportlayeraddress(
     // Extension
     ie->ext  = liblte_bits_2_value(ptr, 1);
     if(ie->ext) {
-      liblte_log_print("TransportLayerAddress error: S1AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("TransportLayerAddress error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -2533,19 +2897,70 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_transportlayeraddress(
 /*******************************************************************************
 /* ProtocolIE UL_HighInterferenceIndication DYNAMIC BIT STRING
 ********************************************************************************/
-// lb:1, ub:120
-typedef struct{
-  bool     ext;
-  uint32_t n_bits;
-  uint8_t  buffer[120];
-}LIBLTE_X2AP_UL_HIGHINTERFERENCEINDICATION_STRUCT;
-
 LIBLTE_ERROR_ENUM liblte_x2ap_pack_ul_highinterferenceindication(
   LIBLTE_X2AP_UL_HIGHINTERFERENCEINDICATION_STRUCT                               *ie,
-  uint8_t                                                     **ptr);
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Dynamic bit string - UL_HighInterferenceIndication
+    // lb:1, ub:110
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("UL_HighInterferenceIndication error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    // Length
+    liblte_value_2_bits(ie->n_bits-1, ptr, 8);
+    liblte_align_up_zero(ptr, 8);
+    
+    // Bits
+    uint32_t i;
+    for(i=0;i<ie->n_bits;i++) {
+      liblte_value_2_bits(ie->buffer[i], ptr, 1);
+    }
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
 LIBLTE_ERROR_ENUM liblte_x2ap_unpack_ul_highinterferenceindication(
   uint8_t                                                     **ptr,
-  LIBLTE_X2AP_UL_HIGHINTERFERENCEINDICATION_STRUCT                               *ie);
+  LIBLTE_X2AP_UL_HIGHINTERFERENCEINDICATION_STRUCT                               *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Dynamic bit string - UL_HighInterferenceIndication
+    // lb:1, ub:110
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("UL_HighInterferenceIndication error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    // Length
+    ie->n_bits = liblte_bits_2_value(ptr, 8) + 1;
+    liblte_align_up(ptr, 8);
+
+    // Bits
+    uint32_t i;
+    for(i=0;i<ie->n_bits;i++) {
+      ie->buffer[i] = liblte_bits_2_value(ptr, 1);
+    }
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
 
 
 /* Octet String */
@@ -2553,8 +2968,8 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_ul_highinterferenceindication(
 /*******************************************************************************
 /* ProtocolIE TBCD_STRING STATIC OCTET STRING
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_tbcd_string(
-  LIBLTE_S1AP_TBCD_STRING_STRUCT                                     *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_tbcd_string(
+  LIBLTE_X2AP_TBCD_STRING_STRUCT                                     *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -2563,12 +2978,12 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_tbcd_string(
      ptr != NULL)
   {
     // Static octet string - TBCD-STRING
-    if(LIBLTE_S1AP_TBCD_STRING_OCTET_STRING_LEN > 2) { // X.691 Sec.16
+    if(LIBLTE_X2AP_TBCD_STRING_OCTET_STRING_LEN > 2) { // X.691 Sec.16
       liblte_align_up_zero(ptr, 8);
     }
     // Octets
     uint32_t i;
-    for(i=0;i<LIBLTE_S1AP_TBCD_STRING_OCTET_STRING_LEN;i++) {
+    for(i=0;i<LIBLTE_X2AP_TBCD_STRING_OCTET_STRING_LEN;i++) {
       liblte_value_2_bits(ie->buffer[i], ptr, 8);
     }
     err = LIBLTE_SUCCESS;
@@ -2576,9 +2991,9 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_tbcd_string(
   return err;
 }
 
-LIBLTE_ERROR_ENUM liblte_s1ap_unpack_tbcd_string(
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_tbcd_string(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_TBCD_STRING_STRUCT                                     *ie)
+  LIBLTE_X2AP_TBCD_STRING_STRUCT                                     *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
 
@@ -2586,12 +3001,60 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_tbcd_string(
      ptr != NULL)
   {
     // Static octet string - TBCD-STRING
-    if(LIBLTE_S1AP_TBCD_STRING_OCTET_STRING_LEN > 2) { // X.691 Sec.16
+    if(LIBLTE_X2AP_TBCD_STRING_OCTET_STRING_LEN > 2) { // X.691 Sec.16
       liblte_align_up(ptr, 8);
     }
     // Octets
     uint32_t i;
-    for(i=0;i<LIBLTE_S1AP_TBCD_STRING_OCTET_STRING_LEN;i++) {
+    for(i=0;i<LIBLTE_X2AP_TBCD_STRING_OCTET_STRING_LEN;i++) {
+      ie->buffer[i] = liblte_bits_2_value(ptr, 8);
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE EUTRANTraceID STATIC OCTET STRING
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_eutrantraceid(
+  LIBLTE_X2AP_EUTRANTRACEID_STRUCT                           *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Static octet string - EUTRANTraceID
+    if(LIBLTE_X2AP_EUTRANTRACEID_OCTET_STRING_LEN > 2) { // Do what S1AP do. Not sure if alignment is necessary.
+      liblte_align_up_zero(ptr, 8);
+    }
+    // Octets
+    uint32_t i;
+    for(i=0;i<LIBLTE_X2AP_EUTRANTRACEID_OCTET_STRING_LEN;i++) {
+      liblte_value_2_bits(ie->buffer[i], ptr, 8);
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_eutrantraceid(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_EUTRANTRACEID_STRUCT                           *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Static octet string - EUTRANTraceID
+    if(LIBLTE_X2AP_EUTRANTRACEID_OCTET_STRING_LEN > 2) { // Do what S1AP do. Not sure if alignment is necessary.
+      liblte_align_up_zero(ptr, 8);
+    }
+    // Octets
+    uint32_t i;
+    for(i=0;i<LIBLTE_X2AP_EUTRANTRACEID_OCTET_STRING_LEN;i++) {
       ie->buffer[i] = liblte_bits_2_value(ptr, 8);
     }
     err = LIBLTE_SUCCESS;
@@ -2602,8 +3065,8 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_tbcd_string(
 /*******************************************************************************
 /* ProtocolIE GTP_TEI STATIC OCTET STRING
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_gtp_tei(
-  LIBLTE_S1AP_GTP_TEI_STRUCT                                        *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_gtp_tei(
+  LIBLTE_X2AP_GTP_TEI_STRUCT                                        *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -2612,12 +3075,12 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_gtp_tei(
      ptr != NULL)
   {
     // Static octet string - GTP-TEI
-    if(LIBLTE_S1AP_GTP_TEI_OCTET_STRING_LEN > 2) { // X.691 Sec.16
+    if(LIBLTE_X2AP_GTP_TEI_OCTET_STRING_LEN > 2) { // X.691 Sec.16
       liblte_align_up_zero(ptr, 8);
     }
     // Octets
     uint32_t i;
-    for(i=0;i<LIBLTE_S1AP_GTP_TEI_OCTET_STRING_LEN;i++) {
+    for(i=0;i<LIBLTE_X2AP_GTP_TEI_OCTET_STRING_LEN;i++) {
       liblte_value_2_bits(ie->buffer[i], ptr, 8);
     }
     err = LIBLTE_SUCCESS;
@@ -2625,9 +3088,9 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_gtp_tei(
   return err;
 }
 
-LIBLTE_ERROR_ENUM liblte_s1ap_unpack_gtp_tei(
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_gtp_tei(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_GTP_TEI_STRUCT                                        *ie)
+  LIBLTE_X2AP_GTP_TEI_STRUCT                                        *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
 
@@ -2635,12 +3098,12 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_gtp_tei(
      ptr != NULL)
   {
     // Static octet string - GTP-TEI
-    if(LIBLTE_S1AP_GTP_TEI_OCTET_STRING_LEN > 2) { // X.691 Sec.16
+    if(LIBLTE_X2AP_GTP_TEI_OCTET_STRING_LEN > 2) { // X.691 Sec.16
       liblte_align_up(ptr, 8);
     }
     // Octets
     uint32_t i;
-    for(i=0;i<LIBLTE_S1AP_GTP_TEI_OCTET_STRING_LEN;i++) {
+    for(i=0;i<LIBLTE_X2AP_GTP_TEI_OCTET_STRING_LEN;i++) {
       ie->buffer[i] = liblte_bits_2_value(ptr, 8);
     }
     err = LIBLTE_SUCCESS;
@@ -2651,8 +3114,8 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_gtp_tei(
 /*******************************************************************************
 /* ProtocolIE LAC STATIC OCTET STRING
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_lac(
-  LIBLTE_S1AP_LAC_STRUCT                                             *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_lac(
+  LIBLTE_X2AP_LAC_STRUCT                                             *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -2661,12 +3124,12 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_lac(
      ptr != NULL)
   {
     // Static octet string - LAC
-    if(LIBLTE_S1AP_LAC_OCTET_STRING_LEN > 2) { // X.691 Sec.16
+    if(LIBLTE_X2AP_LAC_OCTET_STRING_LEN > 2) { // X.691 Sec.16
       liblte_align_up_zero(ptr, 8);
     }
     // Octets
     uint32_t i;
-    for(i=0;i<LIBLTE_S1AP_LAC_OCTET_STRING_LEN;i++) {
+    for(i=0;i<LIBLTE_X2AP_LAC_OCTET_STRING_LEN;i++) {
       liblte_value_2_bits(ie->buffer[i], ptr, 8);
     }
     err = LIBLTE_SUCCESS;
@@ -2674,9 +3137,9 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_lac(
   return err;
 }
 
-LIBLTE_ERROR_ENUM liblte_s1ap_unpack_lac(
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_lac(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_LAC_STRUCT                                             *ie)
+  LIBLTE_X2AP_LAC_STRUCT                                             *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
 
@@ -2684,12 +3147,12 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_lac(
      ptr != NULL)
   {
     // Static octet string - LAC
-    if(LIBLTE_S1AP_LAC_OCTET_STRING_LEN > 2) { // X.691 Sec.16
+    if(LIBLTE_X2AP_LAC_OCTET_STRING_LEN > 2) { // X.691 Sec.16
       liblte_align_up(ptr, 8);
     }
     // Octets
     uint32_t i;
-    for(i=0;i<LIBLTE_S1AP_LAC_OCTET_STRING_LEN;i++) {
+    for(i=0;i<LIBLTE_X2AP_LAC_OCTET_STRING_LEN;i++) {
       ie->buffer[i] = liblte_bits_2_value(ptr, 8);
     }
     err = LIBLTE_SUCCESS;
@@ -2700,8 +3163,8 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_lac(
 /*******************************************************************************
 /* ProtocolIE LastVisitedUTRANCellInformation DYNAMIC OCTET STRING
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_lastvisitedutrancellinformation(
-  LIBLTE_S1AP_LASTVISITEDUTRANCELLINFORMATION_STRUCT                 *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_lastvisitedutrancellinformation(
+  LIBLTE_X2AP_LASTVISITEDUTRANCELLINFORMATION_STRUCT                 *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -2720,6 +3183,7 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_lastvisitedutrancellinformation(
       liblte_value_2_bits(ie->n_octets, ptr, 14);
     } else {
       // FIXME: Unlikely to have more than 16K of octets
+      return err; // At least return error. By ZY.
     }
     
     // Octets
@@ -2732,9 +3196,9 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_lastvisitedutrancellinformation(
   return err;
 }
 
-LIBLTE_ERROR_ENUM liblte_s1ap_unpack_lastvisitedutrancellinformation(
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_lastvisitedutrancellinformation(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_LASTVISITEDUTRANCELLINFORMATION_STRUCT                 *ie)
+  LIBLTE_X2AP_LASTVISITEDUTRANCELLINFORMATION_STRUCT                 *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
 
@@ -2766,8 +3230,8 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_lastvisitedutrancellinformation(
 /*******************************************************************************
 /* ProtocolIE MME_Group_ID STATIC OCTET STRING
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_mme_group_id(
-  LIBLTE_S1AP_MME_GROUP_ID_STRUCT                                    *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_mme_group_id(
+  LIBLTE_X2AP_MME_GROUP_ID_STRUCT                                    *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -2776,12 +3240,12 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_mme_group_id(
      ptr != NULL)
   {
     // Static octet string - MME-Group-ID
-    if(LIBLTE_S1AP_MME_GROUP_ID_OCTET_STRING_LEN > 2) { // X.691 Sec.16
+    if(LIBLTE_X2AP_MME_GROUP_ID_OCTET_STRING_LEN > 2) { // X.691 Sec.16
       liblte_align_up_zero(ptr, 8);
     }
     // Octets
     uint32_t i;
-    for(i=0;i<LIBLTE_S1AP_MME_GROUP_ID_OCTET_STRING_LEN;i++) {
+    for(i=0;i<LIBLTE_X2AP_MME_GROUP_ID_OCTET_STRING_LEN;i++) {
       liblte_value_2_bits(ie->buffer[i], ptr, 8);
     }
     err = LIBLTE_SUCCESS;
@@ -2789,9 +3253,9 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_mme_group_id(
   return err;
 }
 
-LIBLTE_ERROR_ENUM liblte_s1ap_unpack_mme_group_id(
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_mme_group_id(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_MME_GROUP_ID_STRUCT                                    *ie)
+  LIBLTE_X2AP_MME_GROUP_ID_STRUCT                                    *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
 
@@ -2799,12 +3263,12 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_mme_group_id(
      ptr != NULL)
   {
     // Static octet string - MME-Group-ID
-    if(LIBLTE_S1AP_MME_GROUP_ID_OCTET_STRING_LEN > 2) { // X.691 Sec.16
+    if(LIBLTE_X2AP_MME_GROUP_ID_OCTET_STRING_LEN > 2) { // X.691 Sec.16
       liblte_align_up(ptr, 8);
     }
     // Octets
     uint32_t i;
-    for(i=0;i<LIBLTE_S1AP_MME_GROUP_ID_OCTET_STRING_LEN;i++) {
+    for(i=0;i<LIBLTE_X2AP_MME_GROUP_ID_OCTET_STRING_LEN;i++) {
       ie->buffer[i] = liblte_bits_2_value(ptr, 8);
     }
     err = LIBLTE_SUCCESS;
@@ -2815,8 +3279,8 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_mme_group_id(
 /*******************************************************************************
 /* ProtocolIE MME_Code STATIC OCTET STRING
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_mme_code(
-  LIBLTE_S1AP_MME_CODE_STRUCT                                        *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_mme_code(
+  LIBLTE_X2AP_MME_CODE_STRUCT                                        *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -2825,12 +3289,12 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_mme_code(
      ptr != NULL)
   {
     // Static octet string - MME-Code
-    if(LIBLTE_S1AP_MME_CODE_OCTET_STRING_LEN > 2) { // X.691 Sec.16
+    if(LIBLTE_X2AP_MME_CODE_OCTET_STRING_LEN > 2) { // X.691 Sec.16
       liblte_align_up_zero(ptr, 8);
     }
     // Octets
     uint32_t i;
-    for(i=0;i<LIBLTE_S1AP_MME_CODE_OCTET_STRING_LEN;i++) {
+    for(i=0;i<LIBLTE_X2AP_MME_CODE_OCTET_STRING_LEN;i++) {
       liblte_value_2_bits(ie->buffer[i], ptr, 8);
     }
     err = LIBLTE_SUCCESS;
@@ -2838,9 +3302,9 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_mme_code(
   return err;
 }
 
-LIBLTE_ERROR_ENUM liblte_s1ap_unpack_mme_code(
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_mme_code(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_MME_CODE_STRUCT                                        *ie)
+  LIBLTE_X2AP_MME_CODE_STRUCT                                        *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
 
@@ -2848,12 +3312,12 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_mme_code(
      ptr != NULL)
   {
     // Static octet string - MME-Code
-    if(LIBLTE_S1AP_MME_CODE_OCTET_STRING_LEN > 2) { // X.691 Sec.16
+    if(LIBLTE_X2AP_MME_CODE_OCTET_STRING_LEN > 2) { // X.691 Sec.16
       liblte_align_up(ptr, 8);
     }
     // Octets
     uint32_t i;
-    for(i=0;i<LIBLTE_S1AP_MME_CODE_OCTET_STRING_LEN;i++) {
+    for(i=0;i<LIBLTE_X2AP_MME_CODE_OCTET_STRING_LEN;i++) {
       ie->buffer[i] = liblte_bits_2_value(ptr, 8);
     }
     err = LIBLTE_SUCCESS;
@@ -2864,60 +3328,92 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_mme_code(
 /*******************************************************************************
 /* ProtocolIE MBMS_Service_Area_Identity STATIC OCTET STRING
 ********************************************************************************/
-#define LIBLTE_X2AP_MBMS_SERVICE_AREA_IDENTITY_OCTET_STRING_LEN 2
-typedef struct{
-  uint8_t  buffer[2];
-}LIBLTE_X2AP_MBMS_SERVICE_AREA_IDENTITY_STRUCT;
-
 LIBLTE_ERROR_ENUM liblte_x2ap_pack_mbms_service_area_identity(
   LIBLTE_X2AP_MBMS_SERVICE_AREA_IDENTITY_STRUCT                                  *ie,
-  uint8_t                                                     **ptr);
-LIBLTE_ERROR_ENUM liblte_x2ap_unpack_mbms_service_area_identity(
-  uint8_t                                                     **ptr,
-  LIBLTE_X2AP_MBMS_SERVICE_AREA_IDENTITY_STRUCT                                  *ie);
-
-/*******************************************************************************
-/* ProtocolIE PLMNidentity STATIC OCTET STRING
-********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_plmnidentity(
-  LIBLTE_S1AP_PLMNIDENTITY_STRUCT                                    *ie,
-  uint8_t                                                           **ptr)
+  uint8_t                                                     **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
 
   if(ie  != NULL &&
      ptr != NULL)
   {
-    // Static octet string - PLMNidentity
-    if(LIBLTE_S1AP_PLMNIDENTITY_OCTET_STRING_LEN > 2) { // X.691 Sec.16
+    // Static octet string - MBMS_Service_Area_Identity
+    if(LIBLTE_X2AP_MBMS_SERVICE_AREA_IDENTITY_OCTET_STRING_LEN > 2) { // X.691 Sec.16
       liblte_align_up_zero(ptr, 8);
     }
     // Octets
     uint32_t i;
-    for(i=0;i<LIBLTE_S1AP_PLMNIDENTITY_OCTET_STRING_LEN;i++) {
+    for(i=0;i<LIBLTE_X2AP_MBMS_SERVICE_AREA_IDENTITY_OCTET_STRING_LEN;i++) {
       liblte_value_2_bits(ie->buffer[i], ptr, 8);
     }
     err = LIBLTE_SUCCESS;
   }
   return err;
 }
-
-LIBLTE_ERROR_ENUM liblte_s1ap_unpack_plmnidentity(
-  uint8_t                                                           **ptr,
-  LIBLTE_S1AP_PLMNIDENTITY_STRUCT                                    *ie)
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_mbms_service_area_identity(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_MBMS_SERVICE_AREA_IDENTITY_STRUCT                                  *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
 
   if(ie  != NULL &&
      ptr != NULL)
   {
-    // Static octet string - PLMNidentity
-    if(LIBLTE_S1AP_PLMNIDENTITY_OCTET_STRING_LEN > 2) { // X.691 Sec.16
+    // Static octet string - MBMS_Service_Area_Identity
+    if(LIBLTE_X2AP_MBMS_SERVICE_AREA_IDENTITY_OCTET_STRING_LEN > 2) { // X.691 Sec.16
       liblte_align_up(ptr, 8);
     }
     // Octets
     uint32_t i;
-    for(i=0;i<LIBLTE_S1AP_PLMNIDENTITY_OCTET_STRING_LEN;i++) {
+    for(i=0;i<LIBLTE_X2AP_MBMS_SERVICE_AREA_IDENTITY_OCTET_STRING_LEN;i++) {
+      ie->buffer[i] = liblte_bits_2_value(ptr, 8);
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE PLMN_identity STATIC OCTET STRING
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_plmn_identity(
+  LIBLTE_X2AP_PLMN_IDENTITY_STRUCT                              *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Static octet string - PLMN_identity
+    if(LIBLTE_X2AP_PLMN_IDENTITY_OCTET_STRING_LEN > 2) { // X.691 Sec.16
+      liblte_align_up_zero(ptr, 8);
+    }
+    // Octets
+    uint32_t i;
+    for(i=0;i<LIBLTE_X2AP_PLMN_IDENTITY_OCTET_STRING_LEN;i++) {
+      liblte_value_2_bits(ie->buffer[i], ptr, 8);
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_plmn_identity(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_PLMN_IDENTITY_STRUCT                              *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Static octet string - PLMN_identity
+    if(LIBLTE_X2AP_PLMN_IDENTITY_OCTET_STRING_LEN > 2) { // X.691 Sec.16
+      liblte_align_up(ptr, 8);
+    }
+    // Octets
+    uint32_t i;
+    for(i=0;i<LIBLTE_X2AP_PLMN_IDENTITY_OCTET_STRING_LEN;i++) {
       ie->buffer[i] = liblte_bits_2_value(ptr, 8);
     }
     err = LIBLTE_SUCCESS;
@@ -2928,8 +3424,8 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_plmnidentity(
 /*******************************************************************************
 /* ProtocolIE RRC_Context DYNAMIC OCTET STRING
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_rrc_context(
-  LIBLTE_S1AP_RRC_CONTEXT_STRUCT                                   *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_rrc_context(
+  LIBLTE_X2AP_RRC_CONTEXT_STRUCT                                   *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -2948,6 +3444,7 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_rrc_context(
       liblte_value_2_bits(ie->n_octets, ptr, 14);
     } else {
       // FIXME: Unlikely to have more than 16K of octets
+      return err; // at least report error, by ZY
     }
     
     // Octets
@@ -2960,9 +3457,9 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_rrc_context(
   return err;
 }
 
-LIBLTE_ERROR_ENUM liblte_s1ap_unpack_rrc_context(
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_rrc_context(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_RRC_CONTEXT_STRUCT                                   *ie)
+  LIBLTE_X2AP_RRC_CONTEXT_STRUCT                                   *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
 
@@ -2978,6 +3475,7 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_rrc_context(
         ie->n_octets = liblte_bits_2_value(ptr, 14);
       } else {
         // FIXME: Unlikely to have more than 16K of octets
+        return err; // at least report error, by ZY
       }
     }
 
@@ -2994,8 +3492,8 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_rrc_context(
 /*******************************************************************************
 /* ProtocolIE TAC STATIC OCTET STRING
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_tac(
-  LIBLTE_S1AP_TAC_STRUCT                                             *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_tac(
+  LIBLTE_X2AP_TAC_STRUCT                                             *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -3004,12 +3502,12 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_tac(
      ptr != NULL)
   {
     // Static octet string - TAC
-    if(LIBLTE_S1AP_TAC_OCTET_STRING_LEN > 2) { // X.691 Sec.16
+    if(LIBLTE_X2AP_TAC_OCTET_STRING_LEN > 2) { // X.691 Sec.16
       liblte_align_up_zero(ptr, 8);
     }
     // Octets
     uint32_t i;
-    for(i=0;i<LIBLTE_S1AP_TAC_OCTET_STRING_LEN;i++) {
+    for(i=0;i<LIBLTE_X2AP_TAC_OCTET_STRING_LEN;i++) {
       liblte_value_2_bits(ie->buffer[i], ptr, 8);
     }
     err = LIBLTE_SUCCESS;
@@ -3017,9 +3515,9 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_tac(
   return err;
 }
 
-LIBLTE_ERROR_ENUM liblte_s1ap_unpack_tac(
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_tac(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_TAC_STRUCT                                             *ie)
+  LIBLTE_X2AP_TAC_STRUCT                                             *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
 
@@ -3027,12 +3525,12 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_tac(
      ptr != NULL)
   {
     // Static octet string - TAC
-    if(LIBLTE_S1AP_TAC_OCTET_STRING_LEN > 2) { // X.691 Sec.16
+    if(LIBLTE_X2AP_TAC_OCTET_STRING_LEN > 2) { // X.691 Sec.16
       liblte_align_up(ptr, 8);
     }
     // Octets
     uint32_t i;
-    for(i=0;i<LIBLTE_S1AP_TAC_OCTET_STRING_LEN;i++) {
+    for(i=0;i<LIBLTE_X2AP_TAC_OCTET_STRING_LEN;i++) {
       ie->buffer[i] = liblte_bits_2_value(ptr, 8);
     }
     err = LIBLTE_SUCCESS;
@@ -3043,73 +3541,261 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_tac(
 /*******************************************************************************
 /* ProtocolIE TargetCellInUTRAN DYNAMIC OCTET STRING
 ********************************************************************************/
-// lb:0, ub:16318
-typedef struct{
-  uint32_t n_octets;
-  uint8_t  buffer[16318];
-}LIBLTE_X2AP_TARGETCELLINUTRAN_STRUCT;
-
 LIBLTE_ERROR_ENUM liblte_x2ap_pack_targetcellinutran(
   LIBLTE_X2AP_TARGETCELLINUTRAN_STRUCT                         *ie,
-  uint8_t                                                     **ptr);
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Dynamic octet string - TargetCellInUTRAN
+    // Length
+    if(ie->n_octets < 128) {
+      liblte_value_2_bits(0,            ptr, 1);
+      liblte_value_2_bits(ie->n_octets, ptr, 7);
+    } else if(ie->n_octets < 16383) {
+      liblte_value_2_bits(1,            ptr, 1);
+      liblte_value_2_bits(0,            ptr, 1);
+      liblte_value_2_bits(ie->n_octets, ptr, 14);
+    } else {
+      // FIXME: Unlikely to have more than 16K of octets
+      return err; // at least report error, by ZY
+    }
+    
+    // Octets
+    uint32_t i;
+    for(i=0;i<ie->n_octets;i++) {
+      liblte_value_2_bits(ie->buffer[i], ptr, 8);
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
 LIBLTE_ERROR_ENUM liblte_x2ap_unpack_targetcellinutran(
   uint8_t                                                     **ptr,
-  LIBLTE_X2AP_TARGETCELLINUTRAN_STRUCT                         *ie);
+  LIBLTE_X2AP_TARGETCELLINUTRAN_STRUCT                         *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Dynamic octet string - TargetCellInUTRAN
+    // Length
+    if(0 == liblte_bits_2_value(ptr, 1)) {
+      ie->n_octets = liblte_bits_2_value(ptr, 7);
+    } else {
+      if(0 == liblte_bits_2_value(ptr, 1)) {
+        ie->n_octets = liblte_bits_2_value(ptr, 14);
+      } else {
+        // FIXME: Unlikely to have more than 16K of octets
+        return err; // at least report error, by ZY
+      }
+    }
+
+    // Octets
+    uint32_t i;
+    for(i=0;i<ie->n_octets;i++) {
+      ie->buffer[i] = liblte_bits_2_value(ptr, 8);
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
 
 /*******************************************************************************
 /* ProtocolIE TargeteNBtoSource_eNBTransparentContainer DYNAMIC OCTET STRING
 ********************************************************************************/
-// lb:0, ub:16318
-typedef struct{
-  uint32_t n_octets;
-  uint8_t  buffer[16318];
-}LIBLTE_X2AP_TARGETENBTOSOURCE_ENBTRANSPARENTCONTAINER_STRUCT;
-
 LIBLTE_ERROR_ENUM liblte_x2ap_pack_targetenbtosource_enbtransparentcontainer(
   LIBLTE_X2AP_TARGETENBTOSOURCE_ENBTRANSPARENTCONTAINER_STRUCT                         *ie,
-  uint8_t                                                     **ptr);
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Dynamic octet string - TargeteNBtoSource_eNBTransparentContainer
+    // Length
+    if(ie->n_octets < 128) {
+      liblte_value_2_bits(0,            ptr, 1);
+      liblte_value_2_bits(ie->n_octets, ptr, 7);
+    } else if(ie->n_octets < 16383) {
+      liblte_value_2_bits(1,            ptr, 1);
+      liblte_value_2_bits(0,            ptr, 1);
+      liblte_value_2_bits(ie->n_octets, ptr, 14);
+    } else {
+      // FIXME: Unlikely to have more than 16K of octets
+      return err; // at least report error, by ZY
+    }
+    
+    // Octets
+    uint32_t i;
+    for(i=0;i<ie->n_octets;i++) {
+      liblte_value_2_bits(ie->buffer[i], ptr, 8);
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
 LIBLTE_ERROR_ENUM liblte_x2ap_unpack_targetenbtosource_enbtransparentcontainer(
   uint8_t                                                     **ptr,
-  LIBLTE_X2AP_TARGETENBTOSOURCE_ENBTRANSPARENTCONTAINER_STRUCT                         *ie);
+  LIBLTE_X2AP_TARGETENBTOSOURCE_ENBTRANSPARENTCONTAINER_STRUCT                         *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Dynamic octet string - TargeteNBtoSource_eNBTransparentContainer
+    // Length
+    if(0 == liblte_bits_2_value(ptr, 1)) {
+      ie->n_octets = liblte_bits_2_value(ptr, 7);
+    } else {
+      if(0 == liblte_bits_2_value(ptr, 1)) {
+        ie->n_octets = liblte_bits_2_value(ptr, 14);
+      } else {
+        // FIXME: Unlikely to have more than 16K of octets
+        return err; // at least report error, by ZY
+      }
+    }
+
+    // Octets
+    uint32_t i;
+    for(i=0;i<ie->n_octets;i++) {
+      ie->buffer[i] = liblte_bits_2_value(ptr, 8);
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
 
 /*******************************************************************************
 /* ProtocolIE UL_RLF_Report_Container DYNAMIC OCTET STRING
 ********************************************************************************/
-// lb:0, ub:16318
-typedef struct{
-  uint32_t n_octets;
-  uint8_t  buffer[16318];
-}LIBLTE_X2AP_UE_RLF_REPORT_CONTAINER_STRUCT;
-
 LIBLTE_ERROR_ENUM liblte_x2ap_pack_ue_rlf_report_container(
   LIBLTE_X2AP_UE_RLF_REPORT_CONTAINER_STRUCT                         *ie,
-  uint8_t                                                     **ptr);
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Dynamic octet string - UL_RLF_Report_Container
+    // Length
+    if(ie->n_octets < 128) {
+      liblte_value_2_bits(0,            ptr, 1);
+      liblte_value_2_bits(ie->n_octets, ptr, 7);
+    } else if(ie->n_octets < 16383) {
+      liblte_value_2_bits(1,            ptr, 1);
+      liblte_value_2_bits(0,            ptr, 1);
+      liblte_value_2_bits(ie->n_octets, ptr, 14);
+    } else {
+      // FIXME: Unlikely to have more than 16K of octets
+      return err; // at least report error, by ZY
+    }
+    
+    // Octets
+    uint32_t i;
+    for(i=0;i<ie->n_octets;i++) {
+      liblte_value_2_bits(ie->buffer[i], ptr, 8);
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
 LIBLTE_ERROR_ENUM liblte_x2ap_unpack_ue_rlf_report_container(
   uint8_t                                                     **ptr,
-  LIBLTE_X2AP_UE_RLF_REPORT_CONTAINER_STRUCT                         *ie);
+  LIBLTE_X2AP_UE_RLF_REPORT_CONTAINER_STRUCT                         *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Dynamic octet string - UL_RLF_Report_Container
+    // Length
+    if(0 == liblte_bits_2_value(ptr, 1)) {
+      ie->n_octets = liblte_bits_2_value(ptr, 7);
+    } else {
+      if(0 == liblte_bits_2_value(ptr, 1)) {
+        ie->n_octets = liblte_bits_2_value(ptr, 14);
+      } else {
+        // FIXME: Unlikely to have more than 16K of octets
+        return err; // at least report error, by ZY
+      }
+    }
+
+    // Octets
+    uint32_t i;
+    for(i=0;i<ie->n_octets;i++) {
+      ie->buffer[i] = liblte_bits_2_value(ptr, 8);
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
 
 /* ENUMERATED */
 
 /*******************************************************************************
 /* ProtocolIE AdditionalSpecialSubframePatterns ENUMERATED
 ********************************************************************************/
-typedef struct{
-  bool                                                         ext;
-  LIBLTE_X2AP_ADDITIONALSPECIALSUBFRAMEPATTERNS_ENUM e;
-}LIBLTE_X2AP_ADDITIONALSPECIALSUBFRAMEPATTERNS_ENUM_EXT;
-
 LIBLTE_ERROR_ENUM liblte_x2ap_pack_additionalspecialsubframepatterns(
   LIBLTE_X2AP_ADDITIONALSPECIALSUBFRAMEPATTERNS_ENUM_EXT                               *ie,
-  uint8_t                                                     **ptr);
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("AdditionalSpecialSubframePatterns error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    // Enum
+    liblte_value_2_bits(ie->e, ptr, 4);
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
 LIBLTE_ERROR_ENUM liblte_x2ap_unpack_additionalspecialsubframepatterns(
   uint8_t                                                     **ptr,
-  LIBLTE_X2AP_ADDITIONALSPECIALSUBFRAMEPATTERNS_ENUM_EXT                               *ie);
+  LIBLTE_X2AP_ADDITIONALSPECIALSUBFRAMEPATTERNS_ENUM_EXT                               *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("AdditionalSpecialSubframePatterns error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    // Enum
+    ie->e = (LIBLTE_X2AP_ADDITIONALSPECIALSUBFRAMEPATTERNS_ENUM)liblte_bits_2_value(ptr, 4);
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
 
 /*******************************************************************************
 /* ProtocolIE CauseMisc ENUMERATED
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_causemisc(
-  LIBLTE_S1AP_CAUSEMISC_ENUM_EXT                                     *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_causemisc(
+  LIBLTE_X2AP_CAUSEMISC_ENUM_EXT                                     *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -3120,7 +3806,7 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_causemisc(
     // Extension
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     if(ie->ext) {
-      liblte_log_print("CauseMisc error: S1AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("CauseMisc error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
@@ -3132,9 +3818,9 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_causemisc(
   return err;
 }
 
-LIBLTE_ERROR_ENUM liblte_s1ap_unpack_causemisc(
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_causemisc(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_CAUSEMISC_ENUM_EXT                                     *ie)
+  LIBLTE_X2AP_CAUSEMISC_ENUM_EXT                                     *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
 
@@ -3144,12 +3830,12 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_causemisc(
     // Extension
     ie->ext  = liblte_bits_2_value(ptr, 1);
     if(ie->ext) {
-      liblte_log_print("CauseMisc error: S1AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("CauseMisc error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
     // Enum
-    ie->e = (LIBLTE_S1AP_CAUSEMISC_ENUM)liblte_bits_2_value(ptr, 3);
+    ie->e = (LIBLTE_X2AP_CAUSEMISC_ENUM)liblte_bits_2_value(ptr, 3);
     liblte_align_up(ptr, 8);
     err = LIBLTE_SUCCESS;
   }
@@ -3159,8 +3845,8 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_causemisc(
 /*******************************************************************************
 /* ProtocolIE CauseProtocol ENUMERATED
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_causeprotocol(
-  LIBLTE_S1AP_CAUSEPROTOCOL_ENUM_EXT                                 *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_causeprotocol(
+  LIBLTE_X2AP_CAUSEPROTOCOL_ENUM_EXT                                 *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -3171,7 +3857,7 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_causeprotocol(
     // Extension
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     if(ie->ext) {
-      liblte_log_print("CauseProtocol error: S1AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("CauseProtocol error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
@@ -3183,9 +3869,9 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_causeprotocol(
   return err;
 }
 
-LIBLTE_ERROR_ENUM liblte_s1ap_unpack_causeprotocol(
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_causeprotocol(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_CAUSEPROTOCOL_ENUM_EXT                                 *ie)
+  LIBLTE_X2AP_CAUSEPROTOCOL_ENUM_EXT                                 *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
 
@@ -3195,12 +3881,12 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_causeprotocol(
     // Extension
     ie->ext  = liblte_bits_2_value(ptr, 1);
     if(ie->ext) {
-      liblte_log_print("CauseProtocol error: S1AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("CauseProtocol error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
     // Enum
-    ie->e = (LIBLTE_S1AP_CAUSEPROTOCOL_ENUM)liblte_bits_2_value(ptr, 3);
+    ie->e = (LIBLTE_X2AP_CAUSEPROTOCOL_ENUM)liblte_bits_2_value(ptr, 3);
     liblte_align_up(ptr, 8);
     err = LIBLTE_SUCCESS;
   }
@@ -3210,8 +3896,8 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_causeprotocol(
 /*******************************************************************************
 /* ProtocolIE CauseRadioNetwork ENUMERATED
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_causeradionetwork(
-  LIBLTE_S1AP_CAUSERADIONETWORK_ENUM_EXT                             *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_causeradionetwork(
+  LIBLTE_X2AP_CAUSERADIONETWORK_ENUM_EXT                             *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -3222,7 +3908,7 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_causeradionetwork(
     // Extension
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     if(ie->ext) {
-      liblte_log_print("CauseRadioNetwork error: S1AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("CauseRadioNetwork error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
@@ -3234,9 +3920,9 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_causeradionetwork(
   return err;
 }
 
-LIBLTE_ERROR_ENUM liblte_s1ap_unpack_causeradionetwork(
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_causeradionetwork(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_CAUSERADIONETWORK_ENUM_EXT                             *ie)
+  LIBLTE_X2AP_CAUSERADIONETWORK_ENUM_EXT                             *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
 
@@ -3246,12 +3932,12 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_causeradionetwork(
     // Extension
     ie->ext  = liblte_bits_2_value(ptr, 1);
     if(ie->ext) {
-      liblte_log_print("CauseRadioNetwork error: S1AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("CauseRadioNetwork error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
     // Enum
-    ie->e = (LIBLTE_S1AP_CAUSERADIONETWORK_ENUM)liblte_bits_2_value(ptr, 6);
+    ie->e = (LIBLTE_X2AP_CAUSERADIONETWORK_ENUM)liblte_bits_2_value(ptr, 6);
     liblte_align_up(ptr, 8);
     err = LIBLTE_SUCCESS;
   }
@@ -3261,8 +3947,8 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_causeradionetwork(
 /*******************************************************************************
 /* ProtocolIE CauseTransport ENUMERATED
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_causetransport(
-  LIBLTE_S1AP_CAUSETRANSPORT_ENUM_EXT                                *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_causetransport(
+  LIBLTE_X2AP_CAUSETRANSPORT_ENUM_EXT                                *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -3273,7 +3959,7 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_causetransport(
     // Extension
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     if(ie->ext) {
-      liblte_log_print("CauseTransport error: S1AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("CauseTransport error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
@@ -3285,9 +3971,9 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_causetransport(
   return err;
 }
 
-LIBLTE_ERROR_ENUM liblte_s1ap_unpack_causetransport(
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_causetransport(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_CAUSETRANSPORT_ENUM_EXT                                *ie)
+  LIBLTE_X2AP_CAUSETRANSPORT_ENUM_EXT                                *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
 
@@ -3297,12 +3983,12 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_causetransport(
     // Extension
     ie->ext  = liblte_bits_2_value(ptr, 1);
     if(ie->ext) {
-      liblte_log_print("CauseTransport error: S1AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("CauseTransport error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
     // Enum
-    ie->e = (LIBLTE_S1AP_CAUSETRANSPORT_ENUM)liblte_bits_2_value(ptr, 1);
+    ie->e = (LIBLTE_X2AP_CAUSETRANSPORT_ENUM)liblte_bits_2_value(ptr, 1);
     liblte_align_up(ptr, 8);
     err = LIBLTE_SUCCESS;
   }
@@ -3312,8 +3998,8 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_causetransport(
 /*******************************************************************************
 /* ProtocolIE Cell_Size ENUMERATED
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_cell_size(
-  LIBLTE_S1AP_CELL_SIZE_ENUM_EXT                                     *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_cell_size(
+  LIBLTE_X2AP_CELL_SIZE_ENUM_EXT                                     *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -3324,7 +4010,7 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_cell_size(
     // Extension
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     if(ie->ext) {
-      liblte_log_print("Cell_Size error: S1AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("Cell_Size error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
@@ -3336,9 +4022,9 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_cell_size(
   return err;
 }
 
-LIBLTE_ERROR_ENUM liblte_s1ap_unpack_cell_size(
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_cell_size(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_CELL_SIZE_ENUM_EXT                                     *ie)
+  LIBLTE_X2AP_CELL_SIZE_ENUM_EXT                                     *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
 
@@ -3348,12 +4034,12 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_cell_size(
     // Extension
     ie->ext  = liblte_bits_2_value(ptr, 1);
     if(ie->ext) {
-      liblte_log_print("Cell_Size error: S1AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("Cell_Size error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
     // Enum
-    ie->e = (LIBLTE_S1AP_CELL_SIZE_ENUM)liblte_bits_2_value(ptr, 2);
+    ie->e = (LIBLTE_X2AP_CELL_SIZE_ENUM)liblte_bits_2_value(ptr, 2);
     liblte_align_up(ptr, 8);
     err = LIBLTE_SUCCESS;
   }
@@ -3363,8 +4049,8 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_cell_size(
 /*******************************************************************************
 /* ProtocolIE CSGMembershipStatus ENUMERATED
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_csgmembershipstatus(
-  LIBLTE_S1AP_CSGMEMBERSHIPSTATUS_ENUM                               *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_csgmembershipstatus(
+  LIBLTE_X2AP_CSGMEMBERSHIPSTATUS_ENUM                               *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -3379,9 +4065,9 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_csgmembershipstatus(
   return err;
 }
 
-LIBLTE_ERROR_ENUM liblte_s1ap_unpack_csgmembershipstatus(
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_csgmembershipstatus(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_CSGMEMBERSHIPSTATUS_ENUM                               *ie)
+  LIBLTE_X2AP_CSGMEMBERSHIPSTATUS_ENUM                               *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
 
@@ -3389,7 +4075,7 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_csgmembershipstatus(
      ptr != NULL)
   {
     // Enum - *ie
-    *ie = (LIBLTE_S1AP_CSGMEMBERSHIPSTATUS_ENUM)liblte_bits_2_value(ptr, 1);
+    *ie = (LIBLTE_X2AP_CSGMEMBERSHIPSTATUS_ENUM)liblte_bits_2_value(ptr, 1);
     err = LIBLTE_SUCCESS;
   }
   return err;
@@ -3398,59 +4084,9 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_csgmembershipstatus(
 /*******************************************************************************
 /* ProtocolIE CyclicPrefixDL ENUMERATED
 ********************************************************************************/
-typedef enum{
-  LIBLTE_X2AP_CYCLICPREFIXDL_NORMAL,
-  LIBLTE_X2AP_CYCLICPREFIXDL_EXTENDED,
-  LIBLTE_X2AP_CYCLICPREFIXDL_N_ITEMS,
-}LIBLTE_X2AP_CYCLICPREFIXDL_ENUM;
-static const char liblte_x2ap_cyclicprefixdl_text[LIBLTE_X2AP_CYCLICPREFIXDL_N_ITEMS][80] = {
-  "normal",
-  "extended",
-};
-
-typedef struct{
-  bool                                                         ext;
-  LIBLTE_X2AP_CYCLICPREFIXDL_ENUM e;
-}LIBLTE_X2AP_CYCLICPREFIXDL_ENUM_EXT;
-
 LIBLTE_ERROR_ENUM liblte_x2ap_pack_cyclicprefixdl(
   LIBLTE_X2AP_CYCLICPREFIXDL_ENUM_EXT                                    *ie,
-  uint8_t                                                     **ptr);
-LIBLTE_ERROR_ENUM liblte_x2ap_unpack_cyclicprefixdl(
-  uint8_t                                                     **ptr,
-  LIBLTE_X2AP_CYCLICPREFIXDL_ENUM_EXT                                   *ie);
-
-/*******************************************************************************
-/* ProtocolIE CyclicPrefixUL ENUMERATED
-********************************************************************************/
-typedef enum{
-  LIBLTE_X2AP_CYCLICPREFIXUL_NORMAL,
-  LIBLTE_X2AP_CYCLICPREFIXUL_EXTENDED,
-  LIBLTE_X2AP_CYCLICPREFIXUL_N_ITEMS,
-}LIBLTE_X2AP_CYCLICPREFIXUL_ENUM;
-static const char liblte_x2ap_cyclicprefixul_text[LIBLTE_X2AP_CYCLICPREFIXUL_N_ITEMS][80] = {
-  "normal",
-  "extended",
-};
-
-typedef struct{
-  bool                                                         ext;
-  LIBLTE_X2AP_CYCLICPREFIXUL_ENUM e;
-}LIBLTE_X2AP_CYCLICPREFIXUL_ENUM_EXT;
-
-LIBLTE_ERROR_ENUM liblte_x2ap_pack_cyclicprefixul(
-  LIBLTE_X2AP_CYCLICPREFIXUL_ENUM_EXT                                    *ie,
-  uint8_t                                                     **ptr);
-LIBLTE_ERROR_ENUM liblte_x2ap_unpack_cyclicprefixul(
-  uint8_t                                                     **ptr,
-  LIBLTE_X2AP_CYCLICPREFIXUL_ENUM_EXT                                   *ie);
-
-/*******************************************************************************
-/* ProtocolIE DL_Forwarding ENUMERATED
-********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_dl_forwarding(
-  LIBLTE_S1AP_DL_FORWARDING_ENUM_EXT                                 *ie,
-  uint8_t                                                           **ptr)
+  uint8_t                                                     **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
 
@@ -3460,21 +4096,20 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_dl_forwarding(
     // Extension
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     if(ie->ext) {
-      liblte_log_print("DL_Forwarding error: S1AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("CyclicPrefixDL error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
     // Enum
-    liblte_value_2_bits(ie->e, ptr, 0);
+    liblte_value_2_bits(ie->e, ptr, 1);
     liblte_align_up_zero(ptr, 8);
     err = LIBLTE_SUCCESS;
   }
   return err;
 }
-
-LIBLTE_ERROR_ENUM liblte_s1ap_unpack_dl_forwarding(
-  uint8_t                                                           **ptr,
-  LIBLTE_S1AP_DL_FORWARDING_ENUM_EXT                                 *ie)
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_cyclicprefixdl(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_CYCLICPREFIXDL_ENUM_EXT                                   *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
 
@@ -3484,12 +4119,12 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_dl_forwarding(
     // Extension
     ie->ext  = liblte_bits_2_value(ptr, 1);
     if(ie->ext) {
-      liblte_log_print("DL_Forwarding error: S1AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("CyclicPrefixDL error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
     // Enum
-    ie->e = (LIBLTE_S1AP_DL_FORWARDING_ENUM)liblte_bits_2_value(ptr, 0);
+    ie->e = (LIBLTE_X2AP_CYCLICPREFIXDL_ENUM)liblte_bits_2_value(ptr, 1);
     liblte_align_up(ptr, 8);
     err = LIBLTE_SUCCESS;
   }
@@ -3497,33 +4132,60 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_dl_forwarding(
 }
 
 /*******************************************************************************
-/* ProtocolIE DeactivationIndication ENUMERATED
+/* ProtocolIE CyclicPrefixUL ENUMERATED
 ********************************************************************************/
-typedef enum{
-  LIBLTE_X2AP_DEACTIVATIONINDICATION_DEACTIVATED,
-  LIBLTE_X2AP_DEACTIVATIONINDICATION_N_ITEMS,
-}LIBLTE_X2AP_DEACTIVATIONINDICATION_ENUM;
-static const char liblte_x2ap_deactivationindication_text[LIBLTE_X2AP_DEACTIVATIONINDICATION_N_ITEMS][80] = {
-  "deactivated",
-};
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_cyclicprefixul(
+  LIBLTE_X2AP_CYCLICPREFIXUL_ENUM_EXT                                    *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
 
-typedef struct{
-  bool                                                         ext;
-  LIBLTE_X2AP_DEACTIVATIONINDICATION_ENUM e;
-}LIBLTE_X2AP_DEACTIVATIONINDICATION_ENUM_EXT;
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("CyclicPrefixUL error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
 
-LIBLTE_ERROR_ENUM liblte_x2ap_pack_deactivationindication(
-  LIBLTE_X2AP_DEACTIVATIONINDICATION_ENUM_EXT            *ie,
-  uint8_t                                                     **ptr);
-LIBLTE_ERROR_ENUM liblte_x2ap_unpack_deactivationindication(
+    // Enum
+    liblte_value_2_bits(ie->e, ptr, 1);
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_cyclicprefixul(
   uint8_t                                                     **ptr,
-  LIBLTE_X2AP_DEACTIVATIONINDICATION_ENUM_EXT            *ie);
+  LIBLTE_X2AP_CYCLICPREFIXUL_ENUM_EXT                                   *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("CyclicPrefixUL error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    // Enum
+    ie->e = (LIBLTE_X2AP_CYCLICPREFIXUL_ENUM)liblte_bits_2_value(ptr, 1);
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
 
 /*******************************************************************************
-/* ProtocolIE EventType ENUMERATED
+/* ProtocolIE DL_Forwarding ENUMERATED
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_eventtype(
-  LIBLTE_S1AP_EVENTTYPE_ENUM_EXT                                     *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_dl_forwarding(
+  LIBLTE_X2AP_DL_FORWARDING_ENUM_EXT                                 *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -3534,7 +4196,112 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_eventtype(
     // Extension
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     if(ie->ext) {
-      liblte_log_print("EventType error: S1AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("DL_Forwarding error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    // Enum
+    // liblte_value_2_bits(ie->e, ptr, 0); changed by ZY
+    liblte_value_2_bits(ie->e, ptr, 1);
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_dl_forwarding(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_DL_FORWARDING_ENUM_EXT                                 *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("DL_Forwarding error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    // Enum
+    // ie->e = (LIBLTE_X2AP_DL_FORWARDING_ENUM)liblte_bits_2_value(ptr, 0); changed by ZY
+    ie->e = (LIBLTE_X2AP_DL_FORWARDING_ENUM)liblte_bits_2_value(ptr, 1);
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE DeactivationIndication ENUMERATED
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_deactivationindication(
+  LIBLTE_X2AP_DEACTIVATIONINDICATION_ENUM_EXT            *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("DeactivationIndication error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    // Enum
+    // liblte_value_2_bits(ie->e, ptr, 0); changed by ZY
+    liblte_value_2_bits(ie->e, ptr, 1);
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_deactivationindication(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_DEACTIVATIONINDICATION_ENUM_EXT            *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("DeactivationIndication error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    // Enum
+    // ie->e = (LIBLTE_X2AP_DEACTIVATIONINDICATION_ENUM)liblte_bits_2_value(ptr, 0); changed by ZY
+    ie->e = (LIBLTE_X2AP_DEACTIVATIONINDICATION_ENUM)liblte_bits_2_value(ptr, 1);
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE EventType ENUMERATED
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_eventtype(
+  LIBLTE_X2AP_EVENTTYPE_ENUM_EXT                                     *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("EventType error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
@@ -3546,9 +4313,9 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_eventtype(
   return err;
 }
 
-LIBLTE_ERROR_ENUM liblte_s1ap_unpack_eventtype(
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_eventtype(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_EVENTTYPE_ENUM_EXT                                     *ie)
+  LIBLTE_X2AP_EVENTTYPE_ENUM_EXT                                     *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
 
@@ -3558,12 +4325,12 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_eventtype(
     // Extension
     ie->ext  = liblte_bits_2_value(ptr, 1);
     if(ie->ext) {
-      liblte_log_print("EventType error: S1AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("EventType error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
     // Enum
-    ie->e = (LIBLTE_S1AP_EVENTTYPE_ENUM)liblte_bits_2_value(ptr, 2);
+    ie->e = (LIBLTE_X2AP_EVENTTYPE_ENUM)liblte_bits_2_value(ptr, 2);
     liblte_align_up(ptr, 8);
     err = LIBLTE_SUCCESS;
   }
@@ -3573,8 +4340,8 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_eventtype(
 /*******************************************************************************
 /* ProtocolIE ForbiddenInterRATs ENUMERATED
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_forbiddeninterrats(
-  LIBLTE_S1AP_FORBIDDENINTERRATS_ENUM_EXT                            *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_forbiddeninterrats(
+  LIBLTE_X2AP_FORBIDDENINTERRATS_ENUM_EXT                            *ie,
   uint8_t                                                           **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
@@ -3585,7 +4352,7 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_forbiddeninterrats(
     // Extension
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     if(ie->ext) {
-      liblte_log_print("ForbiddenInterRATs error: S1AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ForbiddenInterRATs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
@@ -3597,9 +4364,9 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_forbiddeninterrats(
   return err;
 }
 
-LIBLTE_ERROR_ENUM liblte_s1ap_unpack_forbiddeninterrats(
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_forbiddeninterrats(
   uint8_t                                                           **ptr,
-  LIBLTE_S1AP_FORBIDDENINTERRATS_ENUM_EXT                            *ie)
+  LIBLTE_X2AP_FORBIDDENINTERRATS_ENUM_EXT                            *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
 
@@ -3609,12 +4376,12 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_forbiddeninterrats(
     // Extension
     ie->ext  = liblte_bits_2_value(ptr, 1);
     if(ie->ext) {
-      liblte_log_print("ForbiddenInterRATs error: S1AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ForbiddenInterRATs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
     // Enum
-    ie->e = (LIBLTE_S1AP_FORBIDDENINTERRATS_ENUM)liblte_bits_2_value(ptr, 3);
+    ie->e = (LIBLTE_X2AP_FORBIDDENINTERRATS_ENUM)liblte_bits_2_value(ptr, 3);
     liblte_align_up(ptr, 8);
     err = LIBLTE_SUCCESS;
   }
@@ -3624,31 +4391,2801 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_forbiddeninterrats(
 /*******************************************************************************
 /* ProtocolIE HandoverReportType ENUMERATED
 ********************************************************************************/
-typedef enum{
-  LIBLTE_X2AP_HANDOVERREPORTTYPE_HOTOOEARLY,
-  LIBLTE_X2AP_HANDOVERREPORTTYPE_HOTOWRONGCELL,
-  LIBLTE_X2AP_HANDOVERREPORTTYPE_INTERRATPINGPONG,
-  LIBLTE_X2AP_HANDOVERREPORTTYPE_N_ITEMS,
-}LIBLTE_X2AP_HANDOVERREPORTTYPE_ENUM;
-static const char liblte_x2ap_handoverreporttype_text[LIBLTE_X2AP_HANDOVERREPORTTYPE_N_ITEMS][80] = {
-  "hoTooEarly",
-  "hoToWrongCell",
-  "interRATpingpong",
-};
-
-typedef struct{
-  bool                                                         ext;
-  LIBLTE_X2AP_HANDOVERREPORTTYPE_ENUM e;
-}LIBLTE_X2AP_HANDOVERREPORTTYPE_ENUM_EXT;
-
 LIBLTE_ERROR_ENUM liblte_x2ap_pack_handoverreporttype(
   LIBLTE_X2AP_HANDOVERREPORTTYPE_ENUM_EXT                            *ie,
-  uint8_t                                                     **ptr);
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("HandoverReportType error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    // Enum
+    liblte_value_2_bits(ie->e, ptr, 2);
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
 LIBLTE_ERROR_ENUM liblte_x2ap_unpack_handoverreporttype(
   uint8_t                                                     **ptr,
-  LIBLTE_X2AP_HANDOVERREPORTTYPE_ENUM_EXT                            *ie);
+  LIBLTE_X2AP_HANDOVERREPORTTYPE_ENUM_EXT                            *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("HandoverReportType error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    // Enum
+    ie->e = (LIBLTE_X2AP_HANDOVERREPORTTYPE_ENUM)liblte_bits_2_value(ptr, 2);
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE InvokeIndication ENUMERATED
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_invokeindication(
+  LIBLTE_X2AP_INVOKEINDICATION_ENUM_EXT                          *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("InvokeIndication error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    // Enum
+    liblte_value_2_bits(ie->e, ptr, 1);
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_invokeindication(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_INVOKEINDICATION_ENUM_EXT                          *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("InvokeIndication error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    // Enum
+    ie->e = (LIBLTE_X2AP_INVOKEINDICATION_ENUM)liblte_bits_2_value(ptr, 1);
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+  
+/*******************************************************************************
+/* ProtocolIE Links_to_log ENUMERATED
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_links_to_log(
+  LIBLTE_X2AP_LINKS_TO_LOG_ENUM_EXT                            *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("Links_to_log error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    // Enum
+    liblte_value_2_bits(ie->e, ptr, 2);
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_links_to_log(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_LINKS_TO_LOG_ENUM_EXT                            *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("Links_to_log error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    // Enum
+    ie->e = (LIBLTE_X2AP_LINKS_TO_LOG_ENUM)liblte_bits_2_value(ptr, 2);
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE LoadIndicator ENUMERATED
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_loadindicator(
+  LIBLTE_X2AP_LOADINDICATOR_ENUM_EXT                            *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("LoadIndicator error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    // Enum
+    liblte_value_2_bits(ie->e, ptr, 2);
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_loadindicator(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_LOADINDICATOR_ENUM_EXT                            *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("LoadIndicator error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    // Enum
+    ie->e = (LIBLTE_X2AP_LOADINDICATOR_ENUM)liblte_bits_2_value(ptr, 2);
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE M1ReportingTrigger ENUMERATED
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_m1reportingtrigger(
+  LIBLTE_X2AP_M1REPORTINGTRIGGER_ENUM_EXT                      *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("M1ReportingTrigger error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    // Enum
+    liblte_value_2_bits(ie->e, ptr, 2);
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_m1reportingtrigger(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_M1REPORTINGTRIGGER_ENUM_EXT                      *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("M1ReportingTrigger error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    // Enum
+    ie->e = (LIBLTE_X2AP_M1REPORTINGTRIGGER_ENUM)liblte_bits_2_value(ptr, 2);
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE M3period ENUMERATED
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_m3period(
+  LIBLTE_X2AP_M3PERIOD_ENUM_EXT                                *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("M3period error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    // Enum
+    liblte_value_2_bits(ie->e, ptr, 2);
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_m3period(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_M3PERIOD_ENUM_EXT                                *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("M3period error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    // Enum
+    ie->e = (LIBLTE_X2AP_M3PERIOD_ENUM)liblte_bits_2_value(ptr, 2);
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE M4period ENUMERATED
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_m4period(
+  LIBLTE_X2AP_M4PERIOD_ENUM_EXT                                *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("M4period error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    // Enum
+    liblte_value_2_bits(ie->e, ptr, 3);
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_m4period(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_M4PERIOD_ENUM_EXT                                *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("M4period error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    // Enum
+    ie->e = (LIBLTE_X2AP_M4PERIOD_ENUM)liblte_bits_2_value(ptr, 3);
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE M5period ENUMERATED
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_m5period(
+  LIBLTE_X2AP_M5PERIOD_ENUM_EXT                                *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("M5period error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    // Enum
+    liblte_value_2_bits(ie->e, ptr, 3);
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_m5period(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_M5PERIOD_ENUM_EXT                                *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("M5period error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    // Enum
+    ie->e = (LIBLTE_X2AP_M5PERIOD_ENUM)liblte_bits_2_value(ptr, 3);
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE MDT_Activation ENUMERATED
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_mdt_activation(
+  LIBLTE_X2AP_MDT_ACTIVATION_ENUM_EXT                          *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("MDT_Activation error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    // Enum
+    liblte_value_2_bits(ie->e, ptr, 1);
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_mdt_activation(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_MDT_ACTIVATION_ENUM_EXT                          *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("MDT_Activation error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    // Enum
+    ie->e = (LIBLTE_X2AP_MDT_ACTIVATION_ENUM)liblte_bits_2_value(ptr, 1);
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE ManagementBasedMDTAllowed ENUMERATED
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_managementbasedmdtallowed(
+  LIBLTE_X2AP_MANAGEMENTBASEDMDTALLOWED_ENUM_EXT               *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("ManagementBasedMDTAllowed error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    // Enum
+    liblte_value_2_bits(ie->e, ptr, 1);
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_managementbasedmdtallowed(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_MANAGEMENTBASEDMDTALLOWED_ENUM_EXT               *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("ManagementBasedMDTAllowed error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    // Enum
+    ie->e = (LIBLTE_X2AP_MANAGEMENTBASEDMDTALLOWED_ENUM)liblte_bits_2_value(ptr, 1);
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE Number_of_Antennaports ENUMERATED
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_number_of_antennaports(
+  LIBLTE_X2AP_NUMBER_OF_ANTENNAPORTS_ENUM_EXT                        *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("Number_of_Antennaports error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    // Enum
+    liblte_value_2_bits(ie->e, ptr, 2);
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_number_of_antennaports(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_NUMBER_OF_ANTENNAPORTS_ENUM_EXT                        *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("Number_of_Antennaports error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    // Enum
+    ie->e = (LIBLTE_X2AP_NUMBER_OF_ANTENNAPORTS_ENUM)liblte_bits_2_value(ptr, 2);
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE Pre_emptionCapability ENUMERATED
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_pre_emptioncapability(
+  LIBLTE_X2AP_PRE_EMPTIONCAPABILITY_ENUM                       *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Enum - *ie
+    liblte_value_2_bits(*ie, ptr, 1);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_pre_emptioncapability(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_PRE_EMPTIONCAPABILITY_ENUM                       *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Enum - *ie
+    *ie = (LIBLTE_X2AP_PRE_EMPTIONCAPABILITY_ENUM)liblte_bits_2_value(ptr, 1);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE Pre_emptionVulnerability ENUMERATED
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_pre_emptionvulnerability(
+  LIBLTE_X2AP_PRE_EMPTIONVULNERABILITY_ENUM                          *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Enum - *ie
+    liblte_value_2_bits(*ie, ptr, 1);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_pre_emptionvulnerability(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_PRE_EMPTIONVULNERABILITY_ENUM                          *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Enum - *ie
+    *ie = (LIBLTE_X2AP_PRE_EMPTIONVULNERABILITY_ENUM)liblte_bits_2_value(ptr, 1);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE RadioframeAllocationPeriod ENUMERATED
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_radioframeallocationperiod(
+  LIBLTE_X2AP_RADIOFRAMEALLOCATIONPERIOD_ENUM_EXT                    *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("RadioframeAllocationPeriod error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    // Enum
+    liblte_value_2_bits(ie->e, ptr, 3);
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_radioframeallocationperiod(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_RADIOFRAMEALLOCATIONPERIOD_ENUM_EXT                    *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("RadioframeAllocationPeriod error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    // Enum
+    ie->e = (LIBLTE_X2AP_RADIOFRAMEALLOCATIONPERIOD_ENUM)liblte_bits_2_value(ptr, 3);
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE Registration_Request ENUMERATED
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_registration_request(
+  LIBLTE_X2AP_REGISTRATION_REQUEST_ENUM_EXT                              *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("Registration_Request error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    // Enum
+    liblte_value_2_bits(ie->e, ptr, 1);
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_registration_request(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_REGISTRATION_REQUEST_ENUM_EXT                              *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("Registration_Request error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    // Enum
+    ie->e = (LIBLTE_X2AP_REGISTRATION_REQUEST_ENUM)liblte_bits_2_value(ptr, 1);
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE ReportAmountMDT ENUMERATED
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_reportamountmdt(
+  LIBLTE_X2AP_REPORTAMOUNTMDT_ENUM                             *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Enum - *ie
+    liblte_value_2_bits(*ie, ptr, 3);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_reportamountmdt(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_REPORTAMOUNTMDT_ENUM                             *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Enum - *ie
+    *ie = (LIBLTE_X2AP_REPORTAMOUNTMDT_ENUM)liblte_bits_2_value(ptr, 3);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE ReportArea ENUMERATED
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_reportarea(
+  LIBLTE_X2AP_REPORTAREA_ENUM_EXT                              *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("ReportArea error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    // Enum
+    liblte_value_2_bits(ie->e, ptr, 1);
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_reportarea(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_REPORTAREA_ENUM_EXT                              *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("ReportArea error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    // Enum
+    ie->e = (LIBLTE_X2AP_REPORTAREA_ENUM)liblte_bits_2_value(ptr, 1);
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE ReportIntervalMDT ENUMERATED
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_reportintervalmdt(
+  LIBLTE_X2AP_REPORTINTERVALMDT_ENUM                           *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Enum - *ie
+    liblte_value_2_bits(*ie, ptr, 4);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_reportintervalmdt(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_REPORTINTERVALMDT_ENUM                          *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Enum - *ie
+    *ie = (LIBLTE_X2AP_REPORTINTERVALMDT_ENUM)liblte_bits_2_value(ptr, 4);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
 
 
+/*******************************************************************************
+/* ProtocolIE RNTP_Threshold ENUMERATED
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_rntp_threshold(
+  LIBLTE_X2AP_RNTP_THRESHOLD_ENUM_EXT                           *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("RNTP_Threshold error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    // Enum
+    liblte_value_2_bits(ie->e, ptr, 4);
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_rntp_threshold(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_RNTP_THRESHOLD_ENUM_EXT                           *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("RNTP_Threshold error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    // Enum
+    ie->e = (LIBLTE_X2AP_RNTP_THRESHOLD_ENUM)liblte_bits_2_value(ptr, 4);
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+
+/*******************************************************************************
+/* ProtocolIE RRCConnReestabIndicator ENUMERATED
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_rrcconnreestabindicator(
+  LIBLTE_X2AP_RRCCONNREESTABINDICATOR_ENUM_EXT                 *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("RRCConnReestabIndicator error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    // Enum
+    liblte_value_2_bits(ie->e, ptr, 2);
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_rrcronnreestabindicator(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_RRCCONNREESTABINDICATOR_ENUM_EXT                 *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("RRCConnReestabIndicator error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    // Enum
+    ie->e = (LIBLTE_X2AP_RRCCONNREESTABINDICATOR_ENUM)liblte_bits_2_value(ptr, 2);
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE RRCConnSetupIndicator ENUMERATED
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_rrcconnsetupindicator(
+  LIBLTE_X2AP_RRCCONNSETUPINDICATOR_ENUM_EXT                 *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("RRCConnSetupIndicator error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    // Enum
+    liblte_value_2_bits(ie->e, ptr, 1);
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_rrcronnsetupindicator(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_RRCCONNSETUPINDICATOR_ENUM_EXT                 *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("RRCConnSetupIndicator error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    // Enum
+    ie->e = (LIBLTE_X2AP_RRCCONNSETUPINDICATOR_ENUM)liblte_bits_2_value(ptr, 1);
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE SRVCCOperationPossible ENUMERATED
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_srvccoperationpossible(
+  LIBLTE_X2AP_SRVCCOPERATIONPOSSIBLE_ENUM_EXT                  *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("SRVCCOperationPossible error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    // Enum
+    liblte_value_2_bits(ie->e, ptr, 1);
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_srvccoperationpossible(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_SRVCCOPERATIONPOSSIBLE_ENUM_EXT                  *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("SRVCCOperationPossible error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    // Enum
+    ie->e = (LIBLTE_X2AP_SRVCCOPERATIONPOSSIBLE_ENUM)liblte_bits_2_value(ptr, 1);
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+
+/*******************************************************************************
+/* ProtocolIE SubframeAssignment ENUMERATED
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_subframeassignment(
+  LIBLTE_X2AP_SUBFRAMEASSIGNMENT_ENUM_EXT                   *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("SubframeAssignment error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    // Enum
+    liblte_value_2_bits(ie->e, ptr, 3);
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_subframeassignment(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_SUBFRAMEASSIGNMENT_ENUM_EXT                  *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("SubframeAssignment error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    // Enum
+    ie->e = (LIBLTE_X2AP_SUBFRAMEASSIGNMENT_ENUM)liblte_bits_2_value(ptr, 3);
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE SpecialSubframePatterns ENUMERATED
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_specialsubframepatterns(
+  LIBLTE_X2AP_SPECIALSUBFRAMEPATTERNS_ENUM_EXT                   *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("SpecialSubframePatterns error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    // Enum
+    liblte_value_2_bits(ie->e, ptr, 4);
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_specialsubframepatterns(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_SPECIALSUBFRAMEPATTERNS_ENUM_EXT                  *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("SpecialSubframePatterns error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    // Enum
+    ie->e = (LIBLTE_X2AP_SPECIALSUBFRAMEPATTERNS_ENUM)liblte_bits_2_value(ptr, 4);
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE TimeToWait ENUMERATED
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_timetowait(
+  LIBLTE_X2AP_TIMETOWAIT_ENUM_EXT                              *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("TimeToWait error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    // Enum
+    liblte_value_2_bits(ie->e, ptr, 3);
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_timetowait(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_TIMETOWAIT_ENUM_EXT                              *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("TimeToWait error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    // Enum
+    ie->e = (LIBLTE_X2AP_TIMETOWAIT_ENUM)liblte_bits_2_value(ptr, 3);
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE TraceDepth ENUMERATED
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_tracedepth(
+  LIBLTE_X2AP_TRACEDEPTH_ENUM_EXT                              *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("TraceDepth error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    // Enum
+    liblte_value_2_bits(ie->e, ptr, 3);
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_tracedepth(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_TRACEDEPTH_ENUM_EXT                              *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("TraceDepth error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    // Enum
+    ie->e = (LIBLTE_X2AP_TRACEDEPTH_ENUM)liblte_bits_2_value(ptr, 3);
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE Transmission_Bandwidth ENUMERATED
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_transmission_bandwidth(
+  LIBLTE_X2AP_TRANSMISSION_BANDWIDTH_ENUM_EXT                              *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("Transmission_Bandwidth error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    // Enum
+    liblte_value_2_bits(ie->e, ptr, 3);
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_transmission_bandwidth(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_TRANSMISSION_BANDWIDTH_ENUM_EXT                              *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("Transmission_Bandwidth error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    // Enum
+    ie->e = (LIBLTE_X2AP_TRANSMISSION_BANDWIDTH_ENUM)liblte_bits_2_value(ptr, 3);
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+
+/*******************************************************************************
+/* ProtocolIE TypeOfError ENUMERATED
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_typeoferror(
+  LIBLTE_X2AP_TYPEOFERROR_ENUM_EXT                             *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("TypeOfError error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    // Enum
+    liblte_value_2_bits(ie->e, ptr, 1);
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_typeoferror(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_TYPEOFERROR_ENUM_EXT                             *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("TypeOfError error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    // Enum
+    ie->e = (LIBLTE_X2AP_TYPEOFERROR_ENUM)liblte_bits_2_value(ptr, 1);
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE UL_InterferenceOverloadIndication_Item ENUMERATED
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_ul_interferenceoverloadindication_item(
+  LIBLTE_X2AP_UL_INTERFERENCEOVERLOADINDICATION_ITEM_ENUM_EXT                     *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("UL_InterferenceOverloadIndication_Item error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    // Enum
+    liblte_value_2_bits(ie->e, ptr, 2);
+    liblte_align_up_zero(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_ul_interferenceoverloadindication_item(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_UL_INTERFERENCEOVERLOADINDICATION_ITEM_ENUM_EXT                     *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("UL_InterferenceOverloadIndication_Item error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    // Enum
+    ie->e = (LIBLTE_X2AP_UL_INTERFERENCEOVERLOADINDICATION_ITEM_ENUM)liblte_bits_2_value(ptr, 2);
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE ABSInformationFDD SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_absinformationfdd(
+  LIBLTE_X2AP_ABSINFORMATIONFDD_STRUCT            *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    liblte_align_up_zero(ptr, 8);
+    if (ie->ext) {
+      liblte_x2ap_log_print("ABSInformationFDD error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    liblte_value_2_bits(ie->iE_Extensions_present ? 1:0, ptr, 1);
+
+    for (uint32_t i = 0; i < 40; ++i)
+      liblte_value_2_bits(ie->abs_pattern_info[i], ptr, 1);
+    
+    liblte_value_2_bits(ie->numberofCellSpecificAntennaPorts, ptr, 2);
+
+    for (uint32_t i = 0; i < 40; ++i)
+      liblte_value_2_bits(ie->measurement_subset[i], ptr, 1);
+
+    if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_align_up_zero(ptr, 8);
+    
+     err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_absinformationfdd(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_ABSINFORMATIONFDD_STRUCT            *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    liblte_align_up(ptr, 8);
+    ie->ext = liblte_bits_2_value(ptr, 1);
+    if (ie->ext) {
+      liblte_x2ap_log_print("ABSInformationFDD error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    for (uint32_t i = 0; i < 40; ++i)
+      ie->abs_pattern_info[i] = liblte_bits_2_value(ptr, 1);
+
+    ie->numberofCellSpecificAntennaPorts = (decltype(ie->numberofCellSpecificAntennaPorts))liblte_bits_2_value(ptr, 2);
+
+    if (ie->iE_Extensions_present)
+      if (liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS)
+        return LIBLTE_ERROR_DECODE_FAIL;
+
+    liblte_align_up(ptr, 8);
+    
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* Protocol Message ABSInformationFDD_Ext STRUCT
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_absinformationfdd_ext(
+  LIBLTE_X2AP_MESSAGE_ABSINFORMATIONFDD_EXT_STRUCT *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    liblte_align_up_zero(ptr, 8);
+    if (ie->ext) {
+      liblte_x2ap_log_print("ABSInformationFDD_Ext error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    liblte_align_up_zero(ptr, 8);
+     err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_absinformationfdd_ext(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_MESSAGE_ABSINFORMATIONFDD_EXT_STRUCT *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    liblte_align_up(ptr, 8);
+    ie->ext = liblte_bits_2_value(ptr, 1);
+    if (ie->ext) {
+      liblte_x2ap_log_print("ABSInformationFDD_Ext error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE ABSInformationTDD SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_absinformationtdd(
+  LIBLTE_X2AP_ABSINFORMATIONTDD_STRUCT            *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    liblte_align_up_zero(ptr, 8);
+    if (ie->ext) {
+      liblte_x2ap_log_print("ABSInformationTDD error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    liblte_value_2_bits(ie->iE_Extensions_present ? 1:0, ptr, 1);
+
+    for (uint32_t i = 0; i < 70; ++i)
+      liblte_value_2_bits(ie->abs_pattern_info[i], ptr, 1);
+    
+    liblte_value_2_bits(ie->numberofCellSpecificAntennaPorts, ptr, 2);
+
+    for (uint32_t i = 0; i < 70; ++i)
+      liblte_value_2_bits(ie->measurement_subset[i], ptr, 1);
+
+    if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_align_up_zero(ptr, 8);
+    
+     err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_absinformationtdd(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_ABSINFORMATIONTDD_STRUCT            *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    liblte_align_up(ptr, 8);
+    ie->ext = liblte_bits_2_value(ptr, 1);
+    if (ie->ext) {
+      liblte_x2ap_log_print("ABSInformationTDD error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    for (uint32_t i = 0; i < 70; ++i)
+      ie->abs_pattern_info[i] = liblte_bits_2_value(ptr, 1);
+
+    ie->numberofCellSpecificAntennaPorts = (decltype(ie->numberofCellSpecificAntennaPorts))liblte_bits_2_value(ptr, 2);
+
+    if (ie->iE_Extensions_present)
+      if (liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS)
+        return LIBLTE_ERROR_DECODE_FAIL;
+
+    liblte_align_up(ptr, 8);
+    
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* Protocol Message ABSInformationTDD_Ext STRUCT
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_absinformationtdd_ext(
+  LIBLTE_X2AP_MESSAGE_ABSINFORMATIONTDD_EXT_STRUCT *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    liblte_align_up_zero(ptr, 8);
+    if (ie->ext) {
+      liblte_x2ap_log_print("ABSInformationTDD_Ext error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    liblte_align_up_zero(ptr, 8);
+     err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_absinformationtdd_ext(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_MESSAGE_ABSINFORMATIONTDD_EXT_STRUCT *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    liblte_align_up(ptr, 8);
+    ie->ext = liblte_bits_2_value(ptr, 1);
+    if (ie->ext) {
+      liblte_x2ap_log_print("ABSInformationTDD_Ext error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE ABSInformation CHOICE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_absinformation(
+  LIBLTE_X2AP_ABSINFORMATION_STRUCT                            *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+  if (ie != NULL &&
+      ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("ABSInformation error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    // Choice type
+    liblte_value_2_bits(ie->choice_type, ptr, 2);
+    // Choice
+    if (ie->choice_type == LIBLTE_X2AP_ABSINFORMATION_CHOICE_FDD) {
+      if (liblte_x2ap_pack_absinformationfdd(&ie->choice.fdd, ptr) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+    }
+    else if (ie->choice_type == LIBLTE_X2AP_ABSINFORMATION_CHOICE_TDD) {
+      if (liblte_x2ap_pack_absinformationtdd(&ie->choice.tdd, ptr) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+    }
+    else if (ie->choice_type == LIBLTE_X2AP_ABSINFORMATION_CHOICE_ABS_INACTIVE) {
+      // NULL: do nothing
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_absinformation(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_ABSINFORMATION_STRUCT                            *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+  if (ie != NULL &&
+      ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("ABSInformation error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    // Choice type
+    ie->choice_type = (LIBLTE_X2AP_ABSINFORMATION_CHOICE_ENUM)liblte_bits_2_value(ptr, 2);
+    // Choice
+    if (ie->choice_type == LIBLTE_X2AP_ABSINFORMATION_CHOICE_FDD) {
+      if (liblte_x2ap_unpack_absinformationfdd(ptr, &ie->choice.fdd) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_DECODE_FAIL;
+      }
+    }
+    else if (ie->choice_type == LIBLTE_X2AP_ABSINFORMATION_CHOICE_TDD) {
+      if (liblte_x2ap_unpack_absinformationtdd(ptr, &ie->choice.tdd) != LIBLTE_SUCCESS){
+        return LIBLTE_ERROR_DECODE_FAIL;
+      }
+    }
+    else if (ie->choice_type == LIBLTE_X2AP_PRIVATEIE_ID_CHOICE_GLOBAL) {
+      // NULL: do nothing
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE UsableABSInformationFDD SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_usableabsinformationfdd(
+  LIBLTE_X2AP_USABLEABSINFORMATIONFDD_STRUCT                               *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    liblte_align_up_zero(ptr, 8);
+    if (ie->ext) {
+      liblte_x2ap_log_print("UsableABSInformationFDD error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    liblte_value_2_bits(ie->iE_Extensions_present ? 1:0, ptr, 1);
+
+    for (uint32_t i = 0; i < 40; ++i)
+      liblte_value_2_bits(ie->usable_abs_pattern_info[i], ptr, 1);
+
+    if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_align_up_zero(ptr, 8);
+    
+     err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_usableabsinformationfdd(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_USABLEABSINFORMATIONFDD_STRUCT                               *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    liblte_align_up(ptr, 8);
+    ie->ext = liblte_bits_2_value(ptr, 1);
+    if (ie->ext) {
+      liblte_x2ap_log_print("UsableABSInformationFDD error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    for (uint32_t i = 0; i < 40; ++i)
+      ie->usable_abs_pattern_info[i] = liblte_bits_2_value(ptr, 1);
+
+    if (ie->iE_Extensions_present)
+      if (liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS)
+        return LIBLTE_ERROR_DECODE_FAIL;
+
+    liblte_align_up(ptr, 8);
+    
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* Protocol Message UsableABSInformationFDD_Ext STRUCT
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_usableabsinformationfdd_ext(
+  LIBLTE_X2AP_MESSAGE_USABLEABSINFORMATIONFDD_EXT_STRUCT                   *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    liblte_align_up_zero(ptr, 8);
+    if (ie->ext) {
+      liblte_x2ap_log_print("UsableABSInformationFDD_Ext error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    liblte_align_up_zero(ptr, 8);
+     err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_usableabsinformationfdd_ext(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_MESSAGE_USABLEABSINFORMATIONFDD_EXT_STRUCT                   *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    liblte_align_up(ptr, 8);
+    ie->ext = liblte_bits_2_value(ptr, 1);
+    if (ie->ext) {
+      liblte_x2ap_log_print("UsableABSInformationFDD_Ext error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE UsableABSInformationTDD SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_usableabsinformationtdd(
+  LIBLTE_X2AP_USABLEABSINFORMATIONTDD_STRUCT                               *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    liblte_align_up_zero(ptr, 8);
+    if (ie->ext) {
+      liblte_x2ap_log_print("UsableABSInformationTDD error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    liblte_value_2_bits(ie->iE_Extensions_present ? 1:0, ptr, 1);
+
+    for (uint32_t i = 0; i < 70; ++i)
+      liblte_value_2_bits(ie->usable_abs_pattern_info[i], ptr, 1);
+
+    if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_align_up_zero(ptr, 8);
+    
+     err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_usableabsinformationtdd(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_USABLEABSINFORMATIONTDD_STRUCT                               *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    liblte_align_up(ptr, 8);
+    ie->ext = liblte_bits_2_value(ptr, 1);
+    if (ie->ext) {
+      liblte_x2ap_log_print("UsableABSInformationTDD error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    for (uint32_t i = 0; i < 70; ++i)
+      ie->usable_abs_pattern_info[i] = liblte_bits_2_value(ptr, 1);
+
+    if (ie->iE_Extensions_present)
+      if (liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS)
+        return LIBLTE_ERROR_DECODE_FAIL;
+
+    liblte_align_up(ptr, 8);
+    
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* Protocol Message UsableABSInformationTDD_Ext STRUCT
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_usableabsinformationtdd_ext(
+  LIBLTE_X2AP_MESSAGE_USABLEABSINFORMATIONTDD_EXT_STRUCT                   *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    liblte_align_up_zero(ptr, 8);
+    if (ie->ext) {
+      liblte_x2ap_log_print("UsableABSInformationTDD_Ext error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    liblte_align_up_zero(ptr, 8);
+     err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_usableabsinformationtdd_ext(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_MESSAGE_USABLEABSINFORMATIONTDD_EXT_STRUCT                   *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    liblte_align_up(ptr, 8);
+    ie->ext = liblte_bits_2_value(ptr, 1);
+    if (ie->ext) {
+      liblte_x2ap_log_print("UsableABSInformationTDD_Ext error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE UsableABSInformation CHOICE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_usableabsinformation(
+  LIBLTE_X2AP_USABLEABSINFORMATION_STRUCT                          *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+  if (ie != NULL &&
+      ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("UsableABSInformation error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    // Choice type
+    liblte_value_2_bits(ie->choice_type, ptr, 1);
+    // Choice
+    if (ie->choice_type == LIBLTE_X2AP_USABLEABSINFORMATION_CHOICE_FDD) {
+      if (liblte_x2ap_pack_usableabsinformationfdd(&ie->choice.fdd, ptr) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+    }
+    else if (ie->choice_type == LIBLTE_X2AP_USABLEABSINFORMATION_CHOICE_TDD) {
+      if (liblte_x2ap_pack_usableabsinformationtdd(&ie->choice.tdd, ptr) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+    }
+    else
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_usableabsinformation(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_USABLEABSINFORMATION_STRUCT                          *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+  if (ie != NULL &&
+      ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("UsableABSInformation error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    // Choice type
+    ie->choice_type = (LIBLTE_X2AP_USABLEABSINFORMATION_CHOICE_ENUM)liblte_bits_2_value(ptr, 1);
+    // Choice
+    if (ie->choice_type == LIBLTE_X2AP_USABLEABSINFORMATION_CHOICE_FDD) {
+      if (liblte_x2ap_unpack_usableabsinformationfdd(ptr, &ie->choice.fdd) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_DECODE_FAIL;
+      }
+    }
+    else if (ie->choice_type == LIBLTE_X2AP_USABLEABSINFORMATION_CHOICE_TDD) {
+      if (liblte_x2ap_unpack_usableabsinformationtdd(ptr, &ie->choice.tdd) != LIBLTE_SUCCESS){
+        return LIBLTE_ERROR_DECODE_FAIL;
+      }
+    }
+    else
+      return LIBLTE_ERROR_DECODE_FAIL;
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE ABS_Status SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_abs_status(
+  LIBLTE_X2AP_ABS_STATUS_STRUCT            *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    liblte_align_up_zero(ptr, 8);
+    if (ie->ext) {
+      liblte_x2ap_log_print("ABS_Status error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    liblte_value_2_bits(ie->iE_Extensions_present, ptr, 1);
+    
+    if (liblte_x2ap_pack_usableabsinformation(&ie->usableABSInformation, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_align_up_zero(ptr, 8);
+    
+     err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_abs_status(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_ABS_STATUS_STRUCT            *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    liblte_align_up(ptr, 8);
+    ie->ext = liblte_bits_2_value(ptr, 1);
+    if (ie->ext) {
+      liblte_x2ap_log_print("ABS_Status error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    if (liblte_x2ap_unpack_usableabsinformation(ptr, &ie->usableABSInformation) != LIBLTE_SUCCESS)
+      return LIBLTE_ERROR_DECODE_FAIL;
+
+    if (ie->iE_Extensions_present)
+      if (liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS)
+        return LIBLTE_ERROR_DECODE_FAIL;
+
+    liblte_align_up(ptr, 8);
+    
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* Protocol Message ABS_Status_Ext STRUCT
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_abs_status_ext(
+  LIBLTE_X2AP_MESSAGE_ABS_STATUS_EXT_STRUCT *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    liblte_align_up_zero(ptr, 8);
+    if (ie->ext) {
+      liblte_x2ap_log_print("ABS_Status_Ext error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    liblte_align_up_zero(ptr, 8);
+     err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_abs_status_ext(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_MESSAGE_ABS_STATUS_EXT_STRUCT *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    liblte_align_up(ptr, 8);
+    ie->ext = liblte_bits_2_value(ptr, 1);
+    if (ie->ext) {
+      liblte_x2ap_log_print("ABS_Status_Ext error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE AdditionalSpecialSubframe_Info SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_additionalspecialsubframe_info(
+  LIBLTE_X2AP_ADDITIONALSPECIALSUBFRAME_INFO_STRUCT            *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    liblte_align_up_zero(ptr, 8);
+    if (ie->ext) {
+      liblte_x2ap_log_print("AdditionalSpecialSubframe_Info error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    liblte_value_2_bits(ie->iE_Extensions_present ? 1:0, ptr, 1);
+
+    if (liblte_x2ap_pack_additionalspecialsubframepatterns(&ie->additionalspecialSubframePatterns, ptr) != LIBLTE_SUCCESS)
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    
+    if (liblte_x2ap_pack_cyclicprefixdl(&ie->cyclicPrefixDL, ptr) != LIBLTE_SUCCESS)
+      return LIBLTE_ERROR_ENCODE_FAIL;
+
+    if (liblte_x2ap_pack_cyclicprefixul(&ie->cyclicPrefixUL, ptr) != LIBLTE_SUCCESS)
+      return LIBLTE_ERROR_ENCODE_FAIL;
+
+    if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS)
+      return LIBLTE_ERROR_ENCODE_FAIL;
+
+    liblte_align_up_zero(ptr, 8);
+    
+     err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_additionalspecialsubframe_info(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_ADDITIONALSPECIALSUBFRAME_INFO_STRUCT            *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    liblte_align_up(ptr, 8);
+    ie->ext = liblte_bits_2_value(ptr, 1);
+    if (ie->ext) {
+      liblte_x2ap_log_print("AdditionalSpecialSubframe_Info error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    if (liblte_x2ap_unpack_additionalspecialsubframepatterns(ptr, &ie->additionalspecialSubframePatterns) != LIBLTE_SUCCESS)
+      return LIBLTE_ERROR_DECODE_FAIL;
+    
+    if (liblte_x2ap_unpack_cyclicprefixdl(ptr, &ie->cyclicPrefixDL) != LIBLTE_SUCCESS)
+      return LIBLTE_ERROR_DECODE_FAIL;
+
+    if (liblte_x2ap_unpack_cyclicprefixul(ptr, &ie->cyclicPrefixUL) != LIBLTE_SUCCESS)
+      return LIBLTE_ERROR_DECODE_FAIL;
+
+    if (ie->iE_Extensions_present)
+      if (liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS)
+        return LIBLTE_ERROR_DECODE_FAIL;
+
+    liblte_align_up(ptr, 8);
+    
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* Protocol Message AdditionalSpecialSubframe_Info_Ext STRUCT
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_additionalspecialsubframe_info_ext(
+  LIBLTE_X2AP_MESSAGE_ADDITIONALSPECIALSUBFRAME_INFO_EXT_STRUCT *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    liblte_align_up_zero(ptr, 8);
+    if (ie->ext) {
+      liblte_x2ap_log_print("AdditionalSpecialSubframe_Info_Ext error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    liblte_align_up_zero(ptr, 8);
+     err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_additionalspecialsubframe_info_ext(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_MESSAGE_ADDITIONALSPECIALSUBFRAME_INFO_EXT_STRUCT *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    liblte_align_up(ptr, 8);
+    ie->ext = liblte_bits_2_value(ptr, 1);
+    if (ie->ext) {
+      liblte_x2ap_log_print("AdditionalSpecialSubframe_Info_Ext error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE AS_SecurityInformation SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_as_securityinformation(
+  LIBLTE_X2AP_AS_SECURITYINFORMATION_STRUCT            *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    liblte_align_up_zero(ptr, 8);
+    if (ie->ext) {
+      liblte_x2ap_log_print("AS_SecurityInformation error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    liblte_value_2_bits(ie->iE_Extensions_present ? 1:0, ptr, 1);
+
+    if (liblte_x2ap_pack_key_enodeb_star(&ie->key_eNodeB_star, ptr) != LIBLTE_SUCCESS)
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    
+    if (liblte_x2ap_pack_nexthopchainingcount(&ie->nextHopChainingCount, ptr) != LIBLTE_SUCCESS)
+      return LIBLTE_ERROR_ENCODE_FAIL;
+
+    if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS)
+      return LIBLTE_ERROR_ENCODE_FAIL;
+
+    liblte_align_up_zero(ptr, 8);
+    
+     err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_as_securityinformation(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_AS_SECURITYINFORMATION_STRUCT            *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    liblte_align_up(ptr, 8);
+    ie->ext = liblte_bits_2_value(ptr, 1);
+    if (ie->ext) {
+      liblte_x2ap_log_print("AS_SecurityInformation error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    if (liblte_x2ap_unpack_key_enodeb_star(ptr, &ie->key_eNodeB_star) != LIBLTE_SUCCESS)
+      return LIBLTE_ERROR_DECODE_FAIL;
+    
+    if (liblte_x2ap_unpack_nexthopchainingcount(ptr, &ie->nextHopChainingCount) != LIBLTE_SUCCESS)
+      return LIBLTE_ERROR_DECODE_FAIL;
+
+    if (ie->iE_Extensions_present)
+      if (liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS)
+        return LIBLTE_ERROR_DECODE_FAIL;
+
+    liblte_align_up(ptr, 8);
+    
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* Protocol Message AS_SecurityInformation_Ext STRUCT
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_as_securityinformation_ext(
+  LIBLTE_X2AP_MESSAGE_AS_SECURITYINFORMATION_EXT_STRUCT *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    liblte_align_up_zero(ptr, 8);
+    if (ie->ext) {
+      liblte_x2ap_log_print("AS_SecurityInformation_Ext error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    liblte_align_up_zero(ptr, 8);
+     err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_as_securityinformation_ext(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_MESSAGE_AS_SECURITYINFORMATION_EXT_STRUCT *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    liblte_align_up(ptr, 8);
+    ie->ext = liblte_bits_2_value(ptr, 1);
+    if (ie->ext) {
+      liblte_x2ap_log_print("AS_SecurityInformation_Ext error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE AllocationAndRetentionPriority SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_allocationandretentionpriority(
+  LIBLTE_X2AP_ALLOCATIONANDRETENTIONPRIORITY_STRUCT            *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    liblte_align_up_zero(ptr, 8);
+    if (ie->ext) {
+      liblte_x2ap_log_print("AllocationAndRetentionPriority error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    liblte_value_2_bits(ie->iE_Extensions_present ? 1:0, ptr, 1);
+
+    if (liblte_x2ap_pack_prioritylevel(&ie->priorityLevel, ptr) != LIBLTE_SUCCESS)
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    
+    if (liblte_x2ap_pack_pre_emptioncapability(&ie->pre_emptioncapability, ptr) != LIBLTE_SUCCESS)
+      return LIBLTE_ERROR_ENCODE_FAIL;
+
+    if (liblte_x2ap_pack_pre_emptionvulnerability(&ie->pre_emptionVulnerability, ptr) != LIBLTE_SUCCESS)
+      return LIBLTE_ERROR_ENCODE_FAIL;
+
+    if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS)
+      return LIBLTE_ERROR_ENCODE_FAIL;
+
+    liblte_align_up_zero(ptr, 8);
+    
+     err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_allocationandretentionpriority(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_ALLOCATIONANDRETENTIONPRIORITY_STRUCT            *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    liblte_align_up(ptr, 8);
+    ie->ext = liblte_bits_2_value(ptr, 1);
+    if (ie->ext) {
+      liblte_x2ap_log_print("AllocationAndRetentionPriority error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    if (liblte_x2ap_unpack_prioritylevel(ptr, &ie->priorityLevel) != LIBLTE_SUCCESS)
+      return LIBLTE_ERROR_DECODE_FAIL;
+    
+    if (liblte_x2ap_unpack_pre_emptioncapability(ptr, &ie->pre_emptioncapability) != LIBLTE_SUCCESS)
+      return LIBLTE_ERROR_DECODE_FAIL;
+
+    if (liblte_x2ap_unpack_pre_emptionvulnerability(ptr, &ie->pre_emptionVulnerability) != LIBLTE_SUCCESS)
+      return LIBLTE_ERROR_DECODE_FAIL;
+
+    if (ie->iE_Extensions_present)
+      if (liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS)
+        return LIBLTE_ERROR_DECODE_FAIL;
+
+    liblte_align_up(ptr, 8);
+    
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* Protocol Message AllocationAndRetentionPriority_Ext STRUCT
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_allocationandretentionpriority_ext(
+  LIBLTE_X2AP_MESSAGE_ALLOCATIONANDRETENTIONPRIORITY_EXT_STRUCT *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    liblte_align_up_zero(ptr, 8);
+    if (ie->ext) {
+      liblte_x2ap_log_print("AllocationAndRetentionPriority_Ext error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    liblte_align_up_zero(ptr, 8);
+     err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_allocationandretentionpriority_ext(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_MESSAGE_ALLOCATIONANDRETENTIONPRIORITY_EXT_STRUCT *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    liblte_align_up(ptr, 8);
+    ie->ext = liblte_bits_2_value(ptr, 1);
+    if (ie->ext) {
+      liblte_x2ap_log_print("AllocationAndRetentionPriority_Ext error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE BroadcastPLMNs_Item DYNAMIC SEQUENCE OF
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_broadcastplmns_item(
+  LIBLTE_X2AP_BROADCASTPLMNS_ITEM_STRUCT                                    *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    liblte_align_up_zero(ptr, 8);
+    liblte_value_2_bits(ie->len, ptr, 3);
+    
+    for (uint32_t i = 0; i < ie->len; ++i)
+      if (liblte_x2ap_pack_plmn_identity(&ie->buffer[i], ptr) != LIBLTE_SUCCESS)
+        return LIBLTE_ERROR_ENCODE_FAIL;
+
+    liblte_align_up_zero(ptr, 8);
+     err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_broadcastplmns_item(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_BROADCASTPLMNS_ITEM_STRUCT                                    *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    liblte_align_up(ptr, 8);
+    ie->len = liblte_bits_2_value(ptr, 3);
+    
+    for (uint32_t i = 0; i < ie->len; ++i)
+      if (liblte_x2ap_unpack_plmn_identity(ptr, &ie->buffer[i]) != LIBLTE_SUCCESS)
+        return LIBLTE_ERROR_ENCODE_FAIL;
+
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE Cause CHOICE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_cause(
+  LIBLTE_X2AP_CAUSE_STRUCT                                     *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("Cause error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    // Choice type
+    liblte_value_2_bits(ie->choice_type, ptr, 3);
+
+    // Choice
+    if(ie->choice_type == LIBLTE_X2AP_CAUSE_CHOICE_RADIONETWORK) {
+      if(liblte_x2ap_pack_causeradionetwork(&ie->choice.radioNetwork, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    } else if(ie->choice_type == LIBLTE_X2AP_CAUSE_CHOICE_TRANSPORT) {
+      if(liblte_x2ap_pack_causetransport(&ie->choice.transport, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    } else if(ie->choice_type == LIBLTE_X2AP_CAUSE_CHOICE_PROTOCOL) {
+      if(liblte_x2ap_pack_causeprotocol(&ie->choice.protocol, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    } else if(ie->choice_type == LIBLTE_X2AP_CAUSE_CHOICE_MISC) {
+      if(liblte_x2ap_pack_causemisc(&ie->choice.misc, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    } 
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_cause(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_CAUSE_STRUCT                                     *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("Cause error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    // Choice type
+    ie->choice_type = (LIBLTE_X2AP_CAUSE_CHOICE_ENUM)liblte_bits_2_value(ptr, 3);
+
+    // Choice
+    if(ie->choice_type == LIBLTE_X2AP_CAUSE_CHOICE_RADIONETWORK) {
+      if(liblte_x2ap_unpack_causeradionetwork(ptr, &ie->choice.radioNetwork) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    } else if(ie->choice_type == LIBLTE_X2AP_CAUSE_CHOICE_TRANSPORT) {
+      if(liblte_x2ap_unpack_causetransport(ptr, &ie->choice.transport) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    } else if(ie->choice_type == LIBLTE_X2AP_CAUSE_CHOICE_PROTOCOL) {
+      if(liblte_x2ap_unpack_causeprotocol(ptr, &ie->choice.protocol) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    } else if(ie->choice_type == LIBLTE_X2AP_CAUSE_CHOICE_MISC) {
+      if(liblte_x2ap_unpack_causemisc(ptr, &ie->choice.misc) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    } 
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE ECGI SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_ecgi(
+  LIBLTE_X2AP_ECGI_STRUCT                                *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    liblte_align_up_zero(ptr, 8);
+    if (ie->ext) {
+      liblte_x2ap_log_print("ECGI error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    liblte_value_2_bits(ie->iE_Extensions_present ? 1:0, ptr, 1);
+
+    if (liblte_x2ap_pack_plmn_identity(&ie->pLMN_Identity, ptr) != LIBLTE_SUCCESS)
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    
+    if (liblte_x2ap_pack_eutrancellidentifier(&ie->eUTRANcellIdentifier, ptr) != LIBLTE_SUCCESS)
+      return LIBLTE_ERROR_ENCODE_FAIL;
+
+    if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS)
+      return LIBLTE_ERROR_ENCODE_FAIL;
+
+    liblte_align_up_zero(ptr, 8);
+    
+     err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_ecgi(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_ECGI_STRUCT                                *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    liblte_align_up(ptr, 8);
+    ie->ext = liblte_bits_2_value(ptr, 1);
+    if (ie->ext) {
+      liblte_x2ap_log_print("ECGI error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    if (liblte_x2ap_unpack_plmn_identity(ptr, &ie->pLMN_Identity) != LIBLTE_SUCCESS)
+      return LIBLTE_ERROR_DECODE_FAIL;
+    
+    if (liblte_x2ap_unpack_eutrancellidentifier(ptr, &ie->eUTRANcellIdentifier) != LIBLTE_SUCCESS)
+      return LIBLTE_ERROR_DECODE_FAIL;
+
+    if (ie->iE_Extensions_present)
+      if (liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS)
+        return LIBLTE_ERROR_DECODE_FAIL;
+
+    liblte_align_up(ptr, 8);
+    
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* Protocol Message ECGI_Ext STRUCT
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_ecgi_ext(
+  LIBLTE_X2AP_MESSAGE_ECGI_EXT_STRUCT                    *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    liblte_align_up_zero(ptr, 8);
+    if (ie->ext) {
+      liblte_x2ap_log_print("ECGI_Ext error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    liblte_align_up_zero(ptr, 8);
+     err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_ecgi_ext(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_MESSAGE_ECGI_EXT_STRUCT                    *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    liblte_align_up(ptr, 8);
+    ie->ext = liblte_bits_2_value(ptr, 1);
+    if (ie->ext) {
+      liblte_x2ap_log_print("ECGI_Ext error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE CellIdListforMDT DYNAMIC SEQUENCE OF
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_cellidlistformdt(
+  LIBLTE_X2AP_CELLIDLISTFORMDT_STRUCT                          *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    if(ie->len > 32) {
+      liblte_x2ap_log_print("CellIdListforMDT pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    // Length
+    liblte_value_2_bits(ie->len-1, ptr, 5);
+    liblte_align_up_zero(ptr, 8);
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_x2ap_pack_ecgi(&ie->buffer[i], ptr) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_cellidlistformdt(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_CELLIDLISTFORMDT_STRUCT                          *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Length
+    ie->len = liblte_bits_2_value(ptr, 5) + 1;
+    liblte_align_up(ptr, 8);
+    if(ie->len > 32) {
+      liblte_x2ap_log_print("CellIdListforMDT unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_x2ap_unpack_ecgi(ptr, &ie->buffer[i]) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_DECODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE CellBasedMDT SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_cellbasedmdt(
+  LIBLTE_X2AP_CELLBASEDMDT_STRUCT            *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("CellBasedMDT error: S1AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
+
+    if(liblte_x2ap_pack_cellidlistformdt(&ie->cellIdListforMDT, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_cellbasedmdt(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_CELLBASEDMDT_STRUCT            *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("CellBasedMDT error: S1AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    if(liblte_x2ap_unpack_cellidlistformdt(ptr, &ie->cellIdListforMDT) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* Protocol Message CellBasedMDT_Ext STRUCT
+********************************************************************************/
+typedef struct{
+  bool                                                         ext;
+}LIBLTE_X2AP_MESSAGE_CELLBASEDMDT_EXT_STRUCT;
+
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_cellbasedmdt_ext(
+  LIBLTE_X2AP_MESSAGE_CELLBASEDMDT_EXT_STRUCT *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    liblte_align_up_zero(ptr, 8);
+    if (ie->ext) {
+      liblte_x2ap_log_print("CellBasedMDT_Ext error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    liblte_align_up_zero(ptr, 8);
+     err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_cellbasedmdt_ext(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_MESSAGE_CELLBASEDMDT_EXT_STRUCT *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+   if(ie  != NULL &&
+     ptr != NULL)
+  {
+    liblte_align_up(ptr, 8);
+    ie->ext = liblte_bits_2_value(ptr, 1);
+    if (ie->ext) {
+      liblte_x2ap_log_print("CellBasedMDT_Ext error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    liblte_align_up(ptr, 8);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
 
 /*******************************************************************************
 /* ProtocolIE-Field

@@ -301,7 +301,7 @@ typedef enum{
   LIBLTE_X2AP_CRITICALITY_IGNORE,
   LIBLTE_X2AP_CRITICALITY_NOTIFY,
   LIBLTE_X2AP_CRITICALITY_N_ITEMS,
-}LIBLTE_X2AP_CRITICALITY_ENUM;
+} LIBLTE_X2AP_CRITICALITY_ENUM;
 static const char liblte_x2ap_criticality_text[LIBLTE_X2AP_CRITICALITY_N_ITEMS][80] = {
   "reject",
   "ignore",
@@ -746,7 +746,8 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_earfcn(
 /* ProtocolIE EARFCNExtension INTEGER
 ********************************************************************************/
 typedef struct{
-uint16_t EARFCNExtension;
+// uint16_t EARFCNExtension; changed by ZY
+uint32_t EARFCNExtension;
 }LIBLTE_X2AP_EARFCNEXTENSION_STRUCT;
 
 LIBLTE_ERROR_ENUM liblte_x2ap_pack_earfcnextension(
@@ -999,7 +1000,8 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_time_ue_stayedincell_enhancedgranularity(
 /* ProtocolIE UE_S1AP_ID INTEGER
 ********************************************************************************/
 typedef struct{
-uint64_t UE_S1AP_ID;
+// uint64_t UE_S1AP_ID; // change to uint32_t by ZY
+uint32_t UE_S1AP_ID;
 }LIBLTE_X2AP_UE_S1AP_ID_STRUCT;
 
 LIBLTE_ERROR_ENUM liblte_x2ap_pack_ue_s1ap_id(
@@ -1072,7 +1074,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_ul_total_prb_usage(
 ********************************************************************************/
 #define LIBLTE_X2AP_CRNTI_BIT_STRING_LEN 16
 typedef struct{
-  uint8_t  buffer[16];
+  uint8_t  buffer[LIBLTE_X2AP_CRNTI_BIT_STRING_LEN];
 }LIBLTE_X2AP_CRNTI_STRUCT;
 
 LIBLTE_ERROR_ENUM liblte_x2ap_pack_crnti(
@@ -1362,11 +1364,11 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_transportlayeraddress(
 /*******************************************************************************
 /* ProtocolIE UL_HighInterferenceIndication DYNAMIC BIT STRING
 ********************************************************************************/
-// lb:1, ub:120
+// lb:1, ub:110  changed by ZY
 typedef struct{
   bool     ext;
   uint32_t n_bits;
-  uint8_t  buffer[120];
+  uint8_t  buffer[110]; // changed by ZY
 }LIBLTE_X2AP_UL_HIGHINTERFERENCEINDICATION_STRUCT;
 
 LIBLTE_ERROR_ENUM liblte_x2ap_pack_ul_highinterferenceindication(
@@ -1441,10 +1443,11 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_lac(
 /*******************************************************************************
 /* ProtocolIE LastVisitedUTRANCellInformation DYNAMIC OCTET STRING
 ********************************************************************************/
-// lb:0, ub:16318
+// lb:0, ub:16318  <-- This is not consistent with ASN.1, should be
+// lb:None  ub:None
 typedef struct{
   uint32_t n_octets;
-  uint8_t  buffer[16318];
+  uint8_t  buffer[16384]; // WARNING: this is an artificial boundary
 }LIBLTE_X2AP_LASTVISITEDUTRANCELLINFORMATION_STRUCT;
 
 LIBLTE_ERROR_ENUM liblte_x2ap_pack_lastvisitedutrancellinformation(
@@ -1517,10 +1520,11 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_plmn_identity(
 /*******************************************************************************
 /* ProtocolIE RRC_Context DYNAMIC OCTET STRING
 ********************************************************************************/
-// lb:0, ub:16318
+// lb:0, ub:16318, this is artificial limit
+// lb:0, ub:None is the real limit, by ZY
 typedef struct{
   uint32_t n_octets;
-  uint8_t  buffer[16318];
+  uint8_t  buffer[16318]; // WARNING: artificial limit
 }LIBLTE_X2AP_RRC_CONTEXT_STRUCT;
 
 LIBLTE_ERROR_ENUM liblte_x2ap_pack_rrc_context(
@@ -1548,7 +1552,8 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_tac(
 /*******************************************************************************
 /* ProtocolIE TargetCellInUTRAN DYNAMIC OCTET STRING
 ********************************************************************************/
-// lb:0, ub:16318
+// lb:0, ub:16318, this is artificial limit
+// lb:0, ub:None is the real limit, by ZY
 typedef struct{
   uint32_t n_octets;
   uint8_t  buffer[16318];
@@ -1564,7 +1569,8 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_targetcellinutran(
 /*******************************************************************************
 /* ProtocolIE TargeteNBtoSource_eNBTransparentContainer DYNAMIC OCTET STRING
 ********************************************************************************/
-// lb:0, ub:16318
+// lb:0, ub:16318, this is artificial limit
+// lb:0, ub:None is the real limit, by ZY
 typedef struct{
   uint32_t n_octets;
   uint8_t  buffer[16318];
@@ -1580,7 +1586,8 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_targetenbtosource_enbtransparentcontainer(
 /*******************************************************************************
 /* ProtocolIE UL_RLF_Report_Container DYNAMIC OCTET STRING
 ********************************************************************************/
-// lb:0, ub:16318
+// lb:0, ub:16318, this is artificial limit
+// lb:0, ub:None is the real limit, by ZY
 typedef struct{
   uint32_t n_octets;
   uint8_t  buffer[16318];
@@ -1608,7 +1615,7 @@ typedef enum{
   LIBLTE_X2AP_ADDITIONALSPECIALSUBFRAMEPATTERNS_SSP6,
   LIBLTE_X2AP_ADDITIONALSPECIALSUBFRAMEPATTERNS_SSP7,
   LIBLTE_X2AP_ADDITIONALSPECIALSUBFRAMEPATTERNS_SSP8,
-  LIBLTE_X2AP_ADDITIONALSPECIALSUBFRAMEPATTERNS_SSP9,
+  // LIBLTE_X2AP_ADDITIONALSPECIALSUBFRAMEPATTERNS_SSP9, comment out by ZY, not present in ASN.1
   LIBLTE_X2AP_ADDITIONALSPECIALSUBFRAMEPATTERNS_N_ITEMS,
 }LIBLTE_X2AP_ADDITIONALSPECIALSUBFRAMEPATTERNS_ENUM;
 static const char liblte_x2ap_additionalspecialsubframepatterns_text[LIBLTE_X2AP_ADDITIONALSPECIALSUBFRAMEPATTERNS_N_ITEMS][80] = {
@@ -1621,7 +1628,7 @@ static const char liblte_x2ap_additionalspecialsubframepatterns_text[LIBLTE_X2AP
   "ssp6",
   "ssp7",
   "ssp8",
-  "ssp9",
+  // "ssp9", comment out by ZY, not present in ASN.1
 };
 
 typedef struct{
@@ -2371,11 +2378,13 @@ typedef struct{
 }LIBLTE_X2AP_RADIOFRAMEALLOCATIONPERIOD_ENUM_EXT;
 
 LIBLTE_ERROR_ENUM liblte_x2ap_pack_radioframeallocationperiod(
-  LIBLTE_X2AP_RADIOFRAMEALLOCATIONPERIOD_ENUM                    *ie,
+//   LIBLTE_X2AP_RADIOFRAMEALLOCATIONPERIOD_ENUM                    *ie, changed by ZY
+  LIBLTE_X2AP_RADIOFRAMEALLOCATIONPERIOD_ENUM_EXT                    *ie,
   uint8_t                                                     **ptr);
 LIBLTE_ERROR_ENUM liblte_x2ap_unpack_radioframeallocationperiod(
   uint8_t                                                     **ptr,
-  LIBLTE_X2AP_RADIOFRAMEALLOCATIONPERIOD_ENUM                    *ie);
+// LIBLTE_X2AP_RADIOFRAMEALLOCATIONPERIOD_ENUM                    *ie); changed by ZY
+LIBLTE_X2AP_RADIOFRAMEALLOCATIONPERIOD_ENUM_EXT                    *ie);
 
 /*******************************************************************************
 /* ProtocolIE Registration_Request ENUMERATED
@@ -2547,11 +2556,13 @@ typedef struct{
 }LIBLTE_X2AP_RNTP_THRESHOLD_ENUM_EXT;
 
 LIBLTE_ERROR_ENUM liblte_x2ap_pack_rntp_threshold(
-  LIBLTE_X2AP_RNTP_THRESHOLD_ENUM                           *ie,
+//   LIBLTE_X2AP_RNTP_THRESHOLD_ENUM                           *ie, changed by ZY
+   LIBLTE_X2AP_RNTP_THRESHOLD_ENUM_EXT                           *ie,
   uint8_t                                                     **ptr);
 LIBLTE_ERROR_ENUM liblte_x2ap_unpack_rntp_threshold(
   uint8_t                                                     **ptr,
-  LIBLTE_X2AP_RNTP_THRESHOLD_ENUM                           *ie);
+//   LIBLTE_X2AP_RNTP_THRESHOLD_ENUM                           *ie); changed by ZY
+   LIBLTE_X2AP_RNTP_THRESHOLD_ENUM_EXT                         *ie);
 
 
 /*******************************************************************************
@@ -2862,7 +2873,8 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_ul_interferenceoverloadindication_item(
 typedef struct{
   bool                                                         ext;
   uint8_t abs_pattern_info[40]; // BIT STRING
-  enum numberofCellSpecificAntennaPorts {one, two, four};
+  // enum numberofCellSpecificAntennaPorts {one, two, four}; wrong. fixed by ZY.
+  enum {one, two, four} numberofCellSpecificAntennaPorts;
   uint8_t measurement_subset[40]; // BIT STRING
   LIBLTE_X2AP_PROTOCOLEXTENSIONCONTAINER_STRUCT iE_Extensions;
   bool iE_Extensions_present;
@@ -2895,7 +2907,8 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_absinformationfdd_ext(
 typedef struct{
   bool                                                         ext;
   uint8_t abs_pattern_info[70]; // BIT STRING
-  enum numberofCellSpecificAntennaPorts {one, two, four};
+  // enum numberofCellSpecificAntennaPorts {one, two, four}; wrong. fixed by ZY.
+  enum {one, two, four} numberofCellSpecificAntennaPorts;
   uint8_t measurement_subset[70]; // BIT STRING
   LIBLTE_X2AP_PROTOCOLEXTENSIONCONTAINER_STRUCT iE_Extensions;
   bool iE_Extensions_present;
@@ -3185,7 +3198,8 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_allocationandretentionpriority_ext(
 // lb:1, ub:6
 typedef struct{
   uint32_t                                                     len;
-  LIBLTE_X2AP_TBCD_STRING_STRUCT                               buffer[6];
+  // LIBLTE_X2AP_TBCD_STRING_STRUCT                               buffer[6]; wrong, fixed by ZY
+  LIBLTE_X2AP_PLMN_IDENTITY_STRUCT                             buffer[6];
 }LIBLTE_X2AP_BROADCASTPLMNS_ITEM_STRUCT;
 
 LIBLTE_ERROR_ENUM liblte_x2ap_pack_broadcastplmns_item(
@@ -3237,7 +3251,8 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_cause(
 ********************************************************************************/
 typedef struct{
   bool                                                         ext;
-  LIBLTE_X2AP_TBCD_STRING_STRUCT                               pLMN_Identity;
+  // LIBLTE_X2AP_TBCD_STRING_STRUCT                               pLMN_Identity; error, fixed by ZY
+  LIBLTE_X2AP_PLMN_IDENTITY_STRUCT                           pLMN_Identity;
   LIBLTE_X2AP_EUTRANCELLIDENTIFIER_STRUCT                   eUTRANcellIdentifier;
   LIBLTE_X2AP_PROTOCOLEXTENSIONCONTAINER_STRUCT                iE_Extensions;
   bool                                                         iE_Extensions_present;

@@ -9327,15 +9327,16 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_enbdirectinformationtransfer(
 /*******************************************************************************
 /* Protocol Message E_RABDataForwardingItem STRUCT
 ********************************************************************************/
+//Luca: fix name...
 typedef struct{
   bool                                                         ext;
   LIBLTE_S1AP_E_RABDATAFORWARDINGITEM_STRUCT                   E_RABDataForwardingItem;
 }LIBLTE_S1AP_MESSAGE_E_RABDATAFORWARDINGITEM_STRUCT;
 
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_e_rabdataforwardingitem(
+LIBLTE_ERROR_ENUM liblte_s1ap_pack_message_e_rabdataforwardingitem(
   LIBLTE_S1AP_MESSAGE_E_RABDATAFORWARDINGITEM_STRUCT           *ie,
   uint8_t                                                     **ptr);
-LIBLTE_ERROR_ENUM liblte_s1ap_unpack_e_rabdataforwardingitem(
+LIBLTE_ERROR_ENUM liblte_s1ap_unpack_message_e_rabdataforwardingitem(
   uint8_t                                                     **ptr,
   LIBLTE_S1AP_MESSAGE_E_RABDATAFORWARDINGITEM_STRUCT           *ie);
 

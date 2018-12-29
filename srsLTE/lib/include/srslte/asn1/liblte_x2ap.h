@@ -2579,7 +2579,7 @@ static const char liblte_x2ap_rrcconnreestabindicator_text[LIBLTE_X2AP_RRCCONNRE
   "handoverFailure",
   "otherFailure",
 };
-
+//Luca: fix the name ronn->conn
 typedef struct{
   bool                                                         ext;
   LIBLTE_X2AP_RRCCONNREESTABINDICATOR_ENUM e;
@@ -2588,7 +2588,7 @@ typedef struct{
 LIBLTE_ERROR_ENUM liblte_x2ap_pack_rrcconnreestabindicator(
   LIBLTE_X2AP_RRCCONNREESTABINDICATOR_ENUM_EXT                 *ie,
   uint8_t                                                     **ptr);
-LIBLTE_ERROR_ENUM liblte_x2ap_unpack_rrcronnreestabindicator(
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_rrcconnreestabindicator(
   uint8_t                                                     **ptr,
   LIBLTE_X2AP_RRCCONNREESTABINDICATOR_ENUM_EXT                 *ie);
 
@@ -2611,7 +2611,7 @@ typedef struct{
 LIBLTE_ERROR_ENUM liblte_x2ap_pack_rrcconnsetupindicator(
   LIBLTE_X2AP_RRCCONNSETUPINDICATOR_ENUM_EXT                 *ie,
   uint8_t                                                     **ptr);
-LIBLTE_ERROR_ENUM liblte_x2ap_unpack_rrcronnsetupindicator(
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_rrcconnsetupindicator(
   uint8_t                                                     **ptr,
   LIBLTE_X2AP_RRCCONNSETUPINDICATOR_ENUM_EXT                 *ie);
 
@@ -4934,10 +4934,11 @@ typedef struct{
   bool                                                         iE_Extensions_present;
 }LIBLTE_X2AP_SERVEDCELL_INFORMATION_STRUCT;
 
-LIBLTE_ERROR_ENUM liblte_x2ap_pack_servedCell(
+//func name fixed by Luca
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_servedcell_information(
   LIBLTE_X2AP_SERVEDCELL_INFORMATION_STRUCT                           *ie,
   uint8_t                                                     **ptr);
-LIBLTE_ERROR_ENUM liblte_x2ap_unpack_servedcell(
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_servedcell_information(
   uint8_t                                                     **ptr,
   LIBLTE_X2AP_SERVEDCELL_INFORMATION_STRUCT                           *ie);
 
@@ -4970,6 +4971,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_servedcell_information_ext(
 /*******************************************************************************
 /* ProtocolIE ServedCell SEQUENCE
 ********************************************************************************/
+//Luca: capital letter fix
 typedef struct{
   bool                                                         ext;
   LIBLTE_X2AP_SERVEDCELL_INFORMATION_STRUCT                    servedCellInfo;
@@ -4979,7 +4981,7 @@ typedef struct{
   bool                                                         iE_Extensions_present;
 }LIBLTE_X2AP_SERVEDCELL_STRUCT;
 
-LIBLTE_ERROR_ENUM liblte_x2ap_pack_servedCell(
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_servedcell(
   LIBLTE_X2AP_SERVEDCELL_STRUCT                           *ie,
   uint8_t                                                     **ptr);
 LIBLTE_ERROR_ENUM liblte_x2ap_unpack_servedcell(
@@ -5890,15 +5892,15 @@ typedef struct{
   LIBLTE_X2AP_CAUSE_STRUCT                                     Cause;
   bool                                                         Cause_present;
   LIBLTE_X2AP_CRITICALITYDIAGNOSTICS_STRUCT                    CriticalityDiagnostics;
-  bool                                                         criticalityDiagnostics_present;
+  bool                                                         CriticalityDiagnostics_present;
 }LIBLTE_X2AP_MESSAGE_ERRORINDICATION_STRUCT;
 
 LIBLTE_ERROR_ENUM liblte_x2ap_pack_errorindication(
-  LIBLTE_X2AP_MESSAGE_ERRORINDICATION_STRUCT                    *ie,
+  LIBLTE_X2AP_MESSAGE_ERRORINDICATION_STRUCT                    *msg,
   uint8_t                                                     **ptr);
 LIBLTE_ERROR_ENUM liblte_x2ap_unpack_errorindication(
   uint8_t                                                     **ptr,
-  LIBLTE_X2AP_MESSAGE_ERRORINDICATION_STRUCT                    *ie);
+  LIBLTE_X2AP_MESSAGE_ERRORINDICATION_STRUCT                    *msg);
 
 /*-- **************************************************************
  *--
@@ -6060,8 +6062,8 @@ typedef struct{
   bool                                                         ext;
   LIBLTE_X2AP_ABSINFORMATION_STRUCT                            ABSInformation;
   bool                                                         ABSInformation_present;
-  LIBLTE_X2AP_INVOKEINDICATION_ENUM_EXT                        InvokedIndication;
-  bool                                                         InvokedIndication_present;
+  LIBLTE_X2AP_INVOKEINDICATION_ENUM_EXT                        InvokeIndication; //change by Luca, invoke.
+  bool                                                         InvokeIndication_present;
 }LIBLTE_X2AP_MESSAGE_CELLINFORMATION_ITEM_EXT_STRUCT;
 
 LIBLTE_ERROR_ENUM liblte_x2ap_pack_cellinformation_item_ext(
@@ -6074,15 +6076,16 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_cellinformation_item_ext(
 /*******************************************************************************
 /* Protocol Message CellInformation_Item STRUCT
 ********************************************************************************/
+// Luca: fixed function name, add message_
 typedef struct{
   bool                                                         ext;
   LIBLTE_X2AP_CELLINFORMATION_ITEM_STRUCT                      CellInformation_Item;
 }LIBLTE_X2AP_MESSAGE_CELLINFORMATION_ITEM_STRUCT;
 
-LIBLTE_ERROR_ENUM liblte_x2ap_pack_cellinformation_item(
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_message_cellinformation_item(
   LIBLTE_X2AP_MESSAGE_CELLINFORMATION_ITEM_STRUCT                 *ie,
   uint8_t                                                     **ptr);
-LIBLTE_ERROR_ENUM liblte_x2ap_unpack_cellinformation_item(
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_message_cellinformation_item(
   uint8_t                                                     **ptr,
   LIBLTE_X2AP_MESSAGE_CELLINFORMATION_ITEM_STRUCT                 *ie);
 
@@ -6306,15 +6309,16 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_celltoreport_item_ext(
 /*******************************************************************************
 /* Protocol Message CellToReport_Item STRUCT
 ********************************************************************************/
+//func name changed by Luca
 typedef struct{
   bool                                                         ext;
   LIBLTE_X2AP_CELLTOREPORT_ITEM_STRUCT                         CellToReport_Item;
 }LIBLTE_X2AP_MESSAGE_CELLTOREPORT_ITEM_STRUCT;
 
-LIBLTE_ERROR_ENUM liblte_x2ap_pack_celltoreport_item(
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_message_celltoreport_item(
   LIBLTE_X2AP_MESSAGE_CELLTOREPORT_ITEM_STRUCT                 *ie,
   uint8_t                                                     **ptr);
-LIBLTE_ERROR_ENUM liblte_x2ap_unpack_celltoreport_item(
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_message_celltoreport_item(
   uint8_t                                                     **ptr,
   LIBLTE_X2AP_MESSAGE_CELLTOREPORT_ITEM_STRUCT                 *ie);
 
@@ -6364,7 +6368,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_reportingperiodicity(
   LIBLTE_X2AP_REPORTINGPERIODICITY_ENUM_EXT                                *ie);
 
 /*******************************************************************************
-/* ProtocolIE ReartialSuccessIndicator ENUMERATED
+/* ProtocolIE PartialSuccessIndicator ENUMERATED
 ********************************************************************************/
 typedef enum{
   LIBLTE_X2AP_PARTIALSUCCESSINDICATOR_PARTIAL_SUCCESS_ALLOWED,
@@ -6453,15 +6457,16 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_measurementfailurecause_item_ext(
 /*******************************************************************************
 /* Protocol Message MeasurementFailureCause_Item STRUCT
 ********************************************************************************/
+//Luca: change func name add message
 typedef struct{
   bool                                                         ext;
   LIBLTE_X2AP_MEASUREMENTFAILURECAUSE_ITEM_STRUCT              MeasurementFailureCause_Item;
 }LIBLTE_X2AP_MESSAGE_MEASUREMENTFAILURECAUSE_ITEM_STRUCT;
 
-LIBLTE_ERROR_ENUM liblte_x2ap_pack_measurementfailurecause_item(
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_message_measurementfailurecause_item(
   LIBLTE_X2AP_MESSAGE_MEASUREMENTFAILURECAUSE_ITEM_STRUCT                 *ie,
   uint8_t                                                     **ptr);
-LIBLTE_ERROR_ENUM liblte_x2ap_unpack_measurementfailurecause_item(
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_message_measurementfailurecause_item(
   uint8_t                                                     **ptr,
   LIBLTE_X2AP_MESSAGE_MEASUREMENTFAILURECAUSE_ITEM_STRUCT                 *ie);
 
@@ -6517,15 +6522,16 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_measurementinitiationresult_item_ext(
 /*******************************************************************************
 /* Protocol Message MeasurementInitiationResult_Item STRUCT
 ********************************************************************************/
+//Luca: change func name add message
 typedef struct{
   bool                                                         ext;
   LIBLTE_X2AP_MEASUREMENTINITIATIONRESULT_ITEM_STRUCT          MeasurementInitiationResult_Item;
 }LIBLTE_X2AP_MESSAGE_MEASUREMENTINITIATIONRESULT_ITEM_STRUCT;
 
-LIBLTE_ERROR_ENUM liblte_x2ap_pack_measurementinitiationresult_item(
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_message_measurementinitiationresult_item(
   LIBLTE_X2AP_MESSAGE_MEASUREMENTINITIATIONRESULT_ITEM_STRUCT                 *ie,
   uint8_t                                                     **ptr);
-LIBLTE_ERROR_ENUM liblte_x2ap_unpack_measurementinitiationresult_item(
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_message_measurementinitiationresult_item(
   uint8_t                                                     **ptr,
   LIBLTE_X2AP_MESSAGE_MEASUREMENTINITIATIONRESULT_ITEM_STRUCT                 *ie);
 
@@ -6607,15 +6613,16 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_completefailurecauseinformation_item_ext(
 /*******************************************************************************
 /* Protocol Message CompleteFailureCauseInformation_Item STRUCT
 ********************************************************************************/
+//Luca: change func name
 typedef struct{
   bool                                                         ext;
   LIBLTE_X2AP_COMPLETEFAILURECAUSEINFORMATION_ITEM_STRUCT      CompleteFailureCauseInformation_Item;
 }LIBLTE_X2AP_MESSAGE_COMPLETEFAILURECAUSEINFORMATION_ITEM_STRUCT;
 
-LIBLTE_ERROR_ENUM liblte_x2ap_pack_completefailurecauseinformation_item(
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_message_completefailurecauseinformation_item(
   LIBLTE_X2AP_MESSAGE_COMPLETEFAILURECAUSEINFORMATION_ITEM_STRUCT                 *ie,
   uint8_t                                                     **ptr);
-LIBLTE_ERROR_ENUM liblte_x2ap_unpack_completefailurecauseinformation_item(
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_message_completefailurecauseinformation_item(
   uint8_t                                                     **ptr,
   LIBLTE_X2AP_MESSAGE_COMPLETEFAILURECAUSEINFORMATION_ITEM_STRUCT                 *ie);
 
@@ -6707,15 +6714,16 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_cellmeasurementresult_item_ext(
 /*******************************************************************************
 /* Protocol Message CellMeasurementResult_Item STRUCT
 ********************************************************************************/
+//Luca: change func name
 typedef struct{
   bool                                                         ext;
   LIBLTE_X2AP_CELLMEASUREMENTRESULT_ITEM_STRUCT                CellMeasurementResult_Item;
 }LIBLTE_X2AP_MESSAGE_CELLMEASUREMENTRESULT_ITEM_STRUCT;
 
-LIBLTE_ERROR_ENUM liblte_x2ap_pack_cellmeasurementresult_item(
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_message_cellmeasurementresult_item(
   LIBLTE_X2AP_MESSAGE_CELLMEASUREMENTRESULT_ITEM_STRUCT                 *ie,
   uint8_t                                                     **ptr);
-LIBLTE_ERROR_ENUM liblte_x2ap_unpack_cellmeasurementresult_item(
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_message_cellmeasurementresult_item(
   uint8_t                                                     **ptr,
   LIBLTE_X2AP_MESSAGE_CELLMEASUREMENTRESULT_ITEM_STRUCT                 *ie);
 

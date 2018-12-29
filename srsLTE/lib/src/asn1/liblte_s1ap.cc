@@ -31609,7 +31609,8 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_errorindication(
       n_ie--;
     if(!msg->CriticalityDiagnostics_present)
       n_ie--;
-    liblte_value_2_bits(n_ie, ptr, 16);
+    //liblte_value_2_bits(n_ie, ptr, 16);
+    liblte_value_2_bits(n_ie, ptr, 3);  //Modified by Luca, ub 4.
 
     // Temp container for IEs
     LIBLTE_BIT_MSG_STRUCT tmp_msg;
@@ -31726,7 +31727,8 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_errorindication(
     }
 
     // No. of ProtocolIE-Container
-    n_ie = liblte_bits_2_value(ptr, 16);
+    //n_ie = liblte_bits_2_value(ptr, 16);
+    n_ie = liblte_bits_2_value(ptr, 3); //Modified by Luca, ub = 4
 
     // Unpack ProtocolIE Fields
     for(i=0;i<n_ie;i++) {
@@ -37365,7 +37367,7 @@ LIBLTE_ERROR_ENUM liblte_s1ap_unpack_enbdirectinformationtransfer(
 /*******************************************************************************
 /* Protocol Message E_RABDataForwardingItem STRUCT
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_s1ap_pack_e_rabdataforwardingitem(
+LIBLTE_ERROR_ENUM liblte_s1ap_pack_message_e_rabdataforwardingitem(
   LIBLTE_S1AP_MESSAGE_E_RABDATAFORWARDINGITEM_STRUCT                 *msg,
   uint8_t                                                           **ptr)
 {
@@ -37413,7 +37415,7 @@ LIBLTE_ERROR_ENUM liblte_s1ap_pack_e_rabdataforwardingitem(
   return err;
 }
 
-LIBLTE_ERROR_ENUM liblte_s1ap_unpack_e_rabdataforwardingitem(
+LIBLTE_ERROR_ENUM liblte_s1ap_unpack_message_e_rabdataforwardingitem(
   uint8_t                                                           **ptr,
   LIBLTE_S1AP_MESSAGE_E_RABDATAFORWARDINGITEM_STRUCT                 *msg)
 {

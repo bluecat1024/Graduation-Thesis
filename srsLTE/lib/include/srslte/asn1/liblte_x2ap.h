@@ -4860,7 +4860,7 @@ typedef struct{
   bool                                                         ext;
   uint8_t rNTP_PerPRB[110];
   LIBLTE_X2AP_RNTP_THRESHOLD_ENUM_EXT                          rNTP_Threshold;
-  enum numberOfCellSpecificAntennaPorts {one, two, four};
+  enum {one, two, four} numberOfCellSpecificAntennaPorts;
   uint32_t p_B;
   uint32_t pDCCH_InterferenceImpact;
   LIBLTE_X2AP_PROTOCOLEXTENSIONCONTAINER_STRUCT                iE_Extensions;
@@ -4994,7 +4994,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_servedcell(
 // lb:1, ub:256
 typedef struct{
   uint32_t                                                     len;
-  LIBLTE_X2AP_SERVEDCELL_STRUCT                          buffer[32]; //WARNING: Artificial limit to reduce memory footprint
+  LIBLTE_X2AP_SERVEDCELL_STRUCT                          buffer[256]; //WARNING: Artificial limit to reduce memory footprint
 }LIBLTE_X2AP_SERVEDCELLS_STRUCT;
 
 LIBLTE_ERROR_ENUM liblte_x2ap_pack_servedcells(

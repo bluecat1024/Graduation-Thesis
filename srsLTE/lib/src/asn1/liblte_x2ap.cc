@@ -107,7 +107,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_local(
   }
   return err;
 }
- /*******************************************************************************
+/*******************************************************************************
 /* ProtocolIE PrivateIE_ID CHOICE
 ********************************************************************************/
 LIBLTE_ERROR_ENUM liblte_x2ap_pack_privateie_id(
@@ -1425,7 +1425,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_pdcp_sn(
     // Integer - ie->PDCP_SN
     // lb:0, ub:4095
     liblte_align_up_zero(ptr, 8);
-    // liblte_value_2_bits(0, ptr, (1*8)-12); BUG! Comment out by ZY. S1AP is also buggy!
+    // liblte_value_2_bits(0, ptr, (1*8)-12); BUG! Comment out by ZY. X2AP is also buggy!
     liblte_value_2_bits(ie->PDCP_SN, ptr, 12);
     liblte_align_up_zero(ptr, 8);
     err = LIBLTE_SUCCESS;
@@ -1463,7 +1463,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_pdcp_snextended(
     // Integer - ie->PDCP_SNExtended
     // lb:0, ub:32767
     liblte_align_up_zero(ptr, 8);
-    // liblte_value_2_bits(0, ptr, (1*8)-15); BUG! Comment out by ZY. S1AP is also buggy!
+    // liblte_value_2_bits(0, ptr, (1*8)-15); BUG! Comment out by ZY. X2AP is also buggy!
     liblte_value_2_bits(ie->PDCP_SNExtended, ptr, 15);
     liblte_align_up_zero(ptr, 8);
     err = LIBLTE_SUCCESS;
@@ -1751,7 +1751,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_time_ue_stayedincell(
     // Integer - ie->Time_UE_StayedInCell
     // lb:0, ub:4095
     liblte_align_up_zero(ptr, 8);
-    // liblte_value_2_bits(0, ptr, (1*8)-12); BUG! Comment out by ZY. S1AP is also buggy.
+    // liblte_value_2_bits(0, ptr, (1*8)-12); BUG! Comment out by ZY. X2AP is also buggy.
     liblte_value_2_bits(ie->Time_UE_StayedInCell, ptr, 12);
     liblte_align_up_zero(ptr, 8);
     err = LIBLTE_SUCCESS;
@@ -1815,38 +1815,38 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_time_ue_stayedincell_enhancedgranularity(
 }
 
 /*******************************************************************************
-/* ProtocolIE UE_S1AP_ID INTEGER
+/* ProtocolIE UE_X2AP_ID INTEGER
 ********************************************************************************/
-LIBLTE_ERROR_ENUM liblte_x2ap_pack_ue_s1ap_id(
-  LIBLTE_X2AP_UE_S1AP_ID_STRUCT                  *ie,
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_ue_x2ap_id(
+  LIBLTE_X2AP_UE_X2AP_ID_STRUCT                  *ie,
   uint8_t                                                     **ptr)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
    if(ie  != NULL &&
      ptr != NULL)
   {
-    // Integer - ie->UE_S1AP_ID
+    // Integer - ie->UE_X2AP_ID
     // lb:0, ub:4294967295
     liblte_align_up_zero(ptr, 8);
-    liblte_value_2_bits(ie->UE_S1AP_ID, ptr, 32);
+    liblte_value_2_bits(ie->UE_X2AP_ID, ptr, 32);
     liblte_align_up_zero(ptr, 8);
     err = LIBLTE_SUCCESS;
   }
   return err;
 }
 
-LIBLTE_ERROR_ENUM liblte_x2ap_unpack_ue_s1ap_id(
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_ue_x2ap_id(
   uint8_t                                                     **ptr,
-  LIBLTE_X2AP_UE_S1AP_ID_STRUCT                  *ie)
+  LIBLTE_X2AP_UE_X2AP_ID_STRUCT                  *ie)
 {
   LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
    if(ie  != NULL &&
      ptr != NULL)
   {
-    // Integer - ie->UE_S1AP_ID
+    // Integer - ie->UE_X2AP_ID
     // lb:0, ub:4294967295
     liblte_align_up(ptr, 8);
-    ie->UE_S1AP_ID = (uint32_t)liblte_bits_2_value(ptr, 32);
+    ie->UE_X2AP_ID = (uint32_t)liblte_bits_2_value(ptr, 32);
     liblte_align_up(ptr, 8);
     err = LIBLTE_SUCCESS;
   }
@@ -3027,7 +3027,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_eutrantraceid(
      ptr != NULL)
   {
     // Static octet string - EUTRANTraceID
-    if(LIBLTE_X2AP_EUTRANTRACEID_OCTET_STRING_LEN > 2) { // Do what S1AP do. Not sure if alignment is necessary.
+    if(LIBLTE_X2AP_EUTRANTRACEID_OCTET_STRING_LEN > 2) { // Do what X2AP do. Not sure if alignment is necessary.
       liblte_align_up_zero(ptr, 8);
     }
     // Octets
@@ -3049,7 +3049,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_eutrantraceid(
      ptr != NULL)
   {
     // Static octet string - EUTRANTraceID
-    if(LIBLTE_X2AP_EUTRANTRACEID_OCTET_STRING_LEN > 2) { // Do what S1AP do. Not sure if alignment is necessary.
+    if(LIBLTE_X2AP_EUTRANTRACEID_OCTET_STRING_LEN > 2) { // Do what X2AP do. Not sure if alignment is necessary.
       liblte_align_up_zero(ptr, 8);
     }
     // Octets
@@ -7093,7 +7093,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_cellbasedmdt(
     // Extension
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     if(ie->ext) {
-      liblte_x2ap_log_print("CellBasedMDT error: S1AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("CellBasedMDT error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
@@ -7124,7 +7124,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_cellbasedmdt(
     // Extension
     ie->ext  = liblte_bits_2_value(ptr, 1);
     if(ie->ext) {
-      liblte_x2ap_log_print("CellBasedMDT error: S1AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("CellBasedMDT error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -7190,6 +7190,5387 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_cellbasedmdt_ext(
 }
 
 /*******************************************************************************
+/* ProtocolIE CellType SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_celltype(
+  LIBLTE_X2AP_CELLTYPE_STRUCT                                        *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("CellType error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
+
+    if(liblte_x2ap_pack_cell_size(&ie->cell_Size, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_celltype(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_CELLTYPE_STRUCT                                        *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("CellType error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    if(liblte_x2ap_unpack_cell_size(ptr, &ie->cell_Size) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* Protocol Message CellType_Ext STRUCT
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_celltype_ext(
+  LIBLTE_X2AP_MESSAGE_CELLTYPE_EXT_STRUCT                            *msg,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(msg != NULL &&
+     ptr != NULL)
+  {
+
+    // Extension
+    liblte_value_2_bits(msg->ext?1:0, ptr, 1);
+    liblte_align_up_zero(ptr, 8);
+    if(msg->ext) {
+      liblte_x2ap_log_print("CellType-ExtIEs error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    // No. of ProtocolIE
+    uint32_t n_ie = 0;
+    liblte_value_2_bits(n_ie, ptr, 16);
+
+    // Temp container for IEs
+    LIBLTE_BIT_MSG_STRUCT tmp_msg;
+    uint8_t              *tmp_ptr;
+
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_celltype_ext(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_MESSAGE_CELLTYPE_EXT_STRUCT                            *msg)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(msg != NULL &&
+     ptr != NULL)
+  {
+    LIBLTE_X2AP_CRITICALITY_ENUM crit;
+    uint32_t ie_id;
+    uint32_t len;
+    uint32_t n_ie;
+    uint32_t i;
+
+    // Set booleans
+
+    // Extension
+    msg->ext  = liblte_bits_2_value(ptr, 1);
+    liblte_align_up(ptr, 8);
+    if(msg->ext) {
+      liblte_x2ap_log_print("CellType-ExtIEs error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    // No. of ProtocolIE-Container
+    n_ie = liblte_bits_2_value(ptr, 16);
+
+
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE CompositeAvailableCapacity SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_compositeavailablecapacity(
+  LIBLTE_X2AP_COMPOSITEAVAILABLECAPACITY_STRUCT                                  *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("CellType error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
+
+    if(liblte_x2ap_pack_cellcapacityclassvalue(&ie->cellCapacityClassValue, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_pack_capacityvalue(&ie->capacityValue, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_compositeavailablecapacity(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_COMPOSITEAVAILABLECAPACITY_STRUCT                                  *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("CellType error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    if(liblte_x2ap_unpack_cellcapacityclassvalue(ptr, &ie->cellCapacityClassValue) !=  LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    if(liblte_x2ap_unpack_capacityvalue(ptr, &ie->capacityValue) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE CompositeAvailableCapacityGroup SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_compositeavailablecapacitygroup(
+  LIBLTE_X2AP_COMPOSITEAVAILABLECAPACITYGROUP_STRUCT                                  *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("CellType error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
+
+    if(liblte_x2ap_pack_compositeavailablecapacity(&ie->dL_CompositeAvailableCapacity, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_pack_compositeavailablecapacity(&ie->uL_CompositeAvailableCapacity, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_compositeavailablecapacitygroup(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_COMPOSITEAVAILABLECAPACITYGROUP_STRUCT                                  *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("CellType error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    if(liblte_x2ap_unpack_compositeavailablecapacity(ptr, &ie->dL_CompositeAvailableCapacity) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_unpack_compositeavailablecapacity(ptr, &ie->uL_CompositeAvailableCapacity) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE COUNTvalue SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_countvalue(
+  LIBLTE_X2AP_COUNTVALUE_STRUCT                                      *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("COUNTvalue error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
+
+    if(liblte_x2ap_pack_pdcp_sn(&ie->pDCP_SN, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(liblte_x2ap_pack_hfn(&ie->hFN, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_countvalue(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_COUNTVALUE_STRUCT                                      *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("COUNTvalue error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    if(liblte_x2ap_unpack_pdcp_sn(ptr, &ie->pDCP_SN) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    if(liblte_x2ap_unpack_hfn(ptr, &ie->hFN) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE COUNTValueExtended SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_countvalueextended(
+  LIBLTE_X2AP_COUNTVALUEEXTENDED_STRUCT                              *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("COUNTValueExtended error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
+
+    if(liblte_x2ap_pack_pdcp_snextended(&ie->pDCP_SNExtended, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(liblte_x2ap_pack_hfnmodified(&ie->hFNModified, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_countvalueextended(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_COUNTVALUEEXTENDED_STRUCT                              *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("COUNTValueExtended error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    if(liblte_x2ap_unpack_pdcp_snextended(ptr, &ie->pDCP_SNExtended) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    if(liblte_x2ap_unpack_hfnmodified(ptr, &ie->hFNModified) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE CriticalityDiagnostics_IE_Item SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_criticalitydiagnostics_ie_item(
+  LIBLTE_X2AP_CRITICALITYDIAGNOSTICS_IE_ITEM_STRUCT                  *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("CriticalityDiagnostics_IE_Item error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
+
+    // Enum - ie->iECriticality
+    liblte_value_2_bits(ie->iECriticality, ptr, 2);
+
+    if(liblte_x2ap_pack_protocolie_id(&ie->iE_ID, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(liblte_x2ap_pack_typeoferror(&ie->typeOfError, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_criticalitydiagnostics_ie_item(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_CRITICALITYDIAGNOSTICS_IE_ITEM_STRUCT                  *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("CriticalityDiagnostics_IE_Item error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    // Enum - ie->iECriticality
+    ie->iECriticality = (LIBLTE_X2AP_CRITICALITY_ENUM)liblte_bits_2_value(ptr, 2);
+
+    if(liblte_x2ap_unpack_protocolie_id(ptr, &ie->iE_ID) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    if(liblte_x2ap_unpack_typeoferror(ptr, &ie->typeOfError) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE CriticalityDiagnostics_IE_List DYNAMIC SEQUENCE OF
+********************************************************************************/
+// lb:1, ub:256
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_criticalitydiagnostics_ie_list(
+  LIBLTE_X2AP_CRITICALITYDIAGNOSTICS_IE_LIST_STRUCT                  *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    if(ie->len > 32) {
+      liblte_x2ap_log_print("CriticalityDiagnostics_IE_List pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    // Length
+    liblte_value_2_bits(ie->len-1, ptr, 8);
+    liblte_align_up_zero(ptr, 8);
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_x2ap_pack_criticalitydiagnostics_ie_item(&ie->buffer[i], ptr) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_criticalitydiagnostics_ie_list(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_CRITICALITYDIAGNOSTICS_IE_LIST_STRUCT                  *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Length
+    ie->len = liblte_bits_2_value(ptr, 8) + 1;
+    liblte_align_up(ptr, 8);
+    if(ie->len > 32) {
+      liblte_x2ap_log_print("CriticalityDiagnostics_IE_List unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_x2ap_unpack_criticalitydiagnostics_ie_item(ptr, &ie->buffer[i]) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_DECODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE CriticalityDiagnostics SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_criticalitydiagnostics(
+  LIBLTE_X2AP_CRITICALITYDIAGNOSTICS_STRUCT                          *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("CriticalityDiagnostics error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->procedureCode_present?1:0, ptr, 1);
+    liblte_value_2_bits(ie->triggeringMessage_present?1:0, ptr, 1);
+    liblte_value_2_bits(ie->procedureCriticality_present?1:0, ptr, 1);
+    liblte_value_2_bits(ie->iEsCriticalityDiagnostics_present?1:0, ptr, 1);
+    liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
+
+    if(ie->procedureCode_present) {
+      if(liblte_x2ap_pack_procedurecode(&ie->procedureCode, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+
+    if(ie->triggeringMessage_present) {
+      // Enum - ie->triggeringMessage
+    liblte_value_2_bits(ie->triggeringMessage, ptr, 2);
+    }
+
+    if(ie->procedureCriticality_present) {
+      // Enum - ie->procedureCriticality
+    liblte_value_2_bits(ie->procedureCriticality, ptr, 2);
+    }
+
+    if(ie->iEsCriticalityDiagnostics_present) {
+      if(liblte_x2ap_pack_criticalitydiagnostics_ie_list(&ie->iEsCriticalityDiagnostics, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_criticalitydiagnostics(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_CRITICALITYDIAGNOSTICS_STRUCT                          *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("CriticalityDiagnostics error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->procedureCode_present = liblte_bits_2_value(ptr, 1);
+    ie->triggeringMessage_present = liblte_bits_2_value(ptr, 1);
+    ie->procedureCriticality_present = liblte_bits_2_value(ptr, 1);
+    ie->iEsCriticalityDiagnostics_present = liblte_bits_2_value(ptr, 1);
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    if(ie->procedureCode_present) {
+      if(liblte_x2ap_unpack_procedurecode(ptr, &ie->procedureCode) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+
+    if(ie->triggeringMessage_present) {
+      // Enum - ie->triggeringMessage
+    ie->triggeringMessage = (LIBLTE_X2AP_TRIGGERINGMESSAGE_ENUM)liblte_bits_2_value(ptr, 2);
+    }
+
+    if(ie->procedureCriticality_present) {
+      // Enum - ie->procedureCriticality
+    ie->procedureCriticality = (LIBLTE_X2AP_CRITICALITY_ENUM)liblte_bits_2_value(ptr, 2);
+    }
+
+    if(ie->iEsCriticalityDiagnostics_present) {
+      if(liblte_x2ap_unpack_criticalitydiagnostics_ie_list(ptr, &ie->iEsCriticalityDiagnostics) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE SpecialSubframe_Info SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_specialsubframe_info(
+  LIBLTE_X2AP_SPECIALSUBFRAME_INFO_STRUCT                           *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("SpecialSubframe_Info SEQUENCE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
+
+    if(liblte_x2ap_pack_specialsubframepatterns(&ie->specialSubframePatterns, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(liblte_x2ap_pack_cyclicprefixdl(&ie->cyclicPrefixDL, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_pack_cyclicprefixul(&ie->cyclicPrefixUL, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_specialsubframe_info(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_SPECIALSUBFRAME_INFO_STRUCT                  *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("SpecialSubframe_Info SEQUENCE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    if(liblte_x2ap_unpack_specialsubframepatterns(ptr, &ie->specialSubframePatterns) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(liblte_x2ap_unpack_cyclicprefixdl(ptr, &ie->cyclicPrefixDL) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_unpack_cyclicprefixul(ptr, &ie->cyclicPrefixUL) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE FDD_Info SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_fdd_info(
+  LIBLTE_X2AP_FDD_INFO_STRUCT                                *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("FDD_Info SEQUENCE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
+
+    if(liblte_x2ap_pack_earfcn(&ie->uL_EARFCN, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_pack_earfcn(&ie->dL_EARFCN, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(liblte_x2ap_pack_transmission_bandwidth(&ie->uL_Transmission_Bandwidth, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_pack_transmission_bandwidth(&ie->dL_Transmission_Bandwidth, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_fdd_info(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_FDD_INFO_STRUCT                                *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("FDD_Info SEQUENCE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    if(liblte_x2ap_unpack_earfcn(ptr, &ie->uL_EARFCN) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_unpack_earfcn(ptr, &ie->dL_EARFCN) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(liblte_x2ap_unpack_transmission_bandwidth(ptr, &ie->uL_Transmission_Bandwidth) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_unpack_transmission_bandwidth(ptr, &ie->dL_Transmission_Bandwidth) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* Protocol Message FDD_Info_Ext STRUCT
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_fdd_info(
+  LIBLTE_X2AP_MESSAGE_FDD_INFO_EXT_STRUCT                                *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("FDD_Info_Ext error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->UL_EARFCNExtension_present?1:0, ptr, 1);
+    liblte_value_2_bits(ie->DL_EARFCNExtension_present?1:0, ptr, 1);
+
+    if(ie->UL_EARFCNExtension_present) {
+      if(liblte_x2ap_pack_earfcnextension(&ie->UL_EARFCNExtension, ptr) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+    }
+    
+    if(ie->DL_EARFCNExtension_present) {
+      if(liblte_x2ap_pack_earfcnextension(&ie->DL_EARFCNExtension, ptr) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+    }
+    
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_fdd_info(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_MESSAGE_FDD_INFO_EXT_STRUCT                                *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("FDD_Info_Ext error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->UL_EARFCNExtension_present = liblte_bits_2_value(ptr, 1);
+    ie->DL_EARFCNExtension_present = liblte_bits_2_value(ptr, 1);
+
+    if(ie->UL_EARFCNExtension_present) {
+      if(liblte_x2ap_unpack_earfcnextension(ptr, &ie->UL_EARFCNExtension) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+    }
+    
+    if(ie->DL_EARFCNExtension_present) {
+      if(liblte_x2ap_unpack_earfcnextension(ptr, &ie->DL_EARFCNExtension) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE TDD_Info SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_tdd_info(
+  LIBLTE_X2AP_TDD_INFO_STRUCT                                *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("TDD_Info SEQUENCE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
+
+    if(liblte_x2ap_pack_earfcn(&ie->eARFCN, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_pack_transmission_bandwidth(&ie->transmission_Bandwidth, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_pack_subframeassignment(&ie->subframeAssignment, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_pack_specialsubframe_info(&ie->specialSubframe_Info, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_tdd_info(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_TDD_INFO_STRUCT                                *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("TDD_Info SEQUENCE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    if(liblte_x2ap_unpack_earfcn(ptr, &ie->eARFCN) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_unpack_transmission_bandwidth(ptr, &ie->transmission_Bandwidth) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_unpack_subframeassignment(ptr, &ie->subframeAssignment) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_unpack_specialsubframe_info(ptr, &ie->specialSubframe_Info) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* Protocol Message TDD_Info_Ext STRUCT
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_tdd_info_ext(
+  LIBLTE_X2AP_MESSAGE_TDD_INFO_EXT_STRUCT                                *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("FDD_Info_Ext SEQUENCE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->AdditionalSpecialSubframe_present?1:0, ptr, 1);
+    liblte_value_2_bits(ie->eARFCNExtension_present?1:0, ptr, 1);
+
+    if(ie->AdditionalSpecialSubframe_present) {
+      if(liblte_x2ap_pack_additionalspecialsubframe_info(&ie->AdditionalSpecialSubframe_Info, ptr) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+    }
+    
+    if(ie->eARFCNExtension_present) {
+      if(liblte_x2ap_pack_earfcnextension(&ie->eARFCNExtension, ptr) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+    }
+    
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_tdd_info_ext(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_MESSAGE_TDD_INFO_EXT_STRUCT                                *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("FDD_Info_Ext SEQUENCE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->AdditionalSpecialSubframe_present = liblte_bits_2_value(ptr, 1);
+    ie->eARFCNExtension_present = liblte_bits_2_value(ptr, 1);
+
+    if(ie->AdditionalSpecialSubframe_present) {
+      if(liblte_x2ap_unpack_additionalspecialsubframe_info(ptr, &ie->AdditionalSpecialSubframe_Info) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+    }
+    
+    if(ie->eARFCNExtension_present) {
+      if(liblte_x2ap_unpack_earfcnextension(ptr, &ie->eARFCNExtension) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+    }
+
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE EUTRA_Mode_Info CHOICE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_eutra_mode_info(
+  LIBLTE_X2AP_EUTRA_MODE_INFO_STRUCT                                    *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+  if (ie != NULL &&
+      ptr != NULL)
+  {
+    if(ie->ext) {
+      liblte_x2ap_log_print("EUTRA_Mode_Info CHOICE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    // Choice type
+    liblte_value_2_bits(ie->choice_type, ptr, 1);
+    // Choice
+    if (ie->choice_type == LIBLTE_X2AP_EUTRA_MODE_INFO_FDD) {
+      if (liblte_x2ap_pack_fdd_info(&ie->choice.fDD, ptr) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+    }
+    else if (ie->choice_type == LIBLTE_X2AP_EUTRA_MODE_INFO_TDD) {
+      if (liblte_x2ap_pack_tdd_info(&ie->choice.tDD, ptr) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_eutra_mode_info(
+    uint8_t **ptr,
+    LIBLTE_X2AP_EUTRA_MODE_INFO_STRUCT *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+  if (ie != NULL &&
+      ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("EUTRA_Mode_Info CHOICE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    // Choice type
+    ie->choice_type = (LIBLTE_X2AP_EUTRA_MODE_INFO_CHOICE_ENUM)liblte_bits_2_value(ptr, 1);
+
+    // Choice
+    if (ie->choice_type == LIBLTE_X2AP_EUTRA_MODE_INFO_FDD) {
+      if (liblte_x2ap_unpack_fdd_info(ptr, &ie->choice.fDD) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+    }
+    else if (ie->choice_type == LIBLTE_X2AP_EUTRA_MODE_INFO_TDD) {
+      if (liblte_x2ap_unpack_tdd_info(ptr, &ie->choice.tDD) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE ENB_ID CHOICE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_enb_id(
+  LIBLTE_X2AP_ENB_ID_STRUCT                                          *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("ENB_ID error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    // Choice type
+    liblte_value_2_bits(ie->choice_type, ptr, 1);
+
+       // Choice
+ if(ie->choice_type == LIBLTE_X2AP_ENB_ID_CHOICE_MACROENB_ID) {
+      if(liblte_x2ap_pack_macroenb_id(&ie->choice.macroENB_ID, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    } else if(ie->choice_type == LIBLTE_X2AP_ENB_ID_CHOICE_HOMEENB_ID) {
+      if(liblte_x2ap_pack_homeenb_id(&ie->choice.homeENB_ID, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    } 
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_enb_id(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_ENB_ID_STRUCT                                          *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("ENB_ID error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    // Choice type
+    ie->choice_type = (LIBLTE_X2AP_ENB_ID_CHOICE_ENUM)liblte_bits_2_value(ptr, 1);
+
+       // Choice
+ if(ie->choice_type == LIBLTE_X2AP_ENB_ID_CHOICE_MACROENB_ID) {
+      if(liblte_x2ap_unpack_macroenb_id(ptr, &ie->choice.macroENB_ID) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    } else if(ie->choice_type == LIBLTE_X2AP_ENB_ID_CHOICE_HOMEENB_ID) {
+      if(liblte_x2ap_unpack_homeenb_id(ptr, &ie->choice.homeENB_ID) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    } 
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE EPLMNs DYNAMIC SEQUENCE OF
+********************************************************************************/
+// lb:1, ub:15
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_eplmns(
+  LIBLTE_X2AP_EPLMNS_STRUCT                                          *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    if(ie->len > 15) {
+      liblte_x2ap_log_print("EPLMNs pack error - max supported dynamic sequence length = 15, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    // Length
+    liblte_value_2_bits(ie->len-1, ptr, 4);
+    liblte_align_up_zero(ptr, 8);
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_x2ap_pack_tbcd_string(&ie->buffer[i], ptr) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_eplmns(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_EPLMNS_STRUCT                                          *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Length
+    ie->len = liblte_bits_2_value(ptr, 4) + 1;
+    liblte_align_up(ptr, 8);
+    if(ie->len > 15) {
+      liblte_x2ap_log_print("EPLMNs unpack error - max supported dynamic sequence length = 15, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_x2ap_unpack_tbcd_string(ptr, &ie->buffer[i]) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_DECODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE GBR_QosInformation SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_gbr_qosinformation(
+  LIBLTE_X2AP_GBR_QOSINFORMATION_STRUCT                              *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("GBR_QosInformation error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
+
+    if(liblte_x2ap_pack_bitrate(&ie->e_RAB_MaximumBitrateDL, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(liblte_x2ap_pack_bitrate(&ie->e_RAB_MaximumBitrateUL, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(liblte_x2ap_pack_bitrate(&ie->e_RAB_GuaranteedBitrateDL, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(liblte_x2ap_pack_bitrate(&ie->e_RAB_GuaranteedBitrateUL, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_gbr_qosinformation(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_GBR_QOSINFORMATION_STRUCT                              *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("GBR_QosInformation error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    if(liblte_x2ap_unpack_bitrate(ptr, &ie->e_RAB_MaximumBitrateDL) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    if(liblte_x2ap_unpack_bitrate(ptr, &ie->e_RAB_MaximumBitrateUL) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    if(liblte_x2ap_unpack_bitrate(ptr, &ie->e_RAB_GuaranteedBitrateDL) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    if(liblte_x2ap_unpack_bitrate(ptr, &ie->e_RAB_GuaranteedBitrateUL) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE E_RAB_Level_QoS_Parameters SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_e_rab_level_qos_parameters(
+  LIBLTE_X2AP_E_RAB_LEVEL_QOS_PARAMETERS_STRUCT                              *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("E_RAB_Level_QoS_Parameters error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
+    liblte_value_2_bits(ie->gbrQosInformation_present?1:0, ptr, 1);
+
+    if(liblte_x2ap_pack_qci(&ie->qCI, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    if(liblte_x2ap_pack_allocationandretentionpriority(&ie->allocationRetentionPriority, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    if(ie->gbrQosInformation_present) {
+      if(liblte_x2ap_pack_gbr_qosinformation(&ie->gbrQosInformation, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_e_rab_level_qos_parameters(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_E_RAB_LEVEL_QOS_PARAMETERS_STRUCT                              *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("E_RAB_Level_QoS_Parameters error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+    ie->gbrQosInformation_present = liblte_bits_2_value(ptr, 1);
+
+    if(liblte_x2ap_unpack_qci(ptr, &ie->qCI) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    if(liblte_x2ap_unpack_allocationandretentionpriority(ptr, &ie->allocationRetentionPriority) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    if(ie->gbrQosInformation_present) {
+      if(liblte_x2ap_unpack_gbr_qosinformation(ptr, &ie->gbrQosInformation) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE E_RAB_Item SEQUENCE SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_e_rab_item(
+  LIBLTE_X2AP_E_RAB_ITEM_STRUCT                              *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("E_RAB_Item SEQUENCE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
+
+    if(liblte_x2ap_pack_e_rab_id(&ie->e_RAB_ID, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    if(liblte_x2ap_pack_cause(&ie->cause, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_e_rab_item(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_E_RAB_ITEM_STRUCT                              *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("E_RAB_Item SEQUENCE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    if(liblte_x2ap_unpack_e_rab_id(ptr, &ie->e_RAB_ID) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    if(liblte_x2ap_unpack_cause(ptr, &ie->cause) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* Protocol Container List E_RAB_List DYNAMIC SEQUENCE OF
+********************************************************************************/
+// lb:1, ub:256
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_servedmmecs(
+  LIBLTE_X2AP_E_RAB_LIST_STRUCT                                     *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    if(ie->len > 32) {
+      liblte_x2ap_log_print("Container List E_RAB_List DYNAMIC SEQUENCE OF pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    // Length
+    liblte_value_2_bits(ie->len-1, ptr, 8);
+    liblte_align_up_zero(ptr, 8);
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_x2ap_pack_e_rab_item(&ie->buffer[i], ptr) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_servedmmecs(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_E_RAB_LIST_STRUCT                                     *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Length
+    ie->len = liblte_bits_2_value(ptr, 8) + 1;
+    liblte_align_up(ptr, 8);
+    if(ie->len > 32) {
+      liblte_x2ap_log_print("Container List E_RAB_List DYNAMIC SEQUENCE OF unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_x2ap_unpack_e_rab_item(ptr, &ie->buffer[i]) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_DECODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE ForbiddenTACs DYNAMIC SEQUENCE OF
+********************************************************************************/
+// lb:1, ub:4096
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_forbiddentacs(
+  LIBLTE_X2AP_FORBIDDENTACS_STRUCT                                   *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    if(ie->len > 32) {
+      liblte_x2ap_log_print("ForbiddenTACs pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    // Length
+    liblte_value_2_bits(ie->len-1, ptr, 12);
+    liblte_align_up_zero(ptr, 8);
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_x2ap_pack_tac(&ie->buffer[i], ptr) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_forbiddentacs(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_FORBIDDENTACS_STRUCT                                   *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Length
+    ie->len = liblte_bits_2_value(ptr, 12) + 1;
+    liblte_align_up(ptr, 8);
+    if(ie->len > 32) {
+      liblte_x2ap_log_print("ForbiddenTACs unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_x2ap_unpack_tac(ptr, &ie->buffer[i]) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_DECODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE ForbiddenTAs_Item SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_forbiddentas_item(
+  LIBLTE_X2AP_FORBIDDENTAS_ITEM_STRUCT                               *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("ForbiddenTAs_Item error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
+
+    if(liblte_x2ap_pack_tbcd_string(&ie->pLMN_Identity, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(liblte_x2ap_pack_forbiddentacs(&ie->forbiddenTACs, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_forbiddentas_item(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_FORBIDDENTAS_ITEM_STRUCT                               *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("ForbiddenTAs_Item error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    if(liblte_x2ap_unpack_tbcd_string(ptr, &ie->pLMN_Identity) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    if(liblte_x2ap_unpack_forbiddentacs(ptr, &ie->forbiddenTACs) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE ForbiddenTAs DYNAMIC SEQUENCE OF
+********************************************************************************/
+// lb:1, ub:16
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_forbiddentas(
+  LIBLTE_X2AP_FORBIDDENTAS_STRUCT                                    *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    if(ie->len > 32) {
+      liblte_x2ap_log_print("ForbiddenTAs pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    // Length
+    liblte_value_2_bits(ie->len-1, ptr, 4);
+    liblte_align_up_zero(ptr, 8);
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_x2ap_pack_forbiddentas_item(&ie->buffer[i], ptr) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_forbiddentas(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_FORBIDDENTAS_STRUCT                                    *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Length
+    ie->len = liblte_bits_2_value(ptr, 4) + 1;
+    liblte_align_up(ptr, 8);
+    if(ie->len > 32) {
+      liblte_x2ap_log_print("ForbiddenTAs unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_x2ap_unpack_forbiddentas_item(ptr, &ie->buffer[i]) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_DECODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE ForbiddenLACs DYNAMIC SEQUENCE OF
+********************************************************************************/
+// lb:1, ub:4096
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_forbiddenlacs(
+  LIBLTE_X2AP_FORBIDDENLACS_STRUCT                                   *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    if(ie->len > 32) {
+      liblte_x2ap_log_print("ForbiddenLACs pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    // Length
+    liblte_value_2_bits(ie->len-1, ptr, 12);
+    liblte_align_up_zero(ptr, 8);
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_x2ap_pack_lac(&ie->buffer[i], ptr) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_forbiddenlacs(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_FORBIDDENLACS_STRUCT                                   *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Length
+    ie->len = liblte_bits_2_value(ptr, 12) + 1;
+    liblte_align_up(ptr, 8);
+    if(ie->len > 32) {
+      liblte_x2ap_log_print("ForbiddenLACs unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_x2ap_unpack_lac(ptr, &ie->buffer[i]) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_DECODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE ForbiddenLAs_Item SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_forbiddenlas_item(
+  LIBLTE_X2AP_FORBIDDENLAS_ITEM_STRUCT                               *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("ForbiddenLAs_Item error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
+
+    if(liblte_x2ap_pack_tbcd_string(&ie->pLMN_Identity, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(liblte_x2ap_pack_forbiddenlacs(&ie->forbiddenLACs, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_forbiddenlas_item(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_FORBIDDENLAS_ITEM_STRUCT                               *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("ForbiddenLAs_Item error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    if(liblte_x2ap_unpack_tbcd_string(ptr, &ie->pLMN_Identity) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    if(liblte_x2ap_unpack_forbiddenlacs(ptr, &ie->forbiddenLACs) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE ForbiddenLAs DYNAMIC SEQUENCE OF
+********************************************************************************/
+// lb:1, ub:16
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_forbiddenlas(
+  LIBLTE_X2AP_FORBIDDENLAS_STRUCT                                    *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    if(ie->len > 32) {
+      liblte_x2ap_log_print("ForbiddenLAs pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    // Length
+    liblte_value_2_bits(ie->len-1, ptr, 4);
+    liblte_align_up_zero(ptr, 8);
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_x2ap_pack_forbiddenlas_item(&ie->buffer[i], ptr) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_forbiddenlas(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_FORBIDDENLAS_STRUCT                                    *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Length
+    ie->len = liblte_bits_2_value(ptr, 4) + 1;
+    liblte_align_up(ptr, 8);
+    if(ie->len > 32) {
+      liblte_x2ap_log_print("ForbiddenLAs unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_x2ap_unpack_forbiddenlas_item(ptr, &ie->buffer[i]) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_DECODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE GlobalENB_ID SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_globalenb_id(
+  LIBLTE_X2AP_GLOBALENB_ID_STRUCT                               *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("GlobalENB_ID SEQUENCE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
+
+    if(liblte_x2ap_pack_tbcd_string(&ie->pLMN_Identity, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(liblte_x2ap_pack_enb_id(&ie->eNB_ID, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_globalenb_id(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_GLOBALENB_ID_STRUCT                               *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("GlobalENB_ID SEQUENCE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    if(liblte_x2ap_unpack_tbcd_string(ptr, &ie->pLMN_Identity) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    if(liblte_x2ap_unpack_enb_id(ptr, &ie->eNB_ID) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE GTPtunnelEndpoint SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_globalenb_id(
+  LIBLTE_X2AP_GTPTUNNELENDPOINT_STRUCT                               *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("GTPtunnelEndpoint error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
+
+    if(liblte_x2ap_pack_transportlayeraddress(&ie->transportLayerAddress, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(liblte_x2ap_pack_gtp_tei(&ie->gTP_TEID, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_globalenb_id(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_GTPTUNNELENDPOINT_STRUCT                               *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("GTPtunnelEndpoint SEQUENCE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    if(liblte_x2ap_unpack_transportlayeraddress(ptr, &ie->transportLayerAddress) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(liblte_x2ap_unpack_gtp_tei(ptr, &ie->gTP_TEID) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE GU_Group_ID SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_gu_group_id(
+  LIBLTE_X2AP_GU_GROUP_ID_STRUCT                               *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("GU_Group_ID SEQUENCE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
+
+    if(liblte_x2ap_pack_tbcd_string(&ie->pLMN_Identity, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(liblte_x2ap_pack_mme_group_id(&ie->mME_Group_ID, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_gu_group_id(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_GU_GROUP_ID_STRUCT                               *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("GU_Group_ID SEQUENCE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    if(liblte_x2ap_unpack_tbcd_string(ptr, &ie->pLMN_Identity) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    if(liblte_x2ap_unpack_mme_group_id(ptr, &ie->mME_Group_ID) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE GUGroupIDList DYNAMIC SEQUENCE OF
+********************************************************************************/
+// lb:1, ub:16
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_forbiddentas(
+  LIBLTE_X2AP_GUGROUPIDLIST_STRUCT                                    *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    if(ie->len > 32) {
+      liblte_x2ap_log_print("GUGroupIDList pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    // Length
+    liblte_value_2_bits(ie->len-1, ptr, 4);
+    liblte_align_up_zero(ptr, 8);
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_x2ap_pack_gu_group_id(&ie->buffer[i], ptr) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_forbiddentas(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_GUGROUPIDLIST_STRUCT                                    *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Length
+    ie->len = liblte_bits_2_value(ptr, 4) + 1;
+    liblte_align_up(ptr, 8);
+    if(ie->len > 32) {
+      liblte_x2ap_log_print("GUGroupIDList unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_x2ap_unpack_gu_group_id(ptr, &ie->buffer[i]) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_DECODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE GUMMEI SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_gummei(
+  LIBLTE_X2AP_GUMMEI_STRUCT                                          *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("GUMMEI error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
+
+    if(liblte_x2ap_pack_gu_group_id(&ie->gU_Group_ID, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(liblte_x2ap_pack_mme_code(&ie->mME_Code, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_gummei(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_GUMMEI_STRUCT                                          *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("GUMMEI error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    if(liblte_x2ap_unpack_gu_group_id(ptr, &ie->gU_Group_ID) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    if(liblte_x2ap_unpack_mme_code(ptr, &ie->mME_Code) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE HandoverRestrictionList SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_handoverrestrictionlist(
+  LIBLTE_X2AP_HANDOVERRESTRICTIONLIST_STRUCT                         *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("HandoverRestrictionList error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->equivalentPLMNs_present?1:0, ptr, 1);
+    liblte_value_2_bits(ie->forbiddenTAs_present?1:0, ptr, 1);
+    liblte_value_2_bits(ie->forbiddenLAs_present?1:0, ptr, 1);
+    liblte_value_2_bits(ie->forbiddenInterRATs_present?1:0, ptr, 1);
+    liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
+
+    if(liblte_x2ap_pack_tbcd_string(&ie->servingPLMN, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(ie->equivalentPLMNs_present) {
+      if(liblte_x2ap_pack_eplmns(&ie->equivalentPLMNs, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+
+    if(ie->forbiddenTAs_present) {
+      if(liblte_x2ap_pack_forbiddentas(&ie->forbiddenTAs, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+
+    if(ie->forbiddenLAs_present) {
+      if(liblte_x2ap_pack_forbiddenlas(&ie->forbiddenLAs, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+
+    if(ie->forbiddenInterRATs_present) {
+      if(liblte_x2ap_pack_forbiddeninterrats(&ie->forbiddenInterRATs, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_handoverrestrictionlist(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_HANDOVERRESTRICTIONLIST_STRUCT                         *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("HandoverRestrictionList error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->equivalentPLMNs_present = liblte_bits_2_value(ptr, 1);
+    ie->forbiddenTAs_present = liblte_bits_2_value(ptr, 1);
+    ie->forbiddenLAs_present = liblte_bits_2_value(ptr, 1);
+    ie->forbiddenInterRATs_present = liblte_bits_2_value(ptr, 1);
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    if(liblte_x2ap_unpack_tbcd_string(ptr, &ie->servingPLMN) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    if(ie->equivalentPLMNs_present) {
+      if(liblte_x2ap_unpack_eplmns(ptr, &ie->equivalentPLMNs) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+
+    if(ie->forbiddenTAs_present) {
+      if(liblte_x2ap_unpack_forbiddentas(ptr, &ie->forbiddenTAs) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+
+    if(ie->forbiddenLAs_present) {
+      if(liblte_x2ap_unpack_forbiddenlas(ptr, &ie->forbiddenLAs) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+
+    if(ie->forbiddenInterRATs_present) {
+      if(liblte_x2ap_unpack_forbiddeninterrats(ptr, &ie->forbiddenInterRATs) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE HWLoadIndicator SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_hwloadindicator(
+  LIBLTE_X2AP_HWLOADINDICATOR_STRUCT                         *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("HWLoadIndicator error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
+
+    if(liblte_x2ap_pack_loadindicator(&ie->dLHWLoadIndicator, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_pack_loadindicator(&ie->uLHWLoadIndicator, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_hwloadindicator(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_HWLOADINDICATOR_STRUCT                         *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("HWLoadIndicator error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    if(liblte_x2ap_unpack_loadindicator(ptr, &ie->dLHWLoadIndicator) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_unpack_loadindicator(ptr, &ie->uLHWLoadIndicator) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE LastVisitedEUTRANCellInformation SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_lastvisitedeutrancellinformation(
+  LIBLTE_X2AP_LASTVISITEDEUTRANCELLINFORMATION_STRUCT                *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("LastVisitedEUTRANCellInformation error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
+
+    if(liblte_x2ap_pack_ecgi(&ie->global_Cell_ID, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(liblte_x2ap_pack_celltype(&ie->cellType, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(liblte_x2ap_pack_time_ue_stayedincell(&ie->time_UE_StayedInCell, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_lastvisitedeutrancellinformation(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_LASTVISITEDEUTRANCELLINFORMATION_STRUCT                *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("LastVisitedEUTRANCellInformation error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    if(liblte_x2ap_unpack_ecgi(ptr, &ie->global_Cell_ID) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    if(liblte_x2ap_unpack_celltype(ptr, &ie->cellType) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    if(liblte_x2ap_unpack_time_ue_stayedincell(ptr, &ie->time_UE_StayedInCell) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* Protocol Message LastVisitedEUTRANCellInformation_Ext STRUCT
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_lastvisitedeutrancellinformation_ext(
+  LIBLTE_X2AP_MESSAGE_LASTVISITEDEUTRANCELLINFORMATION_EXT_STRUCT       *msg,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(msg != NULL &&
+     ptr != NULL)
+  {
+
+    // Extension
+    liblte_value_2_bits(msg->ext?1:0, ptr, 1);
+    liblte_align_up_zero(ptr, 8);
+    if(msg->ext) {
+      liblte_x2ap_log_print("LastVisitedEUTRANCellInformation-ExtIEs error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    // No. of ProtocolIE
+    uint32_t n_ie = 2;
+    if(!msg->Time_UE_StayedInCell_EnhancedGranularity_present)
+      n_ie--;
+    if(!msg->HO_Cause_present)
+      n_ie--;
+    liblte_value_2_bits(n_ie, ptr, 16);
+
+    // Temp container for IEs
+    LIBLTE_BIT_MSG_STRUCT tmp_msg;
+    uint8_t              *tmp_ptr;
+
+    // ProtocolIE - Time_UE_StayedInCell_EnhancedGranularity
+    if(msg->Time_UE_StayedInCell_EnhancedGranularity_present) {
+      tmp_msg.reset();
+      tmp_ptr = tmp_msg.msg;
+      if(liblte_x2ap_pack_time_ue_stayedincell_enhancedgranularity(&msg->Time_UE_StayedInCell_EnhancedGranularity, &tmp_ptr) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+      liblte_align_up_zero(&tmp_ptr, 8);
+      tmp_msg.N_bits = tmp_ptr - tmp_msg.msg;
+      if(liblte_x2ap_pack_protocolie_header(tmp_msg.N_bits / 8,
+                                            LIBLTE_X2AP_IE_ID_TIME_UE_STAYEDINCELL_ENHANCEDGRANULARITY,
+                                            LIBLTE_X2AP_CRITICALITY_IGNORE,
+                                            ptr) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+      memcpy(*ptr, tmp_msg.msg, tmp_msg.N_bits);
+      *ptr += tmp_msg.N_bits;
+    }
+
+    // ProtocolIE - HO_Cause
+    if(msg->HO_Cause_present) {
+      tmp_msg.reset();
+      tmp_ptr = tmp_msg.msg;
+      if(liblte_x2ap_pack_cause(&msg->HO_Cause, &tmp_ptr) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+      liblte_align_up_zero(&tmp_ptr, 8);
+      tmp_msg.N_bits = tmp_ptr - tmp_msg.msg;
+      if(liblte_x2ap_pack_protocolie_header(tmp_msg.N_bits / 8,
+                                            LIBLTE_X2AP_IE_ID_HO_CAUSE,
+                                            LIBLTE_X2AP_CRITICALITY_IGNORE,
+                                            ptr) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+      memcpy(*ptr, tmp_msg.msg, tmp_msg.N_bits);
+      *ptr += tmp_msg.N_bits;
+    }
+
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_lastvisitedeutrancellinformation_ext(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_MESSAGE_LASTVISITEDEUTRANCELLINFORMATION_EXT_STRUCT       *msg)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(msg != NULL &&
+     ptr != NULL)
+  {
+    LIBLTE_X2AP_CRITICALITY_ENUM crit;
+    uint32_t ie_id;
+    uint32_t len;
+    uint32_t n_ie;
+    uint32_t i;
+
+    // Set booleans
+    msg->Time_UE_StayedInCell_EnhancedGranularity_present = false;
+    msg->HO_Cause_present = false;
+
+    // Extension
+    msg->ext  = liblte_bits_2_value(ptr, 1);
+    liblte_align_up(ptr, 8);
+    if(msg->ext) {
+      liblte_x2ap_log_print("LastVisitedEUTRANCellInformation-ExtIEs error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    // No. of ProtocolIE-Container
+    n_ie = liblte_bits_2_value(ptr, 16);
+
+    // Unpack ProtocolIE Fields
+    for(i=0;i<n_ie;i++) {
+      if(liblte_x2ap_unpack_protocolie_header(ptr, &ie_id, &crit, &len) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_DECODE_FAIL;
+      }
+      if(LIBLTE_X2AP_IE_ID_TIME_UE_STAYEDINCELL_ENHANCEDGRANULARITY == ie_id) {
+        if(liblte_x2ap_unpack_time_ue_stayedincell_enhancedgranularity(ptr, &msg->Time_UE_StayedInCell_EnhancedGranularity) != LIBLTE_SUCCESS) {
+          return LIBLTE_ERROR_DECODE_FAIL;
+        }
+        liblte_align_up(ptr, 8);
+        msg->Time_UE_StayedInCell_EnhancedGranularity_present = true;
+      } else      if(LIBLTE_X2AP_IE_ID_HO_CAUSE == ie_id) {
+        if(liblte_x2ap_unpack_cause(ptr, &msg->HO_Cause) != LIBLTE_SUCCESS) {
+          return LIBLTE_ERROR_DECODE_FAIL;
+        }
+        liblte_align_up(ptr, 8);
+        msg->HO_Cause_present = true;
+      } 
+    }
+
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE LastVisitedGERANCellInformation CHOICE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_lastvisitedgerancellinformation(
+  LIBLTE_X2AP_LASTVISITEDGERANCELLINFORMATION_STRUCT                 *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("LastVisitedGERANCellInformation error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    // Choice type
+    liblte_value_2_bits(ie->choice_type, ptr, 0);
+
+       // Choice
+ if(ie->choice_type == LIBLTE_X2AP_LASTVISITEDGERANCELLINFORMATION_CHOICE_UNDEFINED) {
+      } 
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_lastvisitedgerancellinformation(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_LASTVISITEDGERANCELLINFORMATION_STRUCT                 *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("LastVisitedGERANCellInformation error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    // Choice type
+    ie->choice_type = (LIBLTE_X2AP_LASTVISITEDGERANCELLINFORMATION_CHOICE_ENUM)liblte_bits_2_value(ptr, 0);
+
+       // Choice
+ if(ie->choice_type == LIBLTE_X2AP_LASTVISITEDGERANCELLINFORMATION_CHOICE_UNDEFINED) {
+      } 
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE LastVisitedCell_Item CHOICE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_lastvisitedcell_item(
+  LIBLTE_X2AP_LASTVISITEDCELL_ITEM_STRUCT                            *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("LastVisitedCell_Item error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    // Choice type
+    liblte_value_2_bits(ie->choice_type, ptr, 2);
+
+       // Choice
+ if(ie->choice_type == LIBLTE_X2AP_LASTVISITEDCELL_ITEM_CHOICE_E_UTRAN_CELL) {
+      if(liblte_x2ap_pack_lastvisitedeutrancellinformation(&ie->choice.e_UTRAN_Cell, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    } else if(ie->choice_type == LIBLTE_X2AP_LASTVISITEDCELL_ITEM_CHOICE_UTRAN_CELL) {
+      if(liblte_x2ap_pack_lastvisitedutrancellinformation(&ie->choice.uTRAN_Cell, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    } else if(ie->choice_type == LIBLTE_X2AP_LASTVISITEDCELL_ITEM_CHOICE_GERAN_CELL) {
+      if(liblte_x2ap_pack_lastvisitedgerancellinformation(&ie->choice.gERAN_Cell, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    } 
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_lastvisitedcell_item(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_LASTVISITEDCELL_ITEM_STRUCT                            *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("LastVisitedCell_Item error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    // Choice type
+    ie->choice_type = (LIBLTE_X2AP_LASTVISITEDCELL_ITEM_CHOICE_ENUM)liblte_bits_2_value(ptr, 2);
+
+       // Choice
+ if(ie->choice_type == LIBLTE_X2AP_LASTVISITEDCELL_ITEM_CHOICE_E_UTRAN_CELL) {
+      if(liblte_x2ap_unpack_lastvisitedeutrancellinformation(ptr, &ie->choice.e_UTRAN_Cell) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    } else if(ie->choice_type == LIBLTE_X2AP_LASTVISITEDCELL_ITEM_CHOICE_UTRAN_CELL) {
+      if(liblte_x2ap_unpack_lastvisitedutrancellinformation(ptr, &ie->choice.uTRAN_Cell) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    } else if(ie->choice_type == LIBLTE_X2AP_LASTVISITEDCELL_ITEM_CHOICE_GERAN_CELL) {
+      if(liblte_x2ap_unpack_lastvisitedgerancellinformation(ptr, &ie->choice.gERAN_Cell) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    } 
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE LocationReportingInformatin SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_locationreportinginformation(
+  LIBLTE_X2AP_LOCATIONREPORTINGINFORMATION_STRUCT                                *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("LocationReportingInformatin SEQUENCE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
+
+    if(liblte_x2ap_pack_eventtype(&ie->eventType, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_pack_reportarea(&ie->reportArea, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_locationreportinginformation(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_LOCATIONREPORTINGINFORMATION_STRUCT                                *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("LocationReportingInformatin SEQUENCE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    if(liblte_x2ap_unpack_eventtype(ptr, &ie->eventType) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_unpack_reportarea(ptr, &ie->reportArea) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE MeasurementThresholdA2 CHOICE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_measurementthresholda2(
+  LIBLTE_X2AP_MEASUREMENTTHRESHOLDA2_STRUCT                          *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("MeasurementThresholdA2 error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    // Choice type
+    liblte_value_2_bits(ie->choice_type, ptr, 1);
+
+       // Choice
+ if(ie->choice_type == LIBLTE_X2AP_MEASUREMENTTHRESHOLDA2_CHOICE_THRESHOLD_RSRP) {
+      if(liblte_x2ap_pack_threshold_rsrp(&ie->choice.threshold_RSRP, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    } else if(ie->choice_type == LIBLTE_X2AP_MEASUREMENTTHRESHOLDA2_CHOICE_THRESHOLD_RSRQ) {
+      if(liblte_x2ap_pack_threshold_rsrq(&ie->choice.threshold_RSRQ, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    } 
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_measurementthresholda2(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_MEASUREMENTTHRESHOLDA2_STRUCT                          *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("MeasurementThresholdA2 error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    // Choice type
+    ie->choice_type = (LIBLTE_X2AP_MEASUREMENTTHRESHOLDA2_CHOICE_ENUM)liblte_bits_2_value(ptr, 1);
+
+       // Choice
+ if(ie->choice_type == LIBLTE_X2AP_MEASUREMENTTHRESHOLDA2_CHOICE_THRESHOLD_RSRP) {
+      if(liblte_x2ap_unpack_threshold_rsrp(ptr, &ie->choice.threshold_RSRP) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    } else if(ie->choice_type == LIBLTE_X2AP_MEASUREMENTTHRESHOLDA2_CHOICE_THRESHOLD_RSRQ) {
+      if(liblte_x2ap_unpack_threshold_rsrq(ptr, &ie->choice.threshold_RSRQ) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    } 
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE M1ThresholdEventA2 SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_m1thresholdeventa2(
+  LIBLTE_X2AP_M1THRESHOLDEVENTA2_STRUCT                              *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("M1ThresholdEventA2 error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
+
+    if(liblte_x2ap_pack_measurementthresholda2(&ie->measurementThreshold, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_m1thresholdeventa2(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_M1THRESHOLDEVENTA2_STRUCT                              *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("M1ThresholdEventA2 error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    if(liblte_x2ap_unpack_measurementthresholda2(ptr, &ie->measurementThreshold) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE M1PeriodicReporting SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_m1periodicreporting(
+  LIBLTE_X2AP_M1PERIODICREPORTING_STRUCT                             *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("M1PeriodicReporting error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
+
+    // Enum - ie->reportInterval
+    liblte_value_2_bits(ie->reportInterval, ptr, 4);
+
+    // Enum - ie->reportAmount
+    liblte_value_2_bits(ie->reportAmount, ptr, 3);
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_m1periodicreporting(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_M1PERIODICREPORTING_STRUCT                             *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("M1PeriodicReporting error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    // Enum - ie->reportInterval
+    ie->reportInterval = (LIBLTE_X2AP_REPORTINTERVALMDT_ENUM)liblte_bits_2_value(ptr, 4);
+
+    // Enum - ie->reportAmount
+    ie->reportAmount = (LIBLTE_X2AP_REPORTAMOUNTMDT_ENUM)liblte_bits_2_value(ptr, 3);
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE M3Configuration SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_m3configuration(
+  LIBLTE_X2AP_M3CONFIGURATION_STRUCT                                 *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("M3Configuration error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
+
+    if(liblte_x2ap_pack_m3period(&ie->m3period, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_m3configuration(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_M3CONFIGURATION_STRUCT                                 *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("M3Configuration error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    if(liblte_x2ap_unpack_m3period(ptr, &ie->m3period) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE M4Configuration SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_m4configuration(
+  LIBLTE_X2AP_M4CONFIGURATION_STRUCT                                 *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("M4Configuration error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
+
+    if(liblte_x2ap_pack_m4period(&ie->m4period, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(liblte_x2ap_pack_links_to_log(&ie->m4_links_to_log, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_m4configuration(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_M4CONFIGURATION_STRUCT                                 *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("M4Configuration error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    if(liblte_x2ap_unpack_m4period(ptr, &ie->m4period) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    if(liblte_x2ap_unpack_links_to_log(ptr, &ie->m4_links_to_log) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE M5Configuration SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_m5configuration(
+  LIBLTE_X2AP_M5CONFIGURATION_STRUCT                                 *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("M5Configuration error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
+
+    if(liblte_x2ap_pack_m5period(&ie->m5period, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(liblte_x2ap_pack_links_to_log(&ie->m5_links_to_log, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_m5configuration(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_M5CONFIGURATION_STRUCT                                 *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("M5Configuration error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    if(liblte_x2ap_unpack_m5period(ptr, &ie->m5period) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    if(liblte_x2ap_unpack_links_to_log(ptr, &ie->m5_links_to_log) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE MDTPLMNList DYNAMIC SEQUENCE OF
+********************************************************************************/
+// lb:1, ub:16
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_mdtplmnlist(
+  LIBLTE_X2AP_MDTPLMNLIST_STRUCT                                     *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    if(ie->len > 32) {
+      liblte_x2ap_log_print("MDTPLMNList pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    // Length
+    liblte_value_2_bits(ie->len-1, ptr, 4);
+    liblte_align_up_zero(ptr, 8);
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_x2ap_pack_tbcd_string(&ie->buffer[i], ptr) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_mdtplmnlist(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_MDTPLMNLIST_STRUCT                                     *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Length
+    ie->len = liblte_bits_2_value(ptr, 4) + 1;
+    liblte_align_up(ptr, 8);
+    if(ie->len > 32) {
+      liblte_x2ap_log_print("MDTPLMNList unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_x2ap_unpack_tbcd_string(ptr, &ie->buffer[i]) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_DECODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE MBMS_Service_Area_Identity_List DYNAMIC SEQUENCE OF
+********************************************************************************/
+// lb:1, ub:16
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_mbms_service_area_identity_list(
+  LIBLTE_X2AP_MBMS_SERVICE_AREA_IDENTITY_LIST_STRUCT                                     *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    if(ie->len > 8) {
+      liblte_x2ap_log_print("MBMS_Service_Area_Identity_List DYNAMIC SEQUENCE OF pack error - max supported dynamic sequence length = 8, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    // Length
+    liblte_value_2_bits(ie->len-1, ptr, 4);
+    liblte_align_up_zero(ptr, 8);
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_x2ap_pack_mbms_service_area_identity(&ie->buffer[i], ptr) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_mbms_service_area_identity_list(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_MBMS_SERVICE_AREA_IDENTITY_LIST_STRUCT                                     *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Length
+    ie->len = liblte_bits_2_value(ptr, 4) + 1;
+    liblte_align_up(ptr, 8);
+    if(ie->len > 8) {
+      liblte_x2ap_log_print("MDTPLMNList unpack error - max supported dynamic sequence length = 8, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_x2ap_unpack_mbms_service_area_identity(ptr, &ie->buffer[i]) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_DECODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE SubframeAllocation CHOICE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_subframeallocation(
+  LIBLTE_X2AP_SUBFRAMEALLOCATION_STRUCT                                    *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+  if (ie != NULL &&
+      ptr != NULL)
+  {
+    if(ie->ext) {
+      liblte_x2ap_log_print("SubframeAllocation CHOICE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    // Choice type
+    liblte_value_2_bits(ie->choice_type, ptr, 1);
+    // Choice
+    if (ie->choice_type == LIBLTE_X2AP_SUBFRAMEALLOCATION_CHOICE_ONEFRAME) {
+      if (liblte_x2ap_pack_oneframe(&ie->choice.oneframe, ptr) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+    }
+    else if (ie->choice_type == LIBLTE_X2AP_SUBFRAMEALLOCATION_CHOICE_FOURFRAMES) {
+      if (liblte_x2ap_pack_fourframes(&ie->choice.fourframes, ptr) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_subframeallocation(
+    uint8_t **ptr,
+    LIBLTE_X2AP_SUBFRAMEALLOCATION_STRUCT *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+  if (ie != NULL &&
+      ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("SubframeAllocation CHOICE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    // Choice type
+    ie->choice_type = (LIBLTE_X2AP_SUBFRAMEALLOCATION_CHOICE_ENUM)liblte_bits_2_value(ptr, 1);
+
+    // Choice
+    if (ie->choice_type == LIBLTE_X2AP_SUBFRAMEALLOCATION_CHOICE_ONEFRAME) {
+      if (liblte_x2ap_unpack_oneframe(ptr, &ie->choice.oneframe) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+    }
+    else if (ie->choice_type == LIBLTE_X2AP_SUBFRAMEALLOCATION_CHOICE_FOURFRAMES) {
+      if (liblte_x2ap_unpack_fourframes(ptr, &ie->choice.fourframes) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE MBSFN_Subframe_Info SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_fdd_info(
+  LIBLTE_X2AP_MBSFN_SUBFRAME_INFO_STRUCT                                *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("MBSFN_Subframe_Info SEQUENCE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
+
+    if(liblte_x2ap_pack_radioframeallocationperiod(&ie->radioframeAllocationPeriod, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_pack_radioframeallocationoffset(&ie->radioframeAllocationOffset, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(liblte_x2ap_pack_subframeallocation(&ie->subframeAllocation, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_fdd_info(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_MBSFN_SUBFRAME_INFO_STRUCT                                *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("MBSFN_Subframe_Info SEQUENCE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    if(liblte_x2ap_unpack_radioframeallocationperiod(ptr, &ie->radioframeAllocationPeriod) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_unpack_radioframeallocationoffset(ptr, &ie->radioframeAllocationOffset) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(liblte_x2ap_unpack_subframeallocation(ptr, &ie->subframeAllocation) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE MBMS_Service_Area_Identity_List DYNAMIC SEQUENCE OF
+********************************************************************************/
+// lb:1, ub:8
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_mbms_service_area_identity_list(
+  LIBLTE_X2AP_MBMS_SERVICE_AREA_IDENTITY_LIST_STRUCT                                     *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    if(ie->len > 8) {
+      liblte_x2ap_log_print("MBMS_Service_Area_Identity_List DYNAMIC SEQUENCE OF pack error - max supported dynamic sequence length = 8, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    // Length
+    liblte_value_2_bits(ie->len-1, ptr, 4);
+    liblte_align_up_zero(ptr, 8);
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_x2ap_pack_mbms_service_area_identity(&ie->buffer[i], ptr) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_mbms_service_area_identity_list(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_MBMS_SERVICE_AREA_IDENTITY_LIST_STRUCT                                     *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Length
+    ie->len = liblte_bits_2_value(ptr, 4) + 1;
+    liblte_align_up(ptr, 8);
+    if(ie->len > 8) {
+      liblte_x2ap_log_print("MBMS_Service_Area_Identity_List unpack error - max supported dynamic sequence length = 8, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_x2ap_unpack_mbms_service_area_identity(ptr, &ie->buffer[i]) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_DECODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE MobilityParametersModificationRange SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_mobilityparametersmodificationrange_info(
+  LIBLTE_X2AP_MOBILITYPARAMETERSMODIFICATIONRANGE_STRUCT                                    *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+  if (ie != NULL &&
+      ptr != NULL)
+  {
+    if(ie->ext) {
+      liblte_x2ap_log_print("MobilityParametersModificationRange SEQUENCE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->handoverTriggerChangeLowerLimit, ptr, 32);
+    liblte_value_2_bits(ie->handoverTriggerChangeUpperLimit, ptr, 32);
+    
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_mobilityparametersmodificationrange_info(
+    uint8_t **ptr,
+    LIBLTE_X2AP_MOBILITYPARAMETERSMODIFICATIONRANGE_STRUCT *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+  if (ie != NULL &&
+      ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("MobilityParametersModificationRange SEQUENCE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    // Choice type
+    ie->handoverTriggerChangeLowerLimit = liblte_bits_2_value(ptr, 32);
+    ie->handoverTriggerChangeUpperLimit = liblte_bits_2_value(ptr, 32);
+    
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE MobilityParametersInformation SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_mobilityparametersinformation_info(
+  LIBLTE_X2AP_MOBILITYPARAMETERSINFORMATION_STRUCT                                    *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+  if (ie != NULL &&
+      ptr != NULL)
+  {
+    if(ie->ext) {
+      liblte_x2ap_log_print("MobilityParametersInformation SEQUENCE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->handoverTriggerChange, ptr, 32);
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_mobilityparametersinformation_info(
+    uint8_t **ptr,
+    LIBLTE_X2AP_MOBILITYPARAMETERSINFORMATION_STRUCT *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+  if (ie != NULL &&
+      ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("MobilityParametersInformation SEQUENCE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    // Choice type
+    ie->handoverTriggerChange = liblte_bits_2_value(ptr, 32);
+    
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE BandInfo SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_bandinfo(
+  LIBLTE_X2AP_BANDINFO_STRUCT                                *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("BandInfo SEQUENCE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
+
+    if(liblte_x2ap_pack_freqbandindicator(&ie->freqBandIndicator, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_bandinfo(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_BANDINFO_STRUCT                                *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("BandInfo SEQUENCE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    if(liblte_x2ap_unpack_freqbandindicator(ptr, &ie->freqBandIndicator) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE MultibandInfolist DYNAMIC SEQUENCE OF
+********************************************************************************/
+// lb:1, ub:16
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_multibandinfolist(
+  LIBLTE_X2AP_MULTIBANDINFOLIST_STRUCT                                     *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    if(ie->len > 16) {
+      liblte_x2ap_log_print("MultibandInfolist DYNAMIC SEQUENCE OF pack error - max supported dynamic sequence length = 16, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    // Length
+    liblte_value_2_bits(ie->len-1, ptr, 4);
+    liblte_align_up_zero(ptr, 8);
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_x2ap_pack_bandinfo(&ie->buffer[i], ptr) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_multibandinfolist(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_MULTIBANDINFOLIST_STRUCT                                     *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Length
+    ie->len = liblte_bits_2_value(ptr, 4) + 1;
+    liblte_align_up(ptr, 8);
+    if(ie->len > 16) {
+      liblte_x2ap_log_print("MultibandInfolist DYNAMIC SEQUENCE OF unpack error - max supported dynamic sequence length = 16, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_x2ap_unpack_bandinfo(ptr, &ie->buffer[i]) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_DECODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE Neighbour_Information_Item SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_neighbour_information_item(
+  LIBLTE_X2AP_NEIGHBOUR_INFORMATION_ITEM_STRUCT                                *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("Neighbour_Information_Item SEQUENCE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
+
+    if(liblte_x2ap_pack_ecgi(&ie->eCGI, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_pack_pci(&ie->pCI, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_pack_earfcn(&ie->eARFCN, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_neighbour_information_item(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_NEIGHBOUR_INFORMATION_ITEM_STRUCT                                *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("Neighbour_Information_Item SEQUENCE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    if(liblte_x2ap_unpack_ecgi(ptr, &ie->eCGI) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_unpack_pci(ptr, &ie->pCI) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_unpack_earfcn(ptr, &ie->eARFCN) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE Neighour_Information DYNAMIC SEQUENCE OF
+********************************************************************************/
+// lb:1, ub:51
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_neighbour_information(
+  LIBLTE_X2AP_NEIGHBOUR_INFORMATION_STRUCT                                     *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    if(ie->len > 51) {
+      liblte_x2ap_log_print("Neighour_Information DYNAMIC SEQUENCE OF pack error - max supported dynamic sequence length = 51, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    // Length
+    liblte_value_2_bits(ie->len-1, ptr, 6);
+    liblte_align_up_zero(ptr, 8);
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_x2ap_pack_neighbour_information_item(&ie->buffer[i], ptr) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_neighbour_information(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_NEIGHBOUR_INFORMATION_STRUCT                                     *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Length
+    ie->len = liblte_bits_2_value(ptr, 6) + 1;
+    liblte_align_up(ptr, 8);
+    if(ie->len > 51) {
+      liblte_x2ap_log_print("Neighour_Information unpack error - max supported dynamic sequence length = 51, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_x2ap_unpack_neighbour_information_item(ptr, &ie->buffer[i]) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_DECODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE Neighbour_Information_Ext SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_neighbour_information_item(
+  LIBLTE_X2AP_MESSAGE_NEIGHBOUR_INFORMATION_EXT_STRUCT                                *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("Neighbour_Information_Ext SEQUENCE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->NeighbourTAC_present?1:0, ptr, 1);
+    liblte_value_2_bits(ie->eARFCNExtension_present?1:0, ptr, 1);
+
+    if(ie->NeighbourTAC_present) {
+      if(liblte_x2ap_pack_tac(&ie->NeighbourTAC, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    
+    if(ie->eARFCNExtension_present) {
+      if(liblte_x2ap_pack_earfcnextension(&ie->eARFCNExtension, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_neighbour_information_item(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_MESSAGE_NEIGHBOUR_INFORMATION_EXT_STRUCT                                *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("Neighbour_Information_Ext SEQUENCE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->NeighbourTAC_present = liblte_bits_2_value(ptr, 1);
+    ie->eARFCNExtension_present = liblte_bits_2_value(ptr, 1);
+
+    if(ie->NeighbourTAC_present) {
+      if(liblte_x2ap_unpack_tac(ptr, &ie->NeighbourTAC) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    
+    if(ie->eARFCNExtension_present) {
+      if(liblte_x2ap_unpack_earfcnextension(ptr, &ie->eARFCNExtension) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE PRACH_Configuration SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_prach_configuration(
+  LIBLTE_X2AP_PRACH_CONFIGURATION_STRUCT                                *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("PRACH_Configuration SEQUENCE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
+    liblte_value_2_bits(ie->highSpeedFlag?1:0, ptr, 1);
+    liblte_value_2_bits(ie->prach_ConfigIndex_present?1:0, ptr, 1);
+    
+    liblte_value_2_bits(ie->rootSequenceIndex?1:0, ptr, 32);
+    liblte_value_2_bits(ie->zeroCorrelationIndex?1:0, ptr, 32);
+    
+    if(ie->prach_ConfigIndex_present) {
+      liblte_value_2_bits(ie->prach_FreqOffset?1:0, ptr, 32);
+      liblte_value_2_bits(ie->prach_ConfigIndex?1:0, ptr, 32);
+    }
+    
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_prach_configuration(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_PRACH_CONFIGURATION_STRUCT                                *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("PRACH_Configuration SEQUENCE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+    ie->highSpeedFlag = liblte_bits_2_value(ptr, 1);
+    ie->prach_ConfigIndex_present = liblte_bits_2_value(ptr, 1);
+    ie->rootSequenceIndex = liblte_bits_2_value(ptr, 32);
+    ie->zeroCorrelationIndex = liblte_bits_2_value(ptr, 32);
+
+    if(ie->prach_ConfigIndex_present) {
+      ie->prach_FreqOffset = liblte_bits_2_value(ptr, 32);
+      ie->prach_ConfigIndex = liblte_bits_2_value(ptr, 32);
+    }
+    
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE RadioResourceStatus SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_radioresourcestatus(
+  LIBLTE_X2AP_RADIORESOURCESTATUS_STRUCT                                *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("RadioResourceStatus SEQUENCE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
+
+    if(liblte_x2ap_pack_dl_gbr_prb_usage(&ie->dL_GBR_PRB_usage, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_pack_ul_gbr_prb_usage(&ie->uL_GBR_PRB_usage, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_pack_dl_non_gbr_prb_usage(&ie->dL_non_GBR_PRB_usage, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_pack_ul_non_gbr_prb_usage(&ie->uL_non_GBR_PRB_usage, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_pack_dl_total_prb_usage(&ie->dL_Total_PRB_usage, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_pack_ul_total_prb_usage(&ie->uL_Total_PRB_usage, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_radioresourcestatus(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_RADIORESOURCESTATUS_STRUCT                                *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("RadioResourceStatus SEQUENCE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    if(liblte_x2ap_unpack_dl_gbr_prb_usage(ptr, &ie->dL_GBR_PRB_usage) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_unpack_ul_gbr_prb_usage(ptr, &ie->uL_GBR_PRB_usage) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_unpack_dl_non_gbr_prb_usage(ptr, &ie->dL_non_GBR_PRB_usage) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_unpack_ul_non_gbr_prb_usage(ptr, &ie->uL_non_GBR_PRB_usage) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_unpack_dl_total_prb_usage(ptr, &ie->dL_Total_PRB_usage) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_unpack_ul_total_prb_usage(ptr, &ie->uL_Total_PRB_usage) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE RelativeNarrowbandTxPower SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_relativenarrowbandtxpower(
+  LIBLTE_X2AP_RELATIVENARROWBANDTXPOWER_STRUCT                                *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("RelativeNarrowbandTxPower SEQUENCE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
+
+    for (int i = 0; i < 110; i++)
+      liblte_value_2_bits(ie->rNTP_PerPRB[i], ptr, 8);
+
+    if(liblte_x2ap_pack_rntp_threshold(&ie->rNTP_Threshold, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->numberOfCellSpecificAntennaPorts, ptr, 2);
+    
+    liblte_value_2_bits(ie->p_B, ptr, 32);
+    liblte_value_2_bits(ie->pDCCH_InterferenceImpact, ptr, 32);
+    
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_relativenarrowbandtxpower(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_RELATIVENARROWBANDTXPOWER_STRUCT                                *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("RelativeNarrowbandTxPower SEQUENCE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    for (int i = 0; i < 110; i++)
+      ie->rNTP_PerPRB[i] = liblte_bits_2_value(ptr, 8);
+
+    if(liblte_x2ap_unpack_rntp_threshold(ptr, &ie->rNTP_Threshold) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    ie->numberOfCellSpecificAntennaPorts = (decltype(ie->numberOfCellSpecificAntennaPorts))liblte_bits_2_value(ptr, 2);
+    ie->p_B = liblte_bits_2_value(ptr, 32);
+    ie->pDCCH_InterferenceImpact = liblte_bits_2_value(ptr, 32);
+    
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE S1TNLLoadIndicator SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_neighbour_information_item(
+  LIBLTE_X2AP_S1TNLLOADINDICATOR_STRUCT                                *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("S1TNLLoadIndicator SEQUENCE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
+
+    if(liblte_x2ap_pack_loadindicator(&ie->dLS1TNLLoadIndicator, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_pack_loadindicator(&ie->uLS1TNLLoadIndicator, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_neighbour_information_item(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_S1TNLLOADINDICATOR_STRUCT                                *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("S1TNLLoadIndicator SEQUENCE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    if(liblte_x2ap_unpack_loadindicator(ptr, &ie->dLS1TNLLoadIndicator) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_unpack_loadindicator(ptr, &ie->uLS1TNLLoadIndicator) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE ServedCell_Information SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_servedcell_information(
+  LIBLTE_X2AP_SERVEDCELL_INFORMATION_STRUCT                                *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("ServedCell_Information SEQUENCE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
+
+    if(liblte_x2ap_pack_pci(&ie->pCI, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_pack_ecgi(&ie->cellId, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_pack_tac(&ie->tAC, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_pack_broadcastplmns_item(&ie->broadcastPLMNS, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_pack_eutra_mode_info(&ie->eUTRA_Mode_Info, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_servedcell_information(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_SERVEDCELL_INFORMATION_STRUCT                                *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("ServedCell_Information SEQUENCE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    if(liblte_x2ap_unpack_pci(ptr, &ie->pCI) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_unpack_ecgi(ptr, &ie->cellId) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_unpack_tac(ptr, &ie->tAC) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_unpack_broadcastplmns_item(ptr, &ie->broadcastPLMNS) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_unpack_eutra_mode_info(ptr, &ie->eUTRA_Mode_Info) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE Message ServedCell_Information_Ext STRUCT
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_servedcell_information_ext(
+  LIBLTE_X2AP_MESSAGE_SERVEDCELL_INFORMATION_EXT_STRUCT                                *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("Message ServedCell_Information_Ext STRUCT error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->number_of_antennaports_present?1:0, ptr, 1);
+    liblte_value_2_bits(ie->PRACH_Configuration_present?1:0, ptr, 1);
+    liblte_value_2_bits(ie->MBSFN_Subframe_Info_present?1:0, ptr, 1);
+    liblte_value_2_bits(ie->CSG_Id_presnet?1:0, ptr, 1);
+    liblte_value_2_bits(ie->MBMS_Service_Area_List_present?1:0, ptr, 1);
+    liblte_value_2_bits(ie->MultibandInfolist_present?1:0, ptr, 1);
+
+    if(ie->number_of_antennaports_present) {
+      if(liblte_x2ap_pack_number_of_antennaports(&ie->number_of_antennaports, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    if(ie->PRACH_Configuration_present) {
+      if(liblte_x2ap_pack_prach_configuration(&ie->PRACH_Configuration, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    if(ie->MBSFN_Subframe_Info_present) {
+      if(liblte_x2ap_pack_mbsfn_subframe_infolist(&ie->MBSFN_Subframe_Info, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    if(ie->CSG_Id_presnet) {
+      if(liblte_x2ap_pack_csg_id(&ie->CSG_Id, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    if(ie->MBMS_Service_Area_List_present) {
+      if(liblte_x2ap_pack_mbms_service_area_identity_list(&ie->MBMS_Service_Area_List, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    if(ie->MultibandInfolist_present) {
+      if(liblte_x2ap_pack_multibandinfolist(&ie->MultibandInfoList, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_servedcell_information_ext(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_MESSAGE_SERVEDCELL_INFORMATION_EXT_STRUCT                                *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("Message ServedCell_Information_Ext STRUCT error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->number_of_antennaports_present = liblte_bits_2_value(ptr, 1);
+    ie->PRACH_Configuration_present = liblte_bits_2_value(ptr, 1);
+    ie->MBSFN_Subframe_Info_present = liblte_bits_2_value(ptr, 1);
+    ie->CSG_Id_presnet = liblte_bits_2_value(ptr, 1);
+    ie->MBMS_Service_Area_List_present = liblte_bits_2_value(ptr, 1);
+    ie->MultibandInfolist_present = liblte_bits_2_value(ptr, 1);
+
+    if(ie->number_of_antennaports_present) {
+      if(liblte_x2ap_unpack_number_of_antennaports(ptr, &ie->number_of_antennaports) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    if(ie->PRACH_Configuration_present) {
+      if(liblte_x2ap_unpack_prach_configuration(ptr, &ie->PRACH_Configuration) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    if(ie->MBSFN_Subframe_Info_present) {
+      if(liblte_x2ap_unpack_mbsfn_subframe_infolist(ptr, &ie->MBSFN_Subframe_Info) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    if(ie->CSG_Id_presnet) {
+      if(liblte_x2ap_unpack_csg_id(ptr, &ie->CSG_Id) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    if(ie->MBMS_Service_Area_List_present) {
+      if(liblte_x2ap_unpack_mbms_service_area_identity_list(ptr, &ie->MBMS_Service_Area_List) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    if(ie->MultibandInfolist_present) {
+      if(liblte_x2ap_unpack_multibandinfolist(ptr, &ie->MultibandInfoList) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE ServedCell SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_servedcell(
+  LIBLTE_X2AP_SERVEDCELL_STRUCT                                *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("ServedCell SEQUENCE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
+    liblte_value_2_bits(ie->neighbour_Info_present?1:0, ptr, 1);
+
+    if(liblte_x2ap_pack_servedcell_information(&ie->servedCellInfo, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(ie->neighbour_Info_present) {
+      if(liblte_x2ap_pack_neighbour_information(&ie->neighbour_Info, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_servedcell(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_SERVEDCELL_STRUCT                                *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("ServedCell SEQUENCE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+    ie->neighbour_Info_present = liblte_bits_2_value(ptr, 1);
+
+    if(liblte_x2ap_unpack_servedcell_information(ptr, &ie->servedCellInfo) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(ie->neighbour_Info_present) {
+      if(liblte_x2ap_unpack_neighbour_information(ptr, &ie->neighbour_Info) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE ServedCells DYNAMIC SEQUENCE OF
+********************************************************************************/
+// lb:1, ub:256
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_servedcells(
+  LIBLTE_X2AP_SERVEDCELLS_STRUCT                                     *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    if(ie->len > 256) {
+      liblte_x2ap_log_print("ServedCells DYNAMIC SEQUENCE OF pack error - max supported dynamic sequence length = 256, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    // Length
+    liblte_value_2_bits(ie->len-1, ptr, 8);
+    liblte_align_up_zero(ptr, 8);
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_x2ap_pack_servedcell(&ie->buffer[i], ptr) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_servedcells(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_SERVEDCELLS_STRUCT                                     *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Length
+    ie->len = liblte_bits_2_value(ptr, 8) + 1;
+    liblte_align_up(ptr, 8);
+    if(ie->len > 256) {
+      liblte_x2ap_log_print("ServedCells unpack error - max supported dynamic sequence length = 256, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_x2ap_unpack_servedcell(ptr, &ie->buffer[i]) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_DECODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE TAListforMDT DYNAMIC SEQUENCE OF
+********************************************************************************/
+// lb:1, ub:8
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_talistformdt(
+  LIBLTE_X2AP_TALISTFORMDT_STRUCT                                     *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    if(ie->len > 8) {
+      liblte_x2ap_log_print("TAListforMDT DYNAMIC SEQUENCE OF pack error - max supported dynamic sequence length = 8, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    // Length
+    liblte_value_2_bits(ie->len-1, ptr, 3);
+    liblte_align_up_zero(ptr, 8);
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_x2ap_pack_tac(&ie->buffer[i], ptr) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_talistformdt(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_TALISTFORMDT_STRUCT                                     *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Length
+    ie->len = liblte_bits_2_value(ptr, 3) + 1;
+    liblte_align_up(ptr, 8);
+    if(ie->len > 8) {
+      liblte_x2ap_log_print("TAListforMDT unpack error - max supported dynamic sequence length = 8, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_x2ap_unpack_tac(ptr, &ie->buffer[i]) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_DECODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE TAI_Item SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_tai_item(
+  LIBLTE_X2AP_TAI_ITEM_STRUCT                                *ie,
+  uint8_t                                                     **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("TAI_Item SEQUENCE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
+
+    if(liblte_x2ap_pack_tbcd_string(&ie->pLMNidentity, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_pack_tac(&ie->tAC, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_tai_item(
+  uint8_t                                                     **ptr,
+  LIBLTE_X2AP_TAI_ITEM_STRUCT                                *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("TAI_Item SEQUENCE error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
+
+    if(liblte_x2ap_unpack_tbcd_string(ptr, &ie->pLMNidentity) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(liblte_x2ap_unpack_tac(ptr, &ie->tAC) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE TAIListforMDT DYNAMIC SEQUENCE OF
+********************************************************************************/
+// lb:1, ub:8
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_tailistformdt(
+  LIBLTE_X2AP_TAILISTFORMDT_STRUCT                                   *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    if(ie->len > 32) {
+      liblte_x2ap_log_print("TAIListforMDT pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    // Length
+    liblte_value_2_bits(ie->len-1, ptr, 3);
+    liblte_align_up_zero(ptr, 8);
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_x2ap_pack_tai_item(&ie->buffer[i], ptr) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_ENCODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_tailistformdt(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_TAILISTFORMDT_STRUCT                                   *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Length
+    ie->len = liblte_bits_2_value(ptr, 3) + 1;
+    liblte_align_up(ptr, 8);
+    if(ie->len > 32) {
+      liblte_x2ap_log_print("TAIListforMDT unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    uint32_t i;
+    for(i=0;i<ie->len;i++) {
+      if(liblte_x2ap_unpack_tai_item(ptr, &ie->buffer[i]) != LIBLTE_SUCCESS) {
+        return LIBLTE_ERROR_DECODE_FAIL;
+      }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE TAIBasedMDT SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_taibasedmdt(
+  LIBLTE_X2AP_TAIBASEDMDT_STRUCT                                     *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("TAIBasedMDT error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
+
+    if(liblte_x2ap_pack_tailistformdt(&ie->tAIListforMDT, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_taibasedmdt(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_TAIBASEDMDT_STRUCT                                     *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("TAIBasedMDT error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    if(liblte_x2ap_unpack_tailistformdt(ptr, &ie->tAIListforMDT) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE TABasedMDT SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_tabasedmdt(
+  LIBLTE_X2AP_TABASEDMDT_STRUCT                                      *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("TABasedMDT error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
+
+    if(liblte_x2ap_pack_talistformdt(&ie->tAListforMDT, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_tabasedmdt(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_TABASEDMDT_STRUCT                                      *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("TABasedMDT error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+
+    if(liblte_x2ap_unpack_talistformdt(ptr, &ie->tAListforMDT) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE AreaScopeOfMDT CHOICE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_areascopeofmdt(
+  LIBLTE_X2AP_AREASCOPEOFMDT_STRUCT                                  *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("AreaScopeOfMDT error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    // Choice type
+    liblte_value_2_bits(ie->choice_type, ptr, 2);
+
+       // Choice
+ if(ie->choice_type == LIBLTE_X2AP_AREASCOPEOFMDT_CHOICE_CELLBASED) {
+      if(liblte_x2ap_pack_cellbasedmdt(&ie->choice.cellBased, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    } else if(ie->choice_type == LIBLTE_X2AP_AREASCOPEOFMDT_CHOICE_TABASED) {
+      if(liblte_x2ap_pack_tabasedmdt(&ie->choice.tABased, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    } else if(ie->choice_type == LIBLTE_X2AP_AREASCOPEOFMDT_CHOICE_PLMNWIDE) {
+      } else if(ie->choice_type == LIBLTE_X2AP_AREASCOPEOFMDT_CHOICE_TAIBASED) {
+      if(liblte_x2ap_pack_taibasedmdt(&ie->choice.tAIBased, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    } 
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_areascopeofmdt(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_AREASCOPEOFMDT_STRUCT                                  *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("AreaScopeOfMDT error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    // Choice type
+    ie->choice_type = (LIBLTE_X2AP_AREASCOPEOFMDT_CHOICE_ENUM)liblte_bits_2_value(ptr, 2);
+
+       // Choice
+ if(ie->choice_type == LIBLTE_X2AP_AREASCOPEOFMDT_CHOICE_CELLBASED) {
+      if(liblte_x2ap_unpack_cellbasedmdt(ptr, &ie->choice.cellBased) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    } else if(ie->choice_type == LIBLTE_X2AP_AREASCOPEOFMDT_CHOICE_TABASED) {
+      if(liblte_x2ap_unpack_tabasedmdt(ptr, &ie->choice.tABased) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    } else if(ie->choice_type == LIBLTE_X2AP_AREASCOPEOFMDT_CHOICE_PLMNWIDE) {
+      } else if(ie->choice_type == LIBLTE_X2AP_AREASCOPEOFMDT_CHOICE_TAIBASED) {
+      if(liblte_x2ap_unpack_taibasedmdt(ptr, &ie->choice.tAIBased) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    } 
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
+/* ProtocolIE MDT_Configuration SEQUENCE
+********************************************************************************/
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_mdt_configuration(
+  LIBLTE_X2AP_MDT_CONFIGURATION_STRUCT                               *ie,
+  uint8_t                                                           **ptr)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    liblte_value_2_bits(ie->ext?1:0, ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("MDT_Configuration error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
+    liblte_value_2_bits(ie->m1thresholdeventA2_present?1:0, ptr, 1);
+    liblte_value_2_bits(ie->m1periodicReporting_present?1:0, ptr, 1);
+
+    if(liblte_x2ap_pack_mdt_activation(&ie->mdt_Activation, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(liblte_x2ap_pack_areascopeofmdt(&ie->areaScopeOfMDT, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(liblte_x2ap_pack_measurementstoactivate(&ie->measurementsToActivate, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(liblte_x2ap_pack_m1reportingtrigger(&ie->m1reportingTrigger, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(ie->m1thresholdeventA2_present) {
+      if(liblte_x2ap_pack_m1thresholdeventa2(&ie->m1thresholdeventA2, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    
+    if(ie->m1periodicReporting_present) {
+      if(liblte_x2ap_pack_m1periodicreporting(&ie->m1periodicReporting, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_pack_protocolextensioncontainer(&ie->iE_Extensions, ptr) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_mdt_configuration(
+  uint8_t                                                           **ptr,
+  LIBLTE_X2AP_MDT_CONFIGURATION_STRUCT                               *ie)
+{
+  LIBLTE_ERROR_ENUM err = LIBLTE_ERROR_INVALID_INPUTS;
+
+  if(ie  != NULL &&
+     ptr != NULL)
+  {
+    // Extension
+    ie->ext  = liblte_bits_2_value(ptr, 1);
+    if(ie->ext) {
+      liblte_x2ap_log_print("MDT_Configuration error: X2AP ASN extensions not currently supported\n");
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+
+    ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
+    ie->m1thresholdeventA2_present = liblte_bits_2_value(ptr, 1);
+    ie->m1periodicReporting_present = liblte_bits_2_value(ptr, 1);
+
+    if(liblte_x2ap_unpack_mdt_activation(ptr, &ie->mdt_Activation) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(liblte_x2ap_unpack_areascopeofmdt(ptr, &ie->areaScopeOfMDT) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(liblte_x2ap_unpack_measurementstoactivate(ptr, &ie->measurementsToActivate) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(liblte_x2ap_unpack_m1reportingtrigger(ptr, &ie->m1reportingTrigger) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+
+    if(ie->m1thresholdeventA2_present) {
+      if(liblte_x2ap_unpack_m1thresholdeventa2(ptr, &ie->m1thresholdeventA2) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+    
+    if(ie->m1periodicReporting_present) {
+      if(liblte_x2ap_unpack_m1periodicreporting(ptr, &ie->m1periodicReporting) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_ENCODE_FAIL;
+    }
+    }
+
+    if(ie->iE_Extensions_present) {
+      if(liblte_x2ap_unpack_protocolextensioncontainer(ptr, &ie->iE_Extensions) != LIBLTE_SUCCESS) {
+      return LIBLTE_ERROR_DECODE_FAIL;
+    }
+    }
+    err = LIBLTE_SUCCESS;
+  }
+  return err;
+}
+
+/*******************************************************************************
 /* Protocol Message ErrorIndication STRUCT
 ********************************************************************************/
 LIBLTE_ERROR_ENUM liblte_x2ap_pack_errorindication(
@@ -7206,7 +12587,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_errorindication(
     liblte_value_2_bits(msg->ext?1:0, ptr, 1);
     liblte_align_up_zero(ptr, 8);
     if(msg->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
@@ -7333,7 +12714,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_errorindication(
     msg->ext  = liblte_bits_2_value(ptr, 1);
     liblte_align_up(ptr, 8);
     if(msg->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -7403,7 +12784,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_resetrequest(
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     liblte_align_up_zero(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
     // Temp container for IEs
@@ -7412,7 +12793,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_resetrequest(
 
     tmp_msg.reset();
     tmp_ptr = tmp_msg.msg;
-      if(liblte_x2ap_pack_cause(&ie->cause, &tmp_ptr) != LIBLTE_SUCCESS) {
+      if(liblte_x2ap_pack_cause(&ie->Cause, &tmp_ptr) != LIBLTE_SUCCESS) {
         return LIBLTE_ERROR_ENCODE_FAIL;
       }
       liblte_align_up_zero(&tmp_ptr, 8);
@@ -7447,10 +12828,9 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_resetrequest(
     ie->ext  = liblte_bits_2_value(ptr, 1);
     liblte_align_up(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
-
    
     if(liblte_x2ap_unpack_protocolie_header(ptr, &ie_id, &crit, &len) != LIBLTE_SUCCESS)
         return LIBLTE_ERROR_DECODE_FAIL;
@@ -7480,7 +12860,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_resetresponse(
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     liblte_align_up_zero(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
@@ -7529,12 +12909,11 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_resetresponse(
     ie->ext  = liblte_bits_2_value(ptr, 1);
     liblte_align_up(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
     ie->CriticalityDiagnostics_present = liblte_bits_2_value(ptr, 1);
-
     
     if(liblte_x2ap_unpack_protocolie_header(ptr, &ie_id, &crit, &len) != LIBLTE_SUCCESS)
         return LIBLTE_ERROR_DECODE_FAIL;
@@ -7561,7 +12940,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_cellinformation_item(
   {
   	liblte_value_2_bits(ie->ext?1:0, ptr, 1);
   	if(ie->ext){
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
     liblte_value_2_bits(ie->ul_InterferenceOverloadIndication_present?1:0, ptr, 1);
@@ -7600,7 +12979,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_cellinformation_item(
   {
   	ie->ext = liblte_bits_2_value(ptr, 1);
   	if(ie->ext){
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
     ie->ul_InterferenceOverloadIndication_present = liblte_bits_2_value(ptr, 1);
@@ -7649,7 +13028,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_cellinformation_item_ext(
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     liblte_align_up_zero(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
@@ -7731,7 +13110,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_cellinformation_item_ext(
     ie->ext  = liblte_bits_2_value(ptr, 1);
     liblte_align_up(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -7782,7 +13161,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_message_cellinformation_item(
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     liblte_align_up_zero(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
@@ -7836,7 +13215,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_message_cellinformation_item(
     ie->ext  = liblte_bits_2_value(ptr, 1);
     liblte_align_up(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -7876,7 +13255,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_cellinformation_list(
      ptr != NULL)
   {
     if(ie->len > 32) {
-      liblte_log_print("E_RABToBeSetupListBearerSUReq pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      liblte_x2ap_log_print("E_RABToBeSetupListBearerSUReq pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
     // Length
@@ -7927,7 +13306,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_cellinformation_list(
     ie->len = liblte_bits_2_value(ptr, 8) + 1;
     liblte_align_up(ptr, 8);
     if(ie->len > 32) {
-      liblte_log_print("E_RABToBeSetupListBearerSUReq unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      liblte_x2ap_log_print("E_RABToBeSetupListBearerSUReq unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -7966,7 +13345,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_loadinformation(
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     liblte_align_up_zero(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
@@ -8020,7 +13399,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_loadinformation(
     ie->ext  = liblte_bits_2_value(ptr, 1);
     liblte_align_up(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -8058,7 +13437,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_servedcellstomodify_item(
   {
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     if(ie->ext){
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
     liblte_value_2_bits(ie->neighbour_info_present?1:0, ptr, 1);
@@ -8091,7 +13470,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_servedcellstomodify_item(
   {
     ie->ext = liblte_bits_2_value(ptr, 1);
     if(ie->ext){
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
     ie->neighbour_info_present = liblte_bits_2_value(ptr, 1);
@@ -8136,7 +13515,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_servedcellstomodify_item_ext(
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     liblte_align_up_zero(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
@@ -8190,7 +13569,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_servedcellstomodify_item_ext(
     ie->ext  = liblte_bits_2_value(ptr, 1);
     liblte_align_up(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -8229,7 +13608,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_servedcellstomodify(
      ptr != NULL)
   {
     if(ie->len > 32) {
-      liblte_log_print("E_RABToBeSetupListBearerSUReq pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      liblte_x2ap_log_print("E_RABToBeSetupListBearerSUReq pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
     // Length
@@ -8264,7 +13643,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_servedcellstomodify(
     ie->len = liblte_bits_2_value(ptr, 8) + 1;
     liblte_align_up(ptr, 8);
     if(ie->len > 32) {
-      liblte_log_print("E_RABToBeSetupListBearerSUReq unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      liblte_x2ap_log_print("E_RABToBeSetupListBearerSUReq unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -8294,7 +13673,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_old_ecgis(
      ptr != NULL)
   {
     if(ie->len > 32) {
-      liblte_log_print("E_RABToBeSetupListBearerSUReq pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      liblte_x2ap_log_print("E_RABToBeSetupListBearerSUReq pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
     // Length
@@ -8329,7 +13708,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_old_ecgis(
     ie->len = liblte_bits_2_value(ptr, 8) + 1;
     liblte_align_up(ptr, 8);
     if(ie->len > 32) {
-      liblte_log_print("E_RABToBeSetupListBearerSUReq unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      liblte_x2ap_log_print("E_RABToBeSetupListBearerSUReq unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -8361,7 +13740,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_enbconfigurationupdate(
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     liblte_align_up_zero(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
@@ -8506,7 +13885,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_enbconfigurationupdate(
     ie->ext  = liblte_bits_2_value(ptr, 1);
     liblte_align_up(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -8574,7 +13953,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_enbconfigurationupdateacknowledge(
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     liblte_align_up_zero(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
@@ -8634,7 +14013,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_enbconfigurationupdateacknowledge(
     ie->ext  = liblte_bits_2_value(ptr, 1);
     liblte_align_up(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -8678,7 +14057,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_enbconfigurationupdatefailure(
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     liblte_align_up_zero(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
@@ -8773,7 +14152,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_enbconfigurationupdatefailure(
     ie->ext  = liblte_bits_2_value(ptr, 1);
     liblte_align_up(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -8826,7 +14205,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_celltoreport_item(
     liblte_align_up_zero(ptr, 8);
     if(ie->ext)
     {
-      liblte_log_print("CellToReport_Item error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("CellToReport_Item error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
     liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
@@ -8851,7 +14230,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_celltoreport_item(
     liblte_align_up(ptr, 8);
     if(ie->ext)
     {
-      liblte_log_print("CellToReport_Item error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("CellToReport_Item error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
     ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
@@ -8883,7 +14262,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_celltoreport_item_ext(
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     liblte_align_up_zero(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("E-RABToBeSwitchedDLItem-ExtIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("E-RABToBeSwitchedDLItem-ExtIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
@@ -8921,7 +14300,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_celltoreport_item_ext(
     ie->ext  = liblte_bits_2_value(ptr, 1);
     liblte_align_up(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("E-RABToBeSwitchedDLItem-ExtIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("E-RABToBeSwitchedDLItem-ExtIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -8953,7 +14332,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_message_celltoreport_item(
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     liblte_align_up_zero(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
@@ -9008,7 +14387,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_message_celltoreport_item(
     ie->ext  = liblte_bits_2_value(ptr, 1);
     liblte_align_up(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -9048,7 +14427,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_celltoreport_list(
      ptr != NULL)
   {
     if(ie->len > 32) {
-      liblte_log_print("E_RABToBeSetupListBearerSUReq pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      liblte_x2ap_log_print("E_RABToBeSetupListBearerSUReq pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
     // Length
@@ -9098,7 +14477,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_celltoreport_list(
     ie->len = liblte_bits_2_value(ptr, 8) + 1;
     liblte_align_up(ptr, 8);
     if(ie->len > 32) {
-      liblte_log_print("E_RABToBeSetupListBearerSUReq unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      liblte_x2ap_log_print("E_RABToBeSetupListBearerSUReq unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -9134,7 +14513,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_reportingperiodicity(
     // Extension
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     if(ie->ext) {
-      liblte_log_print("CauseMisc error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("CauseMisc error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
@@ -9158,7 +14537,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_reportingperiodicity(
     // Extension
     ie->ext  = liblte_bits_2_value(ptr, 1);
     if(ie->ext) {
-      liblte_log_print("CauseMisc error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("CauseMisc error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -9185,7 +14564,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_partialsuccessindicator(
     // Extension
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     if(ie->ext) {
-      liblte_log_print("CauseMisc error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("CauseMisc error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
@@ -9208,7 +14587,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_partialsuccessindicator(
     // Extension
     ie->ext  = liblte_bits_2_value(ptr, 1);
     if(ie->ext) {
-      liblte_log_print("CauseMisc error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("CauseMisc error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -9237,7 +14616,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_resourcestatusrequest(
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     liblte_align_up_zero(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
@@ -9408,7 +14787,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_resourcestatusrequest(
     ie->ext  = liblte_bits_2_value(ptr, 1);
     liblte_align_up(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -9482,7 +14861,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_measurementfailurecause_item(
     liblte_align_up_zero(ptr, 8);
     if(ie->ext)
     {
-      liblte_log_print("CellToReport_Item error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("CellToReport_Item error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
     liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
@@ -9509,7 +14888,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_measurementfailurecause_item(
     liblte_align_up(ptr, 8);
     if(ie->ext)
     {
-      liblte_log_print("CellToReport_Item error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("CellToReport_Item error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
     ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
@@ -9542,7 +14921,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_measurementfailurecause_item_ext(
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     liblte_align_up_zero(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("E-RABToBeSwitchedDLItem-ExtIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("E-RABToBeSwitchedDLItem-ExtIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
@@ -9580,7 +14959,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_measurementfailurecause_item_ext(
     ie->ext  = liblte_bits_2_value(ptr, 1);
     liblte_align_up(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("E-RABToBeSwitchedDLItem-ExtIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("E-RABToBeSwitchedDLItem-ExtIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -9611,7 +14990,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_message_measurementfailurecause_item(
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     liblte_align_up_zero(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
@@ -9665,7 +15044,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_message_measurementfailurecause_item(
     ie->ext  = liblte_bits_2_value(ptr, 1);
     liblte_align_up(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -9705,7 +15084,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_measurementfailurecause_list(
      ptr != NULL)
   {
     if(ie->len > 32) {
-      liblte_log_print("E_RABToBeSetupListBearerSUReq pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      liblte_x2ap_log_print("E_RABToBeSetupListBearerSUReq pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
     // Length
@@ -9756,7 +15135,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_measurementfailurecause_list(
     ie->len = liblte_bits_2_value(ptr, 8) + 1;
     liblte_align_up(ptr, 8);
     if(ie->len > 32) {
-      liblte_log_print("E_RABToBeSetupListBearerSUReq unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      liblte_x2ap_log_print("E_RABToBeSetupListBearerSUReq unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -9791,7 +15170,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_measurementinitiationresult_item(
     liblte_align_up_zero(ptr, 8);
     if(ie->ext)
     {
-      liblte_log_print("CellToReport_Item error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("CellToReport_Item error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
     liblte_value_2_bits(ie->measurementFailureCause_List_present?1:0, ptr, 1);
@@ -9820,7 +15199,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_measurementinitiationresult_item(
     liblte_align_up(ptr, 8);
     if(ie->ext)
     {
-      liblte_log_print("CellToReport_Item error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("CellToReport_Item error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
     ie->measurementFailureCause_List_present = liblte_bits_2_value(ptr, 1);
@@ -9855,7 +15234,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_measurementinitiationresult_item_ext(
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     liblte_align_up_zero(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("E-RABToBeSwitchedDLItem-ExtIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("E-RABToBeSwitchedDLItem-ExtIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
@@ -9893,7 +15272,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_measurementinitiationresult_item_ext(
     ie->ext  = liblte_bits_2_value(ptr, 1);
     liblte_align_up(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("E-RABToBeSwitchedDLItem-ExtIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("E-RABToBeSwitchedDLItem-ExtIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -9925,7 +15304,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_message_measurementinitiationresult_item(
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     liblte_align_up_zero(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
@@ -9979,7 +15358,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_message_measurementinitiationresult_item(
     ie->ext  = liblte_bits_2_value(ptr, 1);
     liblte_align_up(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -10018,7 +15397,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_measurementinitiationresult_list(
      ptr != NULL)
   {
     if(ie->len > 32) {
-      liblte_log_print("E_RABToBeSetupListBearerSUReq pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      liblte_x2ap_log_print("E_RABToBeSetupListBearerSUReq pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
     // Length
@@ -10069,7 +15448,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_measurementinitiationresult_list(
     ie->len = liblte_bits_2_value(ptr, 8) + 1;
     liblte_align_up(ptr, 8);
     if(ie->len > 32) {
-      liblte_log_print("E_RABToBeSetupListBearerSUReq unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      liblte_x2ap_log_print("E_RABToBeSetupListBearerSUReq unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -10107,7 +15486,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_resourcestatusresponse(
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     liblte_align_up_zero(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
@@ -10221,7 +15600,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_resourcestatusresponse(
     ie->ext  = liblte_bits_2_value(ptr, 1);
     liblte_align_up(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -10278,7 +15657,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_completefailurecauseinformation_item(
     liblte_align_up_zero(ptr, 8);
     if(ie->ext)
     {
-      liblte_log_print("CellToReport_Item error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("CellToReport_Item error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
     liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
@@ -10305,7 +15684,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_completefailurecauseinformation_item(
     liblte_align_up(ptr, 8);
     if(ie->ext)
     {
-      liblte_log_print("CellToReport_Item error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("CellToReport_Item error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
     ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
@@ -10338,7 +15717,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_completefailurecauseinformation_item_ext(
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     liblte_align_up_zero(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("E-RABToBeSwitchedDLItem-ExtIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("E-RABToBeSwitchedDLItem-ExtIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
@@ -10376,7 +15755,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_completefailurecauseinformation_item_ext(
     ie->ext  = liblte_bits_2_value(ptr, 1);
     liblte_align_up(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("E-RABToBeSwitchedDLItem-ExtIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("E-RABToBeSwitchedDLItem-ExtIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -10408,7 +15787,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_message_completefailurecauseinformation_item(
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     liblte_align_up_zero(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
@@ -10462,7 +15841,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_message_completefailurecauseinformation_ite
     ie->ext  = liblte_bits_2_value(ptr, 1);
     liblte_align_up(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -10501,7 +15880,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_completefailurecauseinformation_list(
      ptr != NULL)
   {
     if(ie->len > 32) {
-      liblte_log_print("E_RABToBeSetupListBearerSUReq pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      liblte_x2ap_log_print("E_RABToBeSetupListBearerSUReq pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
     // Length
@@ -10552,7 +15931,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_completefailurecauseinformation_list(
     ie->len = liblte_bits_2_value(ptr, 8) + 1;
     liblte_align_up(ptr, 8);
     if(ie->len > 32) {
-      liblte_log_print("E_RABToBeSetupListBearerSUReq unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      liblte_x2ap_log_print("E_RABToBeSetupListBearerSUReq unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -10590,7 +15969,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_resourcestatusfailure(
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     liblte_align_up_zero(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
@@ -10720,7 +16099,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_resourcestatusfailure(
     ie->ext  = liblte_bits_2_value(ptr, 1);
     liblte_align_up(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -10782,7 +16161,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_cellmeasurementresult_item(
     liblte_align_up_zero(ptr, 8);
     if(ie->ext)
     {
-      liblte_log_print("CellToReport_Item error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("CellToReport_Item error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
     liblte_value_2_bits(ie->hWLoadIndicator_present?1:0, ptr, 1);
@@ -10822,7 +16201,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_cellmeasurementresult_item(
     liblte_align_up(ptr, 8);
     if(ie->ext)
     {
-      liblte_log_print("CellToReport_Item error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("CellToReport_Item error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
     ie->hWLoadIndicator_present = liblte_bits_2_value(ptr, 1);
@@ -10866,7 +16245,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_cellmeasurementresult_item_ext(
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     liblte_align_up_zero(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("E-RABToBeSwitchedDLItem-ExtIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("E-RABToBeSwitchedDLItem-ExtIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
@@ -10944,7 +16323,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_cellmeasurementresult_item_ext(
     ie->ext  = liblte_bits_2_value(ptr, 1);
     liblte_align_up(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("E-RABToBeSwitchedDLItem-ExtIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("E-RABToBeSwitchedDLItem-ExtIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -10993,7 +16372,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_message_cellmeasurementresult_item(
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     liblte_align_up_zero(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
@@ -11047,7 +16426,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_message_cellmeasurementresult_item(
     ie->ext  = liblte_bits_2_value(ptr, 1);
     liblte_align_up(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -11086,7 +16465,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_cellmeasurementresult_list(
      ptr != NULL)
   {
     if(ie->len > 32) {
-      liblte_log_print("E_RABToBeSetupListBearerSUReq pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      liblte_x2ap_log_print("E_RABToBeSetupListBearerSUReq pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
     // Length
@@ -11137,7 +16516,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_cellmeasurementresult_list(
     ie->len = liblte_bits_2_value(ptr, 8) + 1;
     liblte_align_up(ptr, 8);
     if(ie->len > 32) {
-      liblte_log_print("E_RABToBeSetupListBearerSUReq unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      liblte_x2ap_log_print("E_RABToBeSetupListBearerSUReq unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -11175,7 +16554,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_resourcestatusupdate(
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     liblte_align_up_zero(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
@@ -11262,7 +16641,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_resourcestatusupdate(
     ie->ext  = liblte_bits_2_value(ptr, 1);
     liblte_align_up(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -11315,7 +16694,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_privatemessage(
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     liblte_align_up_zero(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("E-RABToBeSwitchedDLItem-ExtIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("E-RABToBeSwitchedDLItem-ExtIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
@@ -11353,7 +16732,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_privatemessage(
     ie->ext  = liblte_bits_2_value(ptr, 1);
     liblte_align_up(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("E-RABToBeSwitchedDLItem-ExtIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("E-RABToBeSwitchedDLItem-ExtIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -11383,7 +16762,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_mobilitychangerequest(
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     liblte_align_up_zero(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
@@ -11506,7 +16885,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_mobilitychangerequest(
     ie->ext  = liblte_bits_2_value(ptr, 1);
     liblte_align_up(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -11570,7 +16949,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_mobilitychangeacknowledge(
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     liblte_align_up_zero(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
@@ -11659,7 +17038,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_mobilitychangeacknowledge(
     ie->ext  = liblte_bits_2_value(ptr, 1);
     liblte_align_up(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -11712,7 +17091,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_mobilitychangefailure(
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     liblte_align_up_zero(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
@@ -11840,7 +17219,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_mobilitychangefailure(
     ie->ext  = liblte_bits_2_value(ptr, 1);
     liblte_align_up(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -11905,7 +17284,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_rlfindication(
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     liblte_align_up_zero(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
@@ -12078,7 +17457,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_rlfindication(
     ie->ext  = liblte_bits_2_value(ptr, 1);
     liblte_align_up(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -12159,7 +17538,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_servedcellstoactivate_item(
     liblte_align_up_zero(ptr, 8);
     if(ie->ext)
     {
-      liblte_log_print("CellToReport_Item error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("CellToReport_Item error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
     liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
@@ -12183,7 +17562,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_servedcellstoactivate_item(
     liblte_align_up(ptr, 8);
     if(ie->ext)
     {
-      liblte_log_print("CellToReport_Item error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("CellToReport_Item error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
     ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
@@ -12214,7 +17593,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_servedcellstoactivate_item_ext(
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     liblte_align_up_zero(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("E-RABToBeSwitchedDLItem-ExtIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("E-RABToBeSwitchedDLItem-ExtIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
@@ -12251,7 +17630,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_servedcellstoactivate_item_ext(
     ie->ext  = liblte_bits_2_value(ptr, 1);
     liblte_align_up(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("E-RABToBeSwitchedDLItem-ExtIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("E-RABToBeSwitchedDLItem-ExtIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -12276,7 +17655,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_servedcellstoactivate(
      ptr != NULL)
   {
     if(ie->len > 32) {
-      liblte_log_print("E_RABToBeSetupListBearerSUReq pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      liblte_x2ap_log_print("E_RABToBeSetupListBearerSUReq pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
     // Length
@@ -12310,7 +17689,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_servedcellstoactivate(
     ie->len = liblte_bits_2_value(ptr, 8) + 1;
     liblte_align_up(ptr, 8);
     if(ie->len > 32) {
-      liblte_log_print("E_RABToBeSetupListBearerSUReq unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      liblte_x2ap_log_print("E_RABToBeSetupListBearerSUReq unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -12342,7 +17721,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_cellactivationrequest(
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     liblte_align_up_zero(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
@@ -12394,7 +17773,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_cellactivationrequest(
     ie->ext  = liblte_bits_2_value(ptr, 1);
     liblte_align_up(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -12441,7 +17820,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_activatedcelllist_item(
     liblte_align_up_zero(ptr, 8);
     if(ie->ext)
     {
-      liblte_log_print("CellToReport_Item error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("CellToReport_Item error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
     liblte_value_2_bits(ie->iE_Extensions_present?1:0, ptr, 1);
@@ -12465,7 +17844,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_activatedcelllist_item(
     liblte_align_up(ptr, 8);
     if(ie->ext)
     {
-      liblte_log_print("CellToReport_Item error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("CellToReport_Item error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
     ie->iE_Extensions_present = liblte_bits_2_value(ptr, 1);
@@ -12496,7 +17875,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_activatedcelllist_item_ext(
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     liblte_align_up_zero(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("E-RABToBeSwitchedDLItem-ExtIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("E-RABToBeSwitchedDLItem-ExtIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
@@ -12533,7 +17912,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_activatedcelllist_item_ext(
     ie->ext  = liblte_bits_2_value(ptr, 1);
     liblte_align_up(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("E-RABToBeSwitchedDLItem-ExtIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("E-RABToBeSwitchedDLItem-ExtIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -12558,7 +17937,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_activatedcelllist(
      ptr != NULL)
   {
     if(ie->len > 32) {
-      liblte_log_print("E_RABToBeSetupListBearerSUReq pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      liblte_x2ap_log_print("E_RABToBeSetupListBearerSUReq pack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
     // Length
@@ -12591,7 +17970,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_activatedcelllist(
     ie->len = liblte_bits_2_value(ptr, 8) + 1;
     liblte_align_up(ptr, 8);
     if(ie->len > 32) {
-      liblte_log_print("E_RABToBeSetupListBearerSUReq unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
+      liblte_x2ap_log_print("E_RABToBeSetupListBearerSUReq unpack error - max supported dynamic sequence length = 32, ie->len = %d\n", ie->len);
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -12623,7 +18002,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_cellactivationresponse(
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     liblte_align_up_zero(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
@@ -12695,7 +18074,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_cellactivationresponse(
     ie->ext  = liblte_bits_2_value(ptr, 1);
     liblte_align_up(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -12750,7 +18129,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_cellactivationfailure(
     liblte_value_2_bits(ie->ext?1:0, ptr, 1);
     liblte_align_up_zero(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_ENCODE_FAIL;
     }
 
@@ -12823,7 +18202,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_cellactivationfailure(
     ie->ext  = liblte_bits_2_value(ptr, 1);
     liblte_align_up(ptr, 8);
     if(ie->ext) {
-      liblte_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
+      liblte_x2ap_log_print("ErrorIndicationIEs error: X2AP ASN extensions not currently supported\n");
       return LIBLTE_ERROR_DECODE_FAIL;
     }
 
@@ -13510,7 +18889,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_x2setuprequest(
     uint32_t n_ie = 3;
     if(!msg->GUGroupIDList_present)
       n_ie--;
-    liblte_value_2_bits(n_ie, ptr, 16);
+    liblte_value_2_bits(n_ie, ptr, 2);  // cz
 
     // Temp container for IEs
     LIBLTE_BIT_MSG_STRUCT tmp_msg;
@@ -13519,9 +18898,9 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_x2setuprequest(
     // ProtocolIE - GlobalENB_ID
     tmp_msg.reset();
     tmp_ptr = tmp_msg.msg;
-    /*if(liblte_x2ap_pack_globalenb_id(&msg->GlobalENB_ID, &tmp_ptr) != LIBLTE_SUCCESS) {
+    if(liblte_x2ap_pack_globalenb_id(&msg->GlobalENB_ID, &tmp_ptr) != LIBLTE_SUCCESS) {
       return LIBLTE_ERROR_ENCODE_FAIL;
-    }*/
+    }
     liblte_align_up_zero(&tmp_ptr, 8);
     tmp_msg.N_bits = tmp_ptr - tmp_msg.msg;
     if(liblte_x2ap_pack_protocolie_header(tmp_msg.N_bits / 8,
@@ -13536,9 +18915,9 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_x2setuprequest(
     // ProtocolIE - ServedCells
     tmp_msg.reset();
     tmp_ptr = tmp_msg.msg;
-    /*if(liblte_x2ap_pack_servedcells(&msg->ServedCells, &tmp_ptr) != LIBLTE_SUCCESS) {
+    if(liblte_x2ap_pack_servedcells(&msg->ServedCells, &tmp_ptr) != LIBLTE_SUCCESS) {
       return LIBLTE_ERROR_ENCODE_FAIL;
-    }*/
+    }
     liblte_align_up_zero(&tmp_ptr, 8);
     tmp_msg.N_bits = tmp_ptr - tmp_msg.msg;
     if(liblte_x2ap_pack_protocolie_header(tmp_msg.N_bits / 8,
@@ -13554,9 +18933,9 @@ LIBLTE_ERROR_ENUM liblte_x2ap_pack_x2setuprequest(
     if(msg->GUGroupIDList_present) {
       tmp_msg.reset();
       tmp_ptr = tmp_msg.msg;
-      /*if(liblte_x2ap_pack_gugroupidlist(&msg->GUGroupIDList, &tmp_ptr) != LIBLTE_SUCCESS) {
+      if(liblte_x2ap_pack_gugroupidlist(&msg->GUGroupIDList, &tmp_ptr) != LIBLTE_SUCCESS) {
         return LIBLTE_ERROR_ENCODE_FAIL;
-      }*/
+      }
       liblte_align_up_zero(&tmp_ptr, 8);
       tmp_msg.N_bits = tmp_ptr - tmp_msg.msg;
       if(liblte_x2ap_pack_protocolie_header(tmp_msg.N_bits / 8,
@@ -13601,7 +18980,7 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_x2setuprequest(
     }
 
     // No. of ProtocolIE-Container
-    n_ie = liblte_bits_2_value(ptr, 16);
+    n_ie = liblte_bits_2_value(ptr, 2);  // cz
 
     // Unpack ProtocolIE Fields
     for(i=0;i<n_ie;i++) {
@@ -13609,19 +18988,19 @@ LIBLTE_ERROR_ENUM liblte_x2ap_unpack_x2setuprequest(
         return LIBLTE_ERROR_DECODE_FAIL;
       }
       if(LIBLTE_X2AP_IE_ID_GLOBALENB_ID == ie_id) {
-        /*if(liblte_x2ap_unpack_globalenb_id(ptr, &msg->GlobalENB_ID) != LIBLTE_SUCCESS) {
+        if(liblte_x2ap_unpack_globalenb_id(ptr, &msg->GlobalENB_ID) != LIBLTE_SUCCESS) {
           return LIBLTE_ERROR_DECODE_FAIL;
-        }*/
+        }
         liblte_align_up(ptr, 8);
       } else      if(LIBLTE_X2AP_IE_ID_SERVEDCELLS == ie_id) {
-        /*if(liblte_x2ap_unpack_servedcells(ptr, &msg->ServedCells) != LIBLTE_SUCCESS) {
+        if(liblte_x2ap_unpack_servedcells(ptr, &msg->ServedCells) != LIBLTE_SUCCESS) {
           return LIBLTE_ERROR_DECODE_FAIL;
-        }*/
+        }
         liblte_align_up(ptr, 8);
       } else      if(LIBLTE_X2AP_IE_ID_GUGROUPIDLIST == ie_id) {
-        /*if(liblte_x2ap_unpack_gugroupidlist(ptr, &msg->GUGroupIDList) != LIBLTE_SUCCESS) {
+        if(liblte_x2ap_unpack_gugroupidlist(ptr, &msg->GUGroupIDList) != LIBLTE_SUCCESS) {
           return LIBLTE_ERROR_DECODE_FAIL;
-        }*/
+        }
         liblte_align_up(ptr, 8);
         msg->GUGroupIDList_present = true;
       } 

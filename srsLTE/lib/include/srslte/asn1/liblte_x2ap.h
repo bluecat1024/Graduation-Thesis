@@ -126,13 +126,13 @@ typedef enum{
   LIBLTE_X2AP_IE_ID_CELLTOREPORT_ITEM                             = 31,
   LIBLTE_X2AP_IE_ID_CELLMEASUREMENTRESULT                         = 32,
   LIBLTE_X2AP_IE_ID_CELLMEASUREMENTRESULT_ITEM                    = 33,
-  LIBLTE_X2AP_IE_GUGROUPIDTOADDLIST                               = 34,
+  LIBLTE_X2AP_IE_ID_GUGROUPIDTOADDLIST                               = 34,
   LIBLTE_X2AP_IE_ID_GUGROUPIDTODELETELIST                         = 35,
   LIBLTE_X2AP_IE_ID_SRVCCOPERATIONPOSSIBLE                        = 36,
   LIBLTE_X2AP_IE_ID_MEASUREMENT_ID                                = 37,
   LIBLTE_X2AP_IE_ID_REPORTCHARATERISTICS                          = 38,
   LIBLTE_X2AP_IE_ID_ENB1_MEASUREMENT_ID                           = 39,
-  LIBLTE_X2AP_IE_ID_ENB2_MEASUREMNET_ID                           = 40,
+  LIBLTE_X2AP_IE_ID_ENB2_MEASUREMENT_ID                           = 40,
   LIBLTE_X2AP_IE_ID_NUMBER_OF_ANTENNAPORTS                        = 41,
   LIBLTE_X2AP_IE_ID_COMPOSITEAVAILABLECAPACITYGROUP               = 42,
   LIBLTE_X2AP_IE_ID_ENB1_CELL_ID                                  = 43,
@@ -142,7 +142,7 @@ typedef enum{
   LIBLTE_X2AP_IE_ID_ENB2_MOBILITY_PARAMETERS_MODIFICATION_RANGE   = 47,
   LIBLTE_X2AP_IE_ID_FAILURECELLPCI                                = 48,
   LIBLTE_X2AP_IE_ID_RE_ESTABLISHMENTCELLECGI                      = 49,
-  LIBLTE_X2AP_IE_FAILURECELLCRNTI                                 = 50,
+  LIBLTE_X2AP_IE_ID_FAILURECELLCRNTI                                 = 50,
   LIBLTE_X2AP_IE_ID_SHORTMAC_I                                    = 51,
   LIBLTE_X2AP_IE_ID_SOURCECELLECGI                                = 52,
   LIBLTE_X2AP_IE_ID_FAILURECELLECGI                               = 53,
@@ -5462,10 +5462,10 @@ typedef struct{
   LIBLTE_X2AP_E_RABS_TOBESETUP_ITEM_STRUCT                     E_RABs_ToBeSetup_Item;
 }LIBLTE_X2AP_MESSAGE_E_RABS_TOBESETUP_ITEM_STRUCT;
 
-LIBLTE_ERROR_ENUM liblte_x2ap_pack_e_rabs_tobesetup_item(
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_message_e_rabs_tobesetup_item(
   LIBLTE_X2AP_MESSAGE_E_RABS_TOBESETUP_ITEM_STRUCT           *ie,
   uint8_t                                                     **ptr);
-LIBLTE_ERROR_ENUM liblte_x2ap_unpack_e_rab_tobesetup_item(
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_message_e_rab_tobesetup_item(
   uint8_t                                                     **ptr,
   LIBLTE_X2AP_MESSAGE_E_RABS_TOBESETUP_ITEM_STRUCT           *ie);
 
@@ -5590,7 +5590,7 @@ typedef struct{
   LIBLTE_X2AP_GTPTUNNELENDPOINT_STRUCT                         uL_GTP_TunnelEndpoint;
   bool                                                         uL_GTP_TunnelEndpoint_present;
   LIBLTE_X2AP_GTPTUNNELENDPOINT_STRUCT                         dL_GTP_TunnelEndpoint;
-  bool                                                         dL_GTP_TunnelEndpoint_presnet;
+  bool                                                         dL_GTP_TunnelEndpoint_present;
   LIBLTE_X2AP_PROTOCOLEXTENSIONCONTAINER_STRUCT                iE_Extensions;
   bool                                                         iE_Extensions_present;
 }LIBLTE_X2AP_E_RABS_ADMITTED_ITEM_STRUCT;
@@ -5624,10 +5624,10 @@ typedef struct{
   LIBLTE_X2AP_E_RABS_ADMITTED_ITEM_STRUCT                      E_RABs_Admitted_Item;
 }LIBLTE_X2AP_MESSAGE_E_RABS_ADMITTED_ITEM_STRUCT;
 
-LIBLTE_ERROR_ENUM liblte_x2ap_pack_e_rabs_admitted_item(
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_message_e_rabs_admitted_item(
   LIBLTE_X2AP_MESSAGE_E_RABS_ADMITTED_ITEM_STRUCT                 *ie,
   uint8_t                                                     **ptr);
-LIBLTE_ERROR_ENUM liblte_x2ap_unpack_e_rabs_admitted_item(
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_message_e_rabs_admitted_item(
   uint8_t                                                     **ptr,
   LIBLTE_X2AP_MESSAGE_E_RABS_ADMITTED_ITEM_STRUCT                 *ie);
 
@@ -5785,10 +5785,10 @@ typedef struct{
   LIBLTE_X2AP_E_RABS_SUBJECTTOSTATUSTRANSFER_ITEM_STRUCT       E_RABs_SubjectToStatusTransfer_Item;
 }LIBLTE_X2AP_MESSAGE_E_RABS_SUBJECTTOSTATUSTRANSFER_ITEM_STRUCT;
 
-LIBLTE_ERROR_ENUM liblte_x2ap_pack_e_rabs_subjecttostatustransfer_item(
+LIBLTE_ERROR_ENUM liblte_x2ap_pack_message_e_rabs_subjecttostatustransfer_item(
   LIBLTE_X2AP_MESSAGE_E_RABS_SUBJECTTOSTATUSTRANSFER_ITEM_STRUCT                 *ie,
   uint8_t                                                     **ptr);
-LIBLTE_ERROR_ENUM liblte_x2ap_unpack_e_rabs_subjecttostatustransfer_item(
+LIBLTE_ERROR_ENUM liblte_x2ap_unpack_message_e_rabs_subjecttostatustransfer_item(
   uint8_t                                                     **ptr,
   LIBLTE_X2AP_MESSAGE_E_RABS_SUBJECTTOSTATUSTRANSFER_ITEM_STRUCT                 *ie);
 

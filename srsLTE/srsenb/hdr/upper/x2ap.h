@@ -104,9 +104,13 @@ private:
 	bool handle_x2setupfailure(LIBLTE_X2AP_MESSAGE_X2SETUPFAILURE_STRUCT *msg);
 
 	// X2AP send messages
+	bool send_x2setuprequest();
+	bool send_x2setupresponse(LIBLTE_X2AP_MESSAGE_X2SETUPREQUEST_STRUCT *msg1);
 	bool send_handoverrequest();
-	bool send_handoverrequestacknowledge(LIBLTE_X2AP_MESSAGE_HANDOVERREQUEST_STRUCT *msg);
-
+	bool send_handoverrequestacknowledge(LIBLTE_X2AP_MESSAGE_HANDOVERREQUEST_STRUCT *msg1);
+	bool send_snstatustransfer(LIBLTE_X2AP_MESSAGE_HANDOVERREQUESTACKNOWLEDGE_STRUCT *msg1);
+	bool send_uecontextrelease(LIBLTE_X2AP_MESSAGE_SNSTATUSTRANSFER_STRUCT *msg1);
+	bool release_ue_cxt(LIBLTE_X2AP_MESSAGE_UECONTEXTRELEASE_STRUCT *msg1);
 	std::string get_cause(LIBLTE_X2AP_CAUSE_STRUCT *c);
 };
 

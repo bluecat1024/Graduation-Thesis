@@ -1,6 +1,6 @@
 #ifndef X2AP_H
 #define X2AP_H
-
+#include <map>
 #include "srslte/common/threads.h"
 #include "srslte/common/log.h"
 #include "srslte/common/buffer_pool.h"
@@ -24,6 +24,14 @@ typedef struct
 	std::string   neighbour_addr;
 	std::string   gtp_bind_addr;
 }x2ap_args_t;
+
+typedef struct {
+  uint32_t  rnti;
+  uint32_t  eNB_UE_X2AP_ID;
+  uint32_t  MME_UE_X2AP_ID;
+  bool      release_requested;
+  uint16_t  stream_id;
+}ue_ctxt_t;
 
 class x2ap
 	: public x2ap_interface_rrc
@@ -60,9 +68,18 @@ private:
 	bool running;
 	int socket_fd, conn_fd;
 	struct sockaddr_in neighbour_enb_addr; // Neighbour ENB address
+	uint32_t  next_eNB_UE_X2AP_ID;    // Next ENB-side UE identifier
+    uint16_t  next_ue_stream_id;      // Next UE SCTP stream identifier
+
+    // Protocol IEs sent with every UL S1AP message
+    LIBLTE_S1AP_TAI_STRUCT        tai;
+    LIBLTE_S1AP_EUTRAN_CGI_STRUCT eutran_cgi;
+    std::map<uint16_t, ue_ctxt_t> ue_ctxt_map;
+    std::map<uint32_t, uint16_t>  enbid_to_rnti_map;
 
 	LIBLTE_X2AP_MESSAGE_X2SETUPRESPONSE_STRUCT x2setupresponse;
 
+	//void build_tai_cgi();
 	bool connect_neighbour();
 	bool setup_x2ap();
 
@@ -88,6 +105,7 @@ private:
 
 	// X2AP send messages
 	bool send_handoverrequest();
+	bool send_handoverrequestacknowledge(LIBLTE_X2AP_MESSAGE_HANDOVERREQUEST_STRUCT *msg);
 
 	std::string get_cause(LIBLTE_X2AP_CAUSE_STRUCT *c);
 };

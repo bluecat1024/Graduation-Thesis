@@ -19,6 +19,7 @@ bool x2ap::init(x2ap_args_t args_, rrc_interface_x2ap *rrc_, s1ap_interface_x2ap
     running             = false;
     neighbour_connected = false;
     //build_tai_cgi();
+    
 
     start(X2AP_THREAD_PRIO);
 
@@ -143,6 +144,8 @@ bool x2ap::connect_neighbour()
             return false;
         }
         x2ap_log->info("SCTP socket established with neighbour ENB\n");
+        x2ap_log->info("对方IP：%s ", inet_ntoa(neighbour_enb_addr.sin_addr));
+        x2ap_log->info("对方PORT：%d ", ntohs(neighbour_enb_addr.sin_port));
         return true;
     }
     else if(args.active_status == 0) // passive connect
@@ -180,8 +183,12 @@ bool x2ap::connect_neighbour()
             close(socket_fd);
             return false;
         }
+        socklen_t len = sizeof(neighbour_enb_addr);
+        getpeername(connfd, (struct sockaddr *)&neighbour_enb_addr, &len);
 
         x2ap_log->info("SCTP socket established with neighbour ENB\n");
+        x2ap_log->info("对方IP：%s ", inet_ntoa(neighbour_enb_addr.sin_addr));
+        x2ap_log->info("对方PORT：%d ", ntohs(neighbour_enb_addr.sin_port));
         return true;
     }
     else
@@ -357,6 +364,7 @@ bool x2ap::handle_x2setuprequest(LIBLTE_X2AP_MESSAGE_X2SETUPREQUEST_STRUCT *msg)
 {
     x2ap_log->info("Received X2setuprequest\n");
     //TODO: send_x2setupresponse();
+    send_x2setupresponse(LIBLTE_X2AP_MESSAGE_X2SETUPREQUEST_STRUCT *msg1);
     return true;
 }
 
@@ -364,6 +372,7 @@ bool x2ap::handle_handoverrequest(LIBLTE_X2AP_MESSAGE_HANDOVERREQUEST_STRUCT *ms
 {
     x2ap_log->info("Received Handoverrequest\n");
     //TODO: send_handoverrequestacknowledge();
+    send_handoverrequestacknowledge(LIBLTE_X2AP_MESSAGE_HANDOVERREQUEST_STRUCT *msg1);
     return true;
 }
 
@@ -371,6 +380,7 @@ bool x2ap::handle_snstatustransfer(LIBLTE_X2AP_MESSAGE_SNSTATUSTRANSFER_STRUCT *
 {
     x2ap_log->info("Received Snstatustransfer\n");
     //TODO: send_uecontextrelease();
+    send_uecontextrelease(LIBLTE_X2AP_MESSAGE_SNSTATUSTRANSFER_STRUCT *msg1);
     return true;
 }
 
@@ -378,6 +388,7 @@ bool x2ap::handle_uecontextrelease(LIBLTE_X2AP_MESSAGE_UECONTEXTRELEASE_STRUCT *
 {
     x2ap_log->info("Received Uecontextrelease\n");
     //TODO: release_ue_cxt();
+    release_ue_cxt(LIBLTE_X2AP_MESSAGE_UECONTEXTRELEASE_STRUCT *msg1);
     return true;
 }
 
@@ -385,6 +396,7 @@ bool x2ap::handle_handoverrequestacknowledge(LIBLTE_X2AP_MESSAGE_HANDOVERREQUEST
 {
     x2ap_log->info("Received Handoverrequestacknowledge\n");
     //TODO: send_snstatustransfer();
+    send_snstatustransfer(LIBLTE_X2AP_MESSAGE_HANDOVERREQUESTACKNOWLEDGE_STRUCT *msg1);
     return true;
 }
 
@@ -412,6 +424,74 @@ bool x2ap::handle_x2setupfailure(LIBLTE_X2AP_MESSAGE_X2SETUPFAILURE_STRUCT *msg)
     return true;
 }
 
+bool x2ap::send_x2setuprequest()
+{
+    if(!neighbour_connected)
+        return false;
+
+    srslte::byte_buffer_t msg;
+
+    LIBLTE_X2AP_X2AP_PDU_STRUCT pdu;
+    bzero(&pdu, sizeof(LIBLTE_X2AP_X2AP_PDU_STRUCT));
+    pdu.ext = false;
+    pdu.choice_type = LIBLTE_X2AP_X2AP_PDU_CHOICE_INITIATINGMESSAGE;
+
+    LIBLTE_X2AP_INITIATINGMESSAGE_STRUCT *init = &pdu.choice.initiatingMessage;
+    init->procedureCode = LIBLTE_X2AP_PROC_ID_X2SETUP;
+    init->choice_type = LIBLTE_X2AP_INITIATINGMESSAGE_CHOICE_X2SETUPREQUEST;
+
+    LIBLTE_X2AP_MESSAGE_X2SETUPREQUEST_STRUCT *req = &(init->choice.X2Setuprequest);
+    //TODO: fill the mandatories
+
+    req->ext = false;
+    req->GUGroupIDList_present = false;
+    liblte_x2ap_pack_x2ap_pdu(&pdu, (LIBLTE_BYTE_MSG_STRUCT*)&msg);
+    x2ap_log->info(msg.msg, msg.N_bytes, "Sending X2 setup request");
+
+    ssize_t n_sent = sctp_sendmsg(socket_fd, msg.msg, msg.N_bytes,
+                                (struct sockaddr*)&neighbour_enb_addr, sizeof(struct sockaddr_in),
+                                htonl(PPID), 0, NONUE_STREAM_ID, 0, 0);
+    if(n_sent == -1) {
+    x2ap_log->error("Failed to send X2SetupRequest");
+    return false;
+  }
+    return true;
+}
+
+bool x2ap::send_x2setupresponse(LIBLTE_X2AP_MESSAGE_X2SETUPREQUEST_STRUCT *msg1)
+{
+    if(!neighbour_connected)
+        return false;
+
+    srslte::byte_buffer_t msg;
+
+    LIBLTE_X2AP_X2AP_PDU_STRUCT pdu;
+    bzero(&pdu, sizeof(LIBLTE_X2AP_X2AP_PDU_STRUCT));
+    pdu.ext = false;
+    pdu.choice_type = LIBLTE_X2AP_X2AP_PDU_CHOICE_SUCCESSFULOUTCOME;
+
+    LIBLTE_X2AP_INITIATINGMESSAGE_STRUCT *successful = &pdu.choice.successfulOutcome;
+    successful->procedureCode = LIBLTE_X2AP_PROC_ID_X2SETUP;
+    successful->choice_type = LIBLTE_X2AP_SUCCESSFULOUTCOME_CHOICE_X2SETUPRESPONSE;
+
+    LIBLTE_X2AP_MESSAGE_X2SETUPRESPONSE_STRUCT *req = &(successful->choice.X2SetupResponse);
+    //TODO: fill the mandatories
+    req->ext = false;
+    req->GUGroupIDList_present = false;
+    req->CriticalityDiagnostics_present = false;
+    liblte_x2ap_pack_x2ap_pdu(&pdu, (LIBLTE_BYTE_MSG_STRUCT*)&msg);
+    x2ap_log->info_hex(msg.msg, msg.N_bytes, "Sending X2 setup response");
+
+    ssize_t n_sent = sctp_sendmsg(socket_fd, msg.msg, msg.N_bytes,
+                                (struct sockaddr*)&neighbour_enb_addr, sizeof(struct sockaddr_in),
+                                htonl(PPID), 0, NONUE_STREAM_ID, 0, 0);
+    if(n_sent == -1) {
+    x2ap_log->error("Failed to send X2SetupResponse");
+    return false;
+  }
+    return true;
+}
+
 bool x2ap::send_handoverrequest()
 {
     if(!neighbour_connected)
@@ -429,11 +509,127 @@ bool x2ap::send_handoverrequest()
     init->choice_type = LIBLTE_X2AP_INITIATINGMESSAGE_CHOICE_HANDOVERREQUEST;
 
     LIBLTE_X2AP_MESSAGE_HANDOVERREQUEST_STRUCT *req = &(init->choice.HandoverRequest);
+    //TODO: fill the mandatories
     req->ext = false;
     req->TraceActivation_present = false;
     req->SRVCCOperationPossible_present = false;
     req->CSGMembershipStatus_present = false;
     req->MobilityInformation_present = false;
+    liblte_x2ap_pack_x2ap_pdu(&pdu, (LIBLTE_BYTE_MSG_STRUCT*)&msg);
+    x2ap_log->info_hex(msg.msg, msg.N_bytes, "Sending X2 handover request");
+
+    ssize_t n_sent = sctp_sendmsg(socket_fd, msg.msg, msg.N_bytes,
+                                (struct sockaddr*)&neighbour_enb_addr, sizeof(struct sockaddr_in),
+                                htonl(PPID), 0, NONUE_STREAM_ID, 0, 0);
+    if(n_sent == -1) {
+    x2ap_log->error("Failed to send X2handoverRequest");
+    return false;
+  }
+    return true;
+}
+
+bool x2ap::send_handoverrequestacknowledge(LIBLTE_X2AP_MESSAGE_HANDOVERREQUEST_STRUCT *msg1)
+{
+    if(!neighbour_connected)
+        return false;
+
+    srslte::byte_buffer_t msg;
+
+    LIBLTE_X2AP_X2AP_PDU_STRUCT pdu;
+    bzero(&pdu, sizeof(LIBLTE_X2AP_X2AP_PDU_STRUCT));
+    pdu.ext = false;
+    pdu.choice_type = LIBLTE_X2AP_X2AP_PDU_CHOICE_SUCCESSFULOUTCOME;
+
+    LIBLTE_X2AP_SUCCESSFULOUTCOME_STRUCT *successful = &pdu.choice.successfulOutcome;
+    successful->procedureCode = LIBLTE_X2AP_PROC_ID_HANDOVERPREPARATION;
+    successful->choice_type = LIBLTE_X2AP_SUCCESSFULOUTCOME_CHOICE_HANDOVERREQUESTACKNOWLEDGE;
+
+    LIBLTE_X2AP_MESSAGE_HANDOVERREQUESTACKNOWLEDGE_STRUCT *req = &(successful->choice.HandoverRequestAcknowledge);
+    //TODO: fill the mandatories
+    req->ext = false;
+    req->E_RABs_NotAdmitted_List_present = false;
+    req->CriticalityDiagnostics_present = false;
+    liblte_x2ap_pack_x2ap_pdu(&pdu, (LIBLTE_BYTE_MSG_STRUCT*)&msg);
+    x2ap_log->info_hex(msg.msg, msg.N_bytes, "Sending X2 handover ack");
+
+    ssize_t n_sent = sctp_sendmsg(socket_fd, msg.msg, msg.N_bytes,
+                                (struct sockaddr*)&neighbour_enb_addr, sizeof(struct sockaddr_in),
+                                htonl(PPID), 0, NONUE_STREAM_ID, 0, 0);
+    if(n_sent == -1) {
+    x2ap_log->error("Failed to send X2handoverRequestAck");
+    return false;
+  }
+    return true;
+}
+
+bool x2ap::send_snstatustransfer(LIBLTE_X2AP_MESSAGE_HANDOVERREQUESTACKNOWLEDGE_STRUCT *msg1)
+{
+    if(!neighbour_connected)
+        return false;
+
+    srslte::byte_buffer_t msg;
+
+    LIBLTE_X2AP_X2AP_PDU_STRUCT pdu;
+    bzero(&pdu, sizeof(LIBLTE_X2AP_X2AP_PDU_STRUCT));
+    pdu.ext = false;
+    pdu.choice_type = LIBLTE_X2AP_X2AP_PDU_CHOICE_INITIATINGMESSAGE;
+
+    LIBLTE_X2AP_SUCCESSFULOUTCOME_STRUCT *init = &pdu.choice.initiatingMessage;
+    init->procedureCode = LIBLTE_X2AP_PROC_ID_SNSTATUSTRANSFER;
+    init->choice_type = LIBLTE_X2AP_INITIATINGMESSAGE_CHOICE_SNSTATUSTRANSFER;
+
+    LIBLTE_X2AP_MESSAGE_SNSTATUSTRANSFER_STRUCT *req = &(init->choice.SNStatusTransfer);
+    //TODO: fill the mandatories
+    req->ext = false;
+    liblte_x2ap_pack_x2ap_pdu(&pdu, (LIBLTE_BYTE_MSG_STRUCT*)&msg);
+    x2ap_log->info_hex(msg.msg, msg.N_bytes, "Sending SNStatusTransfer");
+
+    ssize_t n_sent = sctp_sendmsg(socket_fd, msg.msg, msg.N_bytes,
+                                (struct sockaddr*)&neighbour_enb_addr, sizeof(struct sockaddr_in),
+                                htonl(PPID), 0, NONUE_STREAM_ID, 0, 0);
+    if(n_sent == -1) {
+    x2ap_log->error("Failed to send SNStatusTransfer");
+    return false;
+  }
+    return true;
+}
+
+bool x2ap::send_uecontextrelease(LIBLTE_X2AP_MESSAGE_SNSTATUSTRANSFER_STRUCT *msg1)
+{
+    if(!neighbour_connected)
+        return false;
+
+    srslte::byte_buffer_t msg;
+
+    LIBLTE_X2AP_X2AP_PDU_STRUCT pdu;
+    bzero(&pdu, sizeof(LIBLTE_X2AP_X2AP_PDU_STRUCT));
+    pdu.ext = false;
+    pdu.choice_type = LIBLTE_X2AP_X2AP_PDU_CHOICE_INITIATINGMESSAGE;
+
+    LIBLTE_X2AP_SUCCESSFULOUTCOME_STRUCT *init = &pdu.choice.initiatingMessage;
+    init->procedureCode = LIBLTE_X2AP_PROC_ID_UECONTEXTRELEASE;
+    init->choice_type = LIBLTE_X2AP_INITIATINGMESSAGE_CHOICE_UECONTEXTRELEASE;
+
+    LIBLTE_X2AP_MESSAGE_UECONTEXTRELEASE_STRUCT *req = &(init->choice.UEContextRelease);
+    //TODO: fill the mandatories
+    req->ext = false;
+    liblte_x2ap_pack_x2ap_pdu(&pdu, (LIBLTE_BYTE_MSG_STRUCT*)&msg);
+    x2ap_log->info_hex(msg.msg, msg.N_bytes, "Sending UEContextRelease");
+
+    ssize_t n_sent = sctp_sendmsg(socket_fd, msg.msg, msg.N_bytes,
+                                (struct sockaddr*)&neighbour_enb_addr, sizeof(struct sockaddr_in),
+                                htonl(PPID), 0, NONUE_STREAM_ID, 0, 0);
+    if(n_sent == -1) {
+    x2ap_log->error("Failed to send UEContextRelease");
+    return false;
+  }
+    return true;
+}
+
+bool x2ap::release_ue_cxt(LIBLTE_X2AP_MESSAGE_UECONTEXTRELEASE_STRUCT *msg1)
+{
+    //TODO: change some data
+    x2ap_log->info_hex("successful X2 handover");
     return true;
 }
 

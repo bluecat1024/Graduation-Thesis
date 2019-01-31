@@ -263,7 +263,7 @@ public:
 // S1AP interface for RRC
 class s1ap_interface_rrc
 {
-public:
+public:「
   virtual void initial_ue(uint16_t rnti, srslte::byte_buffer_t *pdu) = 0;
   virtual void initial_ue(uint16_t rnti, srslte::byte_buffer_t *pdu, uint32_t m_tmsi, uint8_t mmec) = 0;
   virtual void write_pdu(uint16_t rnti, srslte::byte_buffer_t *pdu) = 0;
